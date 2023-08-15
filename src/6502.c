@@ -1,65 +1,85 @@
 #include "6502.h"
 
-// =======================================
-//                  CPU
-// =======================================
+#include "stdlib.h"
 
-CPU_6502 cpu;
-
-void reset( void ) {
-    
-    cpu.PC = 0;
-    cpu.SP = START_OF_STACK;
+void reset(void)
+{
 
     cpu.AC = 0;
     cpu.BC = 0;
-    cpu.CF = 0; 
+    cpu.CF = 0;
     cpu.DM = 0;
     cpu.ID = 0;
     cpu.NF = 0;
     cpu.OF = 0;
-    
+    cpu.PC = 0;
+    cpu.SP = 0;
     cpu.ZF = 0;
     cpu.X = 0;
     cpu.Y = 0;
+
+    cpu.memory = (Word *)calloc(MEMORY_WORD_COUNT_6502, sizeof(Word));
 }
 
-void execute( int cycles ) {
-    
-}
+void execute(int cycles)
+{
+    while (cycles > 0)
+    {
 
-// =======================================
-//             Add with Carry
-// =======================================
+        Word opcode = cpu.memory[BASE_STACK + cpu.SP];
 
-void ADC_IM( void ) {
+        switch (opcode)
+        {
+        case OPCODE_ADC_IM:
 
-}
+            cycles -= ADC_IM(cpu);
 
-void ADC_ZP( void ) {
+            break;
 
-}
+        case OPCODE_ADC_ZP:
 
-void ADC_ZP_X( void ) {
+            cycles -= ADC_ZP(cpu);
 
-}
+            break;
 
-void ADC_AB( void ) {
+        case OPCODE_ADC_ZP_X:
 
-}
+            cycles -= ADC_ZP_X(cpu);
 
-void ADC_AB_X( void ) {
+            break;
 
-}
+        case OPCODE_ADC_AB:
 
-void ADC_AB_Y( void ) {
+            cycles -= ADC_AB(cpu);
 
-}
+            break;
 
-void ADC_IN_X( void ) {
+        case OPCODE_ADC_AB_X:
 
-}
+            cycles -= ADC_AB_X(cpu);
 
-void ADC_IN_Y( void ) {
+            break;
 
+        case OPCODE_ADC_AB_Y:
+
+            cycles -= ADC_AB_Y(cpu);
+
+            break;
+
+        case OPCODE_ADC_IN_X:
+
+            cycles -= ADC_IN_X(cpu);
+
+            break;
+
+        case OPCODE_ADC_IN_Y:
+
+            cycles -= ADC_IN_Y(cpu);
+
+            break;
+
+        default:
+            break;
+        }
+    }
 }
