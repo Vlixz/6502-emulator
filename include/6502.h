@@ -3,6 +3,18 @@
 
 #include "common.h"
 
+/* 6502 supports a 256 byte stack located between 0x0100 and 0x01FF. */
+
+#define BASE_STACK 0x0100
+#define START_OF_STACK 0xFF
+#define END_OF_STACK 0x00
+
+/* First 256 byte page of memory is referred to the 'Zero Page' and is focused on creating special addressing modes that result in shorter instructions cycles. */
+
+#define START_ZERO_PAGE 0x0000
+#define END_ZERO_PAGE 0x00FF
+
+
 /**
  * 6502 defenition (registers, etc.);
  * Definitions of all the different instructions;
@@ -124,5 +136,103 @@ typedef struct  {
     Byte NF : 1;
 
 } CPU_6502;
+
+// =======================================
+//                  CPU
+// =======================================
+
+/**
+ * Reset all the registers to their defualt value's.
+*/
+void reset( void );
+
+/** 
+ * Execute a specific number of cycles.
+*/
+void execute( int cycles );
+
+// =======================================
+//             Add with Carry
+// =======================================
+
+/** 
+ * Add with Carry - Immediate
+ * 
+ * Opcode: 0x69
+ * Bytes: 2
+ * Cycles: 2
+ * 
+*/
+void ADC_IM( void );
+
+/** 
+ * Add with Carry - Zero Page
+ * 
+ * Opcode: 0x65
+ * Bytes: 2
+ * Cycles: 3
+ * 
+*/
+void ADC_ZP( void );
+
+/** 
+ * Add with Carry - Zero Page X
+ * 
+ * Opcode: 0x75
+ * Bytes: 2
+ * Cycles: 4
+ * 
+*/
+void ADC_ZP_X( void );
+
+/** 
+ * Add with Carry - Absolute
+ * 
+ * Opcode: 0x6D
+ * Bytes: 3
+ * Cycles: 4
+ * 
+*/
+void ADC_AB( void );
+
+/** 
+ * Add with Carry - Absolute X
+ * 
+ * Opcode: 0x7D
+ * Bytes: 3
+ * Cycles: 4 (+1 if page crossed)
+ * 
+*/
+void ADC_AB_X( void );
+
+/** 
+ * Add with Carry - Absolute Y
+ * 
+ * Opcode: 0x79
+ * Bytes: 3
+ * Cycles: 4 (+1 if page crossed)
+ * 
+*/
+void ADC_AB_Y( void );
+
+/** 
+ * Add with Carry - Indirect X
+ * 
+ * Opcode: 0x61
+ * Bytes: 2
+ * Cycles: 6
+ * 
+*/
+void ADC_IN_X( void );
+
+/** 
+ * Add with Carry - Indirect X
+ * 
+ * Opcode: 0x61
+ * Bytes: 2
+ * Cycles: 6 (+1 if page crossed)
+ * 
+*/
+void ADC_IN_Y( void );
 
 #endif /* INC_6502_H */
