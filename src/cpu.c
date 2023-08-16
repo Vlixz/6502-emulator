@@ -4,27 +4,8 @@
 //             Add with Carry
 // =======================================
 
-Byte ADC_IM(CPU_6502 *cpu)
+inline void ADC_UpdateRegisters(CPU_6502 *cpu, Byte AC, Byte CF, Byte MEM, unsigned int value)
 {
-    // Add together: CF, ACC, MEM
-    Byte AC = cpu->AC; // Accumulator value
-    Byte CF = cpu->CF; // Carry Flag
-    Byte MEM = cpu->memory[cpu->PC++];
-
-    unsigned int value = AC + CF + MEM;
-
-    cpu->AC = value;
-
-    /**
-     * Process after use:
-     *
-     *  Carry Flag: If overflow in bit 7
-     *  Zero Flag: If AC = 0
-     *  Overflow Flag: If sign bit is incorrect
-     *  Negative Flag: If bit 7 set
-     *
-     */
-
     cpu->CF = value >> 8;
     cpu->ZF = !cpu->AC * 1;
     cpu->NF = cpu->AC >> 7;
@@ -40,6 +21,20 @@ Byte ADC_IM(CPU_6502 *cpu)
     {
         cpu->OF = (cpu->AC >> 7); // If sign bit is one then calculation overflowed
     }
+}
+
+Byte ADC_IM(CPU_6502 *cpu)
+{
+    // Add together: CF, ACC, MEM
+    Byte AC = cpu->AC; // Accumulator value
+    Byte CF = cpu->CF; // Carry Flag
+    Byte MEM = cpu->memory[cpu->PC++];
+
+    unsigned int value = AC + CF + MEM;
+
+    cpu->AC = value;
+
+    ADC_UpdateRegisters(cpu, AC, CF, MEM, value);
 
     return ADC_IM_CYCLES;
 }

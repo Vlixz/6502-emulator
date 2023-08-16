@@ -238,4 +238,15 @@ Byte ADC_IN_X(CPU_6502 *cpu);
  */
 Byte ADC_IN_Y(CPU_6502 *cpu);
 
+/**
+ * Process after use:
+ *
+ *  Carry Flag: If overflow in bit 7
+ *  Zero Flag: If AC = 0
+ *  Overflow Flag: If sign bit is incorrect
+ *  Negative Flag: If bit 7 set
+ *
+ */
+void ADC_UpdateRegisters(CPU_6502 *cpu, Byte AC, Byte CF, Byte MEM, unsigned int value);
+
 #endif /* INC_CPU_H */

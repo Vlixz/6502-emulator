@@ -1,6 +1,5 @@
 extern "C"
 {
-
 #include "6502.h"
 }
 
