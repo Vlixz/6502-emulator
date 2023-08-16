@@ -25,10 +25,9 @@ inline void ADC_UpdateRegisters(CPU_6502 *cpu, Byte AC, Byte CF, Byte MEM, unsig
 
 Byte ADC_IM(CPU_6502 *cpu)
 {
-    // Add together: CF, ACC, MEM
-    Byte AC = cpu->AC; // Accumulator value
-    Byte CF = cpu->CF; // Carry Flag
-    Byte MEM = cpu->memory[cpu->PC++];
+    Byte AC = cpu->AC;                 // Accumulator value
+    Byte CF = cpu->CF;                 // Carry Flag
+    Byte MEM = cpu->memory[cpu->PC++]; // Immediate value
 
     unsigned int value = AC + CF + MEM;
 
@@ -41,6 +40,16 @@ Byte ADC_IM(CPU_6502 *cpu)
 
 Byte ADC_ZP(CPU_6502 *cpu)
 {
+    Byte AC = cpu->AC;                              // Accumulator value
+    Byte CF = cpu->CF;                              // Carry Flag
+    Byte MEM = cpu->memory[cpu->memory[cpu->PC++]]; // Value at specific Zero Page address (0x0000 -> 0x00FF)
+
+    unsigned int value = AC + CF + MEM;
+
+    cpu->AC = value;
+
+    ADC_UpdateRegisters(cpu, AC, CF, MEM, value);
+
     return ADC_ZP_CYCLES;
 }
 

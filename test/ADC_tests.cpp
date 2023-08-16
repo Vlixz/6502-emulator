@@ -5,6 +5,18 @@ extern "C"
 
 #include <gtest/gtest.h>
 
+#define TEST_ADC_IM 0
+#define TEST_ADC_ZP 1
+
+/**
+ *
+ * ADC_IM is tested completely (all flags are tested),
+ * The different addressing modes are only tested on the addressing part (the function of the instruction is the same and uses the same inline code)
+ *
+ */
+
+#if TEST_ADC_IM
+
 /**
  * ADC_IM
  *
@@ -160,3 +172,41 @@ TEST(ADC_IM_NegativeFlag, BasicAssertions)
     ASSERT_FALSE(cpu.OF);
     ASSERT_TRUE(cpu.NF);
 }
+
+#endif /* TEST_ADC_IM*/
+
+#if TEST_ADC_ZP
+
+/**
+ * ADC_ZP
+ *
+ * Test: Adding without carry bit & No Overflow
+ */
+TEST(ADC_ZP_NoCarryNoOverflow, BasicAssertions)
+{
+    CPU_6502 cpu;
+
+    reset_6502(&cpu);
+
+    cpu.AC = 5; // 5
+
+    // Start inline program
+    cpu.memory[0xFFFC] = ADC_ZP_OPCODE;
+    cpu.memory[0xFFFD] = 0x10; // Memory address of zero page
+    cpu.memory[0x0010] = 10;
+    // End inline program
+
+    execute_6502(&cpu, ADC_IM_CYCLES);
+
+    ASSERT_EQ(cpu.AC, 15);
+
+    ASSERT_FALSE(cpu.CF);
+    ASSERT_FALSE(cpu.ZF);
+    ASSERT_FALSE(cpu.ID);
+    ASSERT_FALSE(cpu.DM);
+    ASSERT_FALSE(cpu.BC);
+    ASSERT_FALSE(cpu.OF);
+    ASSERT_FALSE(cpu.NF);
+}
+
+#endif /* TEST_ADC_ZP */
