@@ -2,6 +2,7 @@
     "files.associations": {
         "functions.h": "c",
         "memory.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "6502.h": "c"
     }
 }

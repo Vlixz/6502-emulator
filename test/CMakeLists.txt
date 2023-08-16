@@ -2,7 +2,7 @@ enable_testing()
 
 add_executable(
   hello_test
-  test.cpp
+  ADC_tests.cpp
 )
 
 # include the gtest and em6502 lib

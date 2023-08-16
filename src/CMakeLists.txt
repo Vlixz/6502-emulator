@@ -1,6 +1,5 @@
 add_library(em6502 STATIC 
     6502.c
-    memory.c
     cpu.c
 )
 

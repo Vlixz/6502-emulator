@@ -2,7 +2,6 @@
 #define INC_CPU_H
 
 #include "common.h"
-#include "memory.h"
 
 /* 6502 supports a 256 byte stack located between 0x0100 and 0x01FF. */
 
@@ -153,7 +152,7 @@ typedef struct
  * Cycles: 2
  *
  */
-Byte ADC_IM(CPU_6502 cpu);
+Byte ADC_IM(CPU_6502 *cpu);
 
 /**
  * Add with Carry - Zero Page
@@ -165,7 +164,7 @@ Byte ADC_IM(CPU_6502 cpu);
  * @return number of cycles executed
  *
  */
-Byte ADC_ZP(CPU_6502 cpu);
+Byte ADC_ZP(CPU_6502 *cpu);
 
 /**
  * Add with Carry - Zero Page X
@@ -177,7 +176,7 @@ Byte ADC_ZP(CPU_6502 cpu);
  * @return number of cycles executed
  *
  */
-Byte ADC_ZP_X(CPU_6502 cpu);
+Byte ADC_ZP_X(CPU_6502 *cpu);
 
 /**
  * Add with Carry - Absolute
@@ -189,7 +188,7 @@ Byte ADC_ZP_X(CPU_6502 cpu);
  * @return number of cycles executed
  *
  */
-Byte ADC_AB(CPU_6502 cpu);
+Byte ADC_AB(CPU_6502 *cpu);
 
 /**
  * Add with Carry - Absolute X
@@ -201,7 +200,7 @@ Byte ADC_AB(CPU_6502 cpu);
  * @return number of cycles executed
  *
  */
-Byte ADC_AB_X(CPU_6502 cpu);
+Byte ADC_AB_X(CPU_6502 *cpu);
 
 /**
  * Add with Carry - Absolute Y
@@ -213,7 +212,7 @@ Byte ADC_AB_X(CPU_6502 cpu);
  * @return number of cycles executed
  *
  */
-Byte ADC_AB_Y(CPU_6502 cpu);
+Byte ADC_AB_Y(CPU_6502 *cpu);
 
 /**
  * Add with Carry - Indirect X
@@ -225,18 +224,18 @@ Byte ADC_AB_Y(CPU_6502 cpu);
  * @return number of cycles executed
  *
  */
-Byte ADC_IN_X(CPU_6502 cpu);
+Byte ADC_IN_X(CPU_6502 *cpu);
 
 /**
  * Add with Carry - Indirect X
  *
  * Opcode: 0x71
  * Bytes: 2
- * Cycles: 6 (+1 if page crossed)
+ * Cycles: 5 (+1 if page crossed)
  *
  * @return number of cycles executed
  *
  */
-Byte ADC_IN_Y(CPU_6502 cpu);
+Byte ADC_IN_Y(CPU_6502 *cpu);
 
 #endif /* INC_CPU_H */
