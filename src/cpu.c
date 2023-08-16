@@ -55,6 +55,20 @@ Byte ADC_ZP(CPU_6502 *cpu)
 
 Byte ADC_ZP_X(CPU_6502 *cpu)
 {
+    Byte AC = cpu->AC; // Accumulator value
+    Byte CF = cpu->CF; // Carry Flag
+
+    // Calculated Zero Page location (8-bit Zero Page address + X) - this wraps around so 0xFF + 0x80 -> 0x7F
+    Byte ZeroPageMemoryLocation = cpu->X + cpu->memory[cpu->PC++];
+
+    Byte MEM = cpu->memory[ZeroPageMemoryLocation];
+
+    unsigned int value = AC + CF + MEM;
+
+    cpu->AC = value;
+
+    ADC_UpdateRegisters(cpu, AC, CF, MEM, value);
+
     return ADC_ZP_X_CYCLES;
 }
 
