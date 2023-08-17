@@ -1,11 +1,102 @@
 #include "cpu.h"
 
+#include "stdio.h"
+#include "stdlib.h"
 #include "stdbool.h"
+
+// =======================================
+//            Addressing Modes
+// =======================================
+
+inline Byte AddressingMode_Immediate(const Byte *memory, Word *PC)
+{
+    return memory[*PC++];
+}
+
+inline Byte AddressingMode_ZeroPage(const Byte *memory, Word *PC)
+{
+    Byte zeroPageAddress = memory[*PC++];
+
+    return memory[zeroPageAddress];
+}
+
+inline Byte AddressingMode_ZeroPageX(const Byte *memory, Word *PC, const Byte X)
+{
+    Byte ZeroPageMemoryLocation = X + memory[*PC++];
+
+    return memory[ZeroPageMemoryLocation];
+}
+
+inline Byte AddressingMode_ZeroPageY(const Byte *memory, Word *PC, const Byte Y)
+{
+    fprintf(stderr, "Addressing mode Zero Page Y not implemented yet.");
+
+    exit(EXIT_FAILURE);
+}
+
+inline void AddressingMode_Relative(const Byte *memory, Word *PC)
+{
+    fprintf(stderr, "Addressing mode Relative not implemented yet.");
+
+    exit(EXIT_FAILURE);
+}
+
+inline Byte AddressingMode_Absolute(const Byte *memory, Word *PC)
+{
+    Word address = memory[*PC++];
+
+    return memory[address];
+}
+
+inline Byte AddressingMode_AbsoluteX(const Byte *memory, Word *PC, const Byte X)
+{
+    Word address = memory[*PC++] + X;
+
+    return memory[address];
+}
+
+inline Byte AddressingMode_AbsoluteY(const Byte *memory, Word *PC, const Byte Y)
+{
+    Word address = memory[*PC++] + Y;
+
+    return memory[address];
+}
+
+inline Byte AddressingMode_Indirect(const Byte *memory, Word *PC)
+{
+    fprintf(stderr, "Addressing mode Indirect not implemented yet.");
+
+    exit(EXIT_FAILURE);
+}
+
+inline Byte AddressingMode_IndexedIndirect(const Byte *memory, Word *PC, Byte X)
+{
+    fprintf(stderr, "Addressing mode Indexed Indirect not implemented yet.");
+
+    exit(EXIT_FAILURE);
+}
+
+inline Byte AddressingMode_IndirectIndexed(const Byte *memory, Word *PC, Byte Y)
+{
+    fprintf(stderr, "Addressing mode Indirect Indexed not implemented yet.");
+
+    exit(EXIT_FAILURE);
+}
 
 // =======================================
 //             Add with Carry
 // =======================================
 
+void ADC_Algorithmics(CPU_6502 *cpu, Byte O);
+
+/**
+ *
+ * A,Z,C,N = A+M+C
+ *
+ * Adds the content of a memory location to the accumulator together with the carry bit. If a overflow
+ * occurs the carry bit is set.
+ *
+ */
 inline void ADC_Algorithmics(CPU_6502 *cpu, Byte O)
 {
     bool areSignBitsEqual = !((cpu->A & BIT_MASK_SIGNED) ^ (O & BIT_MASK_SIGNED));
@@ -23,7 +114,7 @@ inline void ADC_Algorithmics(CPU_6502 *cpu, Byte O)
 
 Byte ADC_IM(CPU_6502 *cpu)
 {
-    Byte O = cpu->memory[cpu->PC++];
+    Byte O = AddressingMode_Immediate(cpu->memory, &cpu->PC);
 
     ADC_Algorithmics(cpu, O);
 
@@ -32,7 +123,7 @@ Byte ADC_IM(CPU_6502 *cpu)
 
 Byte ADC_ZP(CPU_6502 *cpu)
 {
-    Byte O = cpu->memory[cpu->memory[cpu->PC++]];
+    Byte O = AddressingMode_ZeroPage(cpu->memory, &cpu->PC);
 
     ADC_Algorithmics(cpu, O);
 
@@ -41,10 +132,7 @@ Byte ADC_ZP(CPU_6502 *cpu)
 
 Byte ADC_ZP_X(CPU_6502 *cpu)
 {
-    // Calculated Zero Page location (8-bit Zero Page address + X) - this wraps around so 0xFF + 0x80 -> 0x7F
-    Byte ZeroPageMemoryLocation = cpu->X + cpu->memory[cpu->PC++];
-
-    Byte O = cpu->memory[ZeroPageMemoryLocation];
+    Byte O = AddressingMode_ZeroPageX(cpu->memory, &cpu->PC, cpu->X);
 
     ADC_Algorithmics(cpu, O);
 
@@ -53,21 +141,34 @@ Byte ADC_ZP_X(CPU_6502 *cpu)
 
 Byte ADC_AB(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_Absolute(cpu->memory, &cpu->PC);
+
+    ADC_Algorithmics(cpu, O);
+
     return ADC_AB_CYCLES;
 }
 
 Byte ADC_AB_X(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X);
+
+    ADC_Algorithmics(cpu, O);
+
     return ADC_AB_X_CYCLES;
 }
 
 Byte ADC_AB_Y(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_AbsoluteY(cpu->memory, &cpu->PC, cpu->Y);
+
+    ADC_Algorithmics(cpu, O);
+
     return ADC_AB_Y_CYCLES;
 }
 
 Byte ADC_IN_X(CPU_6502 *cpu)
 {
+
     return ADC_IN_X_CYCLES;
 }
 

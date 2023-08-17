@@ -19,7 +19,7 @@ void reset_6502(CPU_6502 *cpu)
     cpu->X = 0;
     cpu->Y = 0;
 
-    cpu->memory = (Word *)calloc(MEMORY_WORD_COUNT_6502, sizeof(Word));
+    cpu->memory = (Byte *)calloc(MEMORY_WORD_COUNT_6502, sizeof(Byte));
 }
 
 void destroy_6502(CPU_6502 *cpu)
