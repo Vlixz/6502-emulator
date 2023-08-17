@@ -8,6 +8,6 @@ void reset_6502(CPU_6502 *cpu);
 
 void destroy_6502(CPU_6502 *cpu);
 
-void execute_6502(CPU_6502 *cpu, int cycles);
+int execute_6502(CPU_6502 *cpu, int cycles);
 
 #endif /* INC_6502_H */

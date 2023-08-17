@@ -193,13 +193,13 @@ Byte AddressingMode_Absolute(const Byte *memory, Word *PC);
  * Absolute X addressing mode returns the value at a given 16-bit address added to the current value in the X register.
  *
  */
-Byte AddressingMode_AbsoluteX(const Byte *memory, Word *PC, const Byte X);
+Byte AddressingMode_AbsoluteX(const Byte *memory, Word *PC, const Byte X, int *cycles);
 
 /**
  * Absolute Y addressing mode returns the value at a given 16-bit address added to the current value of the Y register.
  *
  */
-Byte AddressingMode_AbsoluteY(const Byte *memory, Word *PC, const Byte Y);
+Byte AddressingMode_AbsoluteY(const Byte *memory, Word *PC, const Byte Y, int *cycles);
 
 /**
  * JMP is the only 6502 instruction to support indirection. The instruction contains a 16 bit address which identifies the

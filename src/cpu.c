@@ -51,24 +51,28 @@ inline Byte AddressingMode_Absolute(const Byte *memory, Word *PC)
     return memory[address];
 }
 
-inline Byte AddressingMode_AbsoluteX(const Byte *memory, Word *PC, const Byte X)
+inline Byte AddressingMode_AbsoluteX(const Byte *memory, Word *PC, const Byte X, int *cycles)
 {
     Byte LSB = memory[(*PC)++];
     Byte MSB = memory[(*PC)++];
 
     Word address = (Word)LSB | MSB << 8;
+
+    (*cycles) = (LSB + X) < X; // The addition wraped around +1 cycle.
 
     address += X;
 
     return memory[address];
 }
 
-inline Byte AddressingMode_AbsoluteY(const Byte *memory, Word *PC, const Byte Y)
+inline Byte AddressingMode_AbsoluteY(const Byte *memory, Word *PC, const Byte Y, int *cycles)
 {
     Byte LSB = memory[(*PC)++];
     Byte MSB = memory[(*PC)++];
 
     Word address = (Word)LSB | MSB << 8;
+
+    (*cycles) = (LSB + Y) < Y; // The addition wraped around +1 cycle.
 
     address += Y;
 
@@ -162,20 +166,24 @@ Byte ADC_AB(CPU_6502 *cpu)
 
 Byte ADC_AB_X(CPU_6502 *cpu)
 {
-    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X);
+    int cycles = 0;
+
+    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, &cycles);
 
     ADC_Algorithmics(cpu, O);
 
-    return ADC_AB_X_CYCLES;
+    return ADC_AB_X_CYCLES + cycles;
 }
 
 Byte ADC_AB_Y(CPU_6502 *cpu)
 {
-    Byte O = AddressingMode_AbsoluteY(cpu->memory, &cpu->PC, cpu->Y);
+    int cycles = 0;
+
+    Byte O = AddressingMode_AbsoluteY(cpu->memory, &cpu->PC, cpu->Y, &cycles);
 
     ADC_Algorithmics(cpu, O);
 
-    return ADC_AB_Y_CYCLES;
+    return ADC_AB_Y_CYCLES + cycles;
 }
 
 Byte ADC_IN_X(CPU_6502 *cpu)
