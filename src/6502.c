@@ -19,7 +19,7 @@ void reset_6502(CPU_6502 *cpu)
     cpu->X = 0;
     cpu->Y = 0;
 
-    cpu->memory = (Word *)calloc(MEMORY_WORD_COUNT_6502, sizeof(Word));
+    cpu->memory = (Byte *)calloc(MEMORY_WORD_COUNT_6502, sizeof(Byte));
 }
 
 void destroy_6502(CPU_6502 *cpu)
@@ -27,8 +27,10 @@ void destroy_6502(CPU_6502 *cpu)
     free(cpu->memory);
 }
 
-void execute_6502(CPU_6502 *cpu, int cycles)
+int execute_6502(CPU_6502 *cpu, int cycles)
 {
+    int runCycles = 0, temp = 0;
+
     while (cycles > 0)
     {
 
@@ -46,49 +48,73 @@ void execute_6502(CPU_6502 *cpu, int cycles)
 
         case ADC_IM_OPCODE:
 
-            cycles -= ADC_IM(cpu);
+            temp = ADC_IM(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
 
             break;
 
         case ADC_ZP_OPCODE:
 
-            cycles -= ADC_ZP(cpu);
+            temp = ADC_ZP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
 
             break;
 
         case ADC_ZP_X_OPCODE:
 
-            cycles -= ADC_ZP_X(cpu);
+            temp = ADC_ZP_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
 
             break;
 
         case ADC_AB_OPCODE:
 
-            cycles -= ADC_AB(cpu);
+            temp = ADC_AB(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
 
             break;
 
         case ADC_AB_X_OPCODE:
 
-            cycles -= ADC_AB_X(cpu);
+            temp = ADC_AB_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
 
             break;
 
         case ADC_AB_Y_OPCODE:
 
-            cycles -= ADC_AB_Y(cpu);
+            temp = ADC_AB_Y(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
 
             break;
 
         case ADC_IN_X_OPCODE:
 
-            cycles -= ADC_IN_X(cpu);
+            temp = ADC_IN_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
 
             break;
 
         case ADC_IN_Y_OPCODE:
 
-            cycles -= ADC_IN_Y(cpu);
+            temp = ADC_IN_Y(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
 
             break;
 
@@ -96,4 +122,6 @@ void execute_6502(CPU_6502 *cpu, int cycles)
             break;
         }
     }
+
+    return runCycles;
 }
