@@ -56,9 +56,9 @@ inline Byte AddressingMode_AbsoluteX(const Byte *memory, Word *PC, const Byte X,
     Byte LSB = memory[(*PC)++];
     Byte MSB = memory[(*PC)++];
 
-    Word address = (Word)LSB | MSB << 8;
+    (*cycles) = (Byte)(LSB + X) < X; // The addition wraped around +1 cycle.
 
-    (*cycles) = (LSB + X) < X; // The addition wraped around +1 cycle.
+    Word address = (Word)LSB | MSB << 8;
 
     address += X;
 
@@ -70,9 +70,9 @@ inline Byte AddressingMode_AbsoluteY(const Byte *memory, Word *PC, const Byte Y,
     Byte LSB = memory[(*PC)++];
     Byte MSB = memory[(*PC)++];
 
-    Word address = (Word)LSB | MSB << 8;
+    (*cycles) = (Byte)(LSB + Y) < Y; // The addition wraped around +1 cycle.
 
-    (*cycles) = (LSB + Y) < Y; // The addition wraped around +1 cycle.
+    Word address = (Word)LSB | MSB << 8;
 
     address += Y;
 
