@@ -4,20 +4,27 @@
 
 void reset_6502(CPU_6502 *cpu)
 {
-    cpu->AC = 0;
-    cpu->BC = 0;
-    cpu->CF = 0;
-    cpu->DM = 0;
-    cpu->ID = 0;
-    cpu->NF = 0;
-    cpu->OF = 0;
+    cpu->A = ACCUMULATOR_RESET_VALUE;
+    cpu->B = BREAK_COMMAND_RESET_VALUE;
+    cpu->C = CARRY_FLAG_RESET_VALUE;
+    cpu->D = DECIMAL_MODE_RESET_VALUE;
+    cpu->I = INTERRUPT_DISABLE_RESET_VALUE;
+    cpu->N = NEGATIVE_FLAG_RESET_VALUE;
+    cpu->V = OVERFLOW_FLAG_RESET_VALUE;
+    cpu->Z = ZERO_FLAG_RESET_VALUE;
+
     cpu->PC = 0xFFFC;
     cpu->SP = START_OF_STACK;
-    cpu->ZF = 0;
+
     cpu->X = 0;
     cpu->Y = 0;
 
     cpu->memory = (Word *)calloc(MEMORY_WORD_COUNT_6502, sizeof(Word));
+}
+
+void destroy_6502(CPU_6502 *cpu)
+{
+    free(cpu->memory);
 }
 
 void execute_6502(CPU_6502 *cpu, int cycles)

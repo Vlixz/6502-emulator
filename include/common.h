@@ -7,6 +7,25 @@
 #define MEMORY_WORD_COUNT_6502 0xFFFF
 
 // =======================================
+//               BitMasks
+// =======================================
+#define BIT_MASK_SIGNED 0b10000000
+#define BIT_MASK_CARRY 0b100000000
+
+// =======================================
+//              Reset values
+// =======================================
+
+#define ACCUMULATOR_RESET_VALUE 0
+#define BREAK_COMMAND_RESET_VALUE 0
+#define CARRY_FLAG_RESET_VALUE 0
+#define DECIMAL_MODE_RESET_VALUE 0
+#define INTERRUPT_DISABLE_RESET_VALUE 0
+#define NEGATIVE_FLAG_RESET_VALUE 0
+#define OVERFLOW_FLAG_RESET_VALUE 0
+#define ZERO_FLAG_RESET_VALUE 0
+
+// =======================================
 //             Add with Carry
 // =======================================
 

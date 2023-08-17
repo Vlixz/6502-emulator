@@ -5,245 +5,294 @@ extern "C"
 
 #include <gtest/gtest.h>
 
-#define TEST_ADC_IM 0
-#define TEST_ADC_ZP 0
-#define TEST_ADC_ZP_X 1
-/**
- *
- * ADC_IM is tested completely (all flags are tested),
- * The different addressing modes are only tested on the addressing part (the function of the instruction is the same and uses the same inline code)
- *
- */
-
-#if TEST_ADC_IM
-
-/**
- * ADC_IM
- *
- * Test: Adding without carry bit & No Overflow
- */
-TEST(ADC_IM_NoCarryNoOverflow, BasicAssertions)
+class ADC_TEST : public ::testing::Test
 {
+protected:
     CPU_6502 cpu;
 
-    reset_6502(&cpu);
+    void SetUp() override
+    {
+        reset_6502(&cpu);
+    }
 
-    cpu.AC = 5; // 5 + 10
+    ~ADC_TEST() override
+    {
+        destroy_6502(&cpu);
+    }
 
-    // Start inline program
-    cpu.memory[0xFFFC] = ADC_IM_OPCODE;
-    cpu.memory[0xFFFD] = 10;
-    // End inline program
+    struct ADC_TestCase
+    {
+        /* Input */
+        bool C; // Carry Value
+        Byte A; // Accumulator value
+        Byte O; // Operator value
 
-    execute_6502(&cpu, ADC_IM_CYCLES);
+        /* Expected outcome */
+        Byte ExpectedA; // Expected accumulator value
+        bool ExpectedZ; // Expected Zero Flag
+        bool ExpectedV; // Expected Overflow Flag
+        bool ExpectedN; // Expected Negative Flag
+        bool ExpectedC; // Expected Carry Flag
+    };
 
-    ASSERT_EQ(cpu.AC, 15);
+    void ADC_IM_test(ADC_TestCase testCase)
+    {
+        cpu.A = testCase.A;
+        cpu.C = testCase.C;
 
-    ASSERT_FALSE(cpu.CF);
-    ASSERT_FALSE(cpu.ZF);
-    ASSERT_FALSE(cpu.ID);
-    ASSERT_FALSE(cpu.DM);
-    ASSERT_FALSE(cpu.BC);
-    ASSERT_FALSE(cpu.OF);
-    ASSERT_FALSE(cpu.NF);
-}
+        // Start inline program
+        cpu.memory[0xFFFC] = ADC_IM_OPCODE;
+        cpu.memory[0xFFFD] = testCase.O;
+        // End inline program
 
-/**
- * ADC_IM
- *
- * Test: Adding with carry bit & No Overflow
- */
-TEST(ADC_IM_WithCarryNoOverflow, BasicAssertions)
+        execute_6502(&cpu, ADC_IM_CYCLES);
+
+        ASSERT_EQ(cpu.A, testCase.ExpectedA);
+
+        ASSERT_EQ(cpu.C, testCase.ExpectedC);
+        ASSERT_EQ(cpu.Z, testCase.ExpectedZ);
+        ASSERT_EQ(cpu.V, testCase.ExpectedV);
+        ASSERT_EQ(cpu.N, testCase.ExpectedN);
+
+        /* Make sure the rest are unaffected by the instruction */
+        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
+        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+    }
+};
+
+TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbers)
 {
-    CPU_6502 cpu;
+    // A: 0000 0101
+    // O: 0000 0101
+    // =: 0000 1010
 
-    reset_6502(&cpu);
+    ADC_TestCase testCase;
 
-    cpu.AC = 5; // 5 + 10
+    testCase.A = 5;
+    testCase.O = 5;
+    testCase.C = 0;
 
-    // Start inline program
-    cpu.memory[0xFFFC] = ADC_IM_OPCODE;
-    cpu.memory[0xFFFD] = 0xFF;
-    // End inline program
+    testCase.ExpectedA = 10;
+    testCase.ExpectedC = false;
+    testCase.ExpectedN = false;
+    testCase.ExpectedV = false;
+    testCase.ExpectedZ = false;
 
-    execute_6502(&cpu, ADC_IM_CYCLES);
-
-    ASSERT_EQ(cpu.AC, 4);
-
-    ASSERT_TRUE(cpu.CF);
-    ASSERT_FALSE(cpu.ZF);
-    ASSERT_FALSE(cpu.ID);
-    ASSERT_FALSE(cpu.DM);
-    ASSERT_FALSE(cpu.BC);
-    ASSERT_FALSE(cpu.OF);
-    ASSERT_FALSE(cpu.NF);
+    ADC_IM_test(testCase);
 }
 
-/**
- * ADC_IM
- *
- * Test: Adding without carry bit & Overflow
- */
-TEST(ADC_IM_NoCarryWithOverflow, BasicAssertions)
+TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbersAndCarry)
 {
-    CPU_6502 cpu;
+    // C: 0000 0001
+    // A: 0000 0101
+    // O: 0000 0101
+    // =: 0000 1011
 
-    reset_6502(&cpu);
+    ADC_TestCase testCase;
 
-    cpu.AC = 1; // 5 + 10
+    testCase.A = 5;
+    testCase.O = 5;
+    testCase.C = 1;
 
-    // Start inline program
-    cpu.memory[0xFFFC] = ADC_IM_OPCODE;
-    cpu.memory[0xFFFD] = 0b01111111;
-    // End inline program
+    testCase.ExpectedA = 11;
+    testCase.ExpectedC = false;
+    testCase.ExpectedN = false;
+    testCase.ExpectedV = false;
+    testCase.ExpectedZ = false;
 
-    execute_6502(&cpu, ADC_IM_CYCLES);
-
-    ASSERT_EQ(cpu.AC, 128);
-
-    ASSERT_FALSE(cpu.CF);
-    ASSERT_FALSE(cpu.ZF);
-    ASSERT_FALSE(cpu.ID);
-    ASSERT_FALSE(cpu.DM);
-    ASSERT_FALSE(cpu.BC);
-
-    ASSERT_TRUE(cpu.OF);
-    ASSERT_TRUE(cpu.NF);
+    ADC_IM_test(testCase);
 }
 
-/**
- * ADC_IM
- *
- * Test: Zero Flag
- */
-TEST(ADC_IM_ZeroFlag, BasicAssertions)
+TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbers)
 {
-    CPU_6502 cpu;
+    // A:     1111 1011
+    // O:     1111 1011
+    // =: (1) 1111 0110
 
-    reset_6502(&cpu);
+    ADC_TestCase testCase;
 
-    cpu.AC = 0; // 5 + 10
+    testCase.A = -5;
+    testCase.O = -5;
+    testCase.C = 0;
 
-    // Start inline program
-    cpu.memory[0xFFFC] = ADC_IM_OPCODE;
-    cpu.memory[0xFFFD] = 0;
-    // End inline program
+    testCase.ExpectedA = -10;
+    testCase.ExpectedC = true;
+    testCase.ExpectedN = true;
+    testCase.ExpectedV = false;
+    testCase.ExpectedZ = false;
 
-    execute_6502(&cpu, ADC_IM_CYCLES);
-
-    ASSERT_EQ(cpu.AC, 0);
-
-    ASSERT_FALSE(cpu.CF);
-    ASSERT_TRUE(cpu.ZF);
-    ASSERT_FALSE(cpu.ID);
-    ASSERT_FALSE(cpu.DM);
-    ASSERT_FALSE(cpu.BC);
-    ASSERT_FALSE(cpu.OF);
-    ASSERT_FALSE(cpu.NF);
+    ADC_IM_test(testCase);
 }
 
-/**
- * ADC_IM
- *
- * Test: Negative Flag
- */
-TEST(ADC_IM_NegativeFlag, BasicAssertions)
+TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbersAndCarry)
 {
-    CPU_6502 cpu;
+    // C:     0000 0001
+    // A:     1111 1011
+    // O:     1111 1011
+    // =: (1) 1111 0111
 
-    reset_6502(&cpu);
+    ADC_TestCase testCase;
 
-    cpu.AC = 0b11111111; // -1
+    testCase.A = -5;
+    testCase.O = -5;
+    testCase.C = 1;
 
-    // Start inline program
-    cpu.memory[0xFFFC] = ADC_IM_OPCODE;
-    cpu.memory[0xFFFD] = 0b11111011; // -5
-    // End inline program
+    testCase.ExpectedA = -9;
+    testCase.ExpectedC = true;
+    testCase.ExpectedN = true;
+    testCase.ExpectedV = false;
+    testCase.ExpectedZ = false;
 
-    execute_6502(&cpu, ADC_IM_CYCLES);
-
-    ASSERT_EQ(cpu.AC, 0b11111010); // -6
-
-    ASSERT_TRUE(cpu.CF);
-    ASSERT_FALSE(cpu.ZF);
-    ASSERT_FALSE(cpu.ID);
-    ASSERT_FALSE(cpu.DM);
-    ASSERT_FALSE(cpu.BC);
-    ASSERT_FALSE(cpu.OF);
-    ASSERT_TRUE(cpu.NF);
+    ADC_IM_test(testCase);
 }
 
-#endif /* TEST_ADC_IM*/
-
-#if TEST_ADC_ZP
-
-/**
- * ADC_ZP
- *
- * Test: Adding without carry bit & No Overflow
- */
-TEST(ADC_ZP_NoCarryNoOverflow, BasicAssertions)
+TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumber)
 {
-    CPU_6502 cpu;
+    // A:     1111 1011
+    // O:     0000 1010
+    // =: (1) 0000 0101
 
-    reset_6502(&cpu);
+    ADC_TestCase testCase;
 
-    cpu.AC = 5; // 5
+    testCase.A = -5;
+    testCase.O = 10;
+    testCase.C = 0;
 
-    // Start inline program
-    cpu.memory[0xFFFC] = ADC_ZP_OPCODE;
-    cpu.memory[0xFFFD] = 0x10; // Memory address of zero page
-    cpu.memory[0x0010] = 10;
-    // End inline program
+    testCase.ExpectedA = 5;
+    testCase.ExpectedC = true;
+    testCase.ExpectedN = false;
+    testCase.ExpectedV = false;
+    testCase.ExpectedZ = false;
 
-    execute_6502(&cpu, ADC_IM_CYCLES);
-
-    ASSERT_EQ(cpu.AC, 15);
-
-    ASSERT_FALSE(cpu.CF);
-    ASSERT_FALSE(cpu.ZF);
-    ASSERT_FALSE(cpu.ID);
-    ASSERT_FALSE(cpu.DM);
-    ASSERT_FALSE(cpu.BC);
-    ASSERT_FALSE(cpu.OF);
-    ASSERT_FALSE(cpu.NF);
+    ADC_IM_test(testCase);
 }
 
-#endif /* TEST_ADC_ZP */
-
-#if TEST_ADC_ZP_X
-
-/**
- * ADC_ZP_X
- *
- * Test: Adding without carry bit & No Overflow
- */
-TEST(ADC_ZP_X_NoCarryNoOverflow, BasicAssertions)
+TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumberAndCarry)
 {
-    CPU_6502 cpu;
+    // C:     0000 0001
+    // A:     1111 1011
+    // O:     0000 1010
+    // =: (1) 0000 0110
 
-    reset_6502(&cpu);
+    ADC_TestCase testCase;
 
-    cpu.AC = 5;   // 5
-    cpu.X = 0x80; // Added to the specified Zero Page address in the instruction
+    testCase.A = -5;
+    testCase.O = 10;
+    testCase.C = 1;
 
-    // Start inline program
-    cpu.memory[0xFFFC] = ADC_ZP_X_OPCODE;
-    cpu.memory[0xFFFD] = 0xFF; // Memory address of zero page
-    cpu.memory[0x007F] = 10;
-    // End inline program
+    testCase.ExpectedA = 6;
+    testCase.ExpectedC = true;
+    testCase.ExpectedN = false;
+    testCase.ExpectedV = false;
+    testCase.ExpectedZ = false;
 
-    execute_6502(&cpu, ADC_IM_CYCLES);
-
-    ASSERT_EQ(cpu.AC, 15);
-
-    ASSERT_FALSE(cpu.CF);
-    ASSERT_FALSE(cpu.ZF);
-    ASSERT_FALSE(cpu.ID);
-    ASSERT_FALSE(cpu.DM);
-    ASSERT_FALSE(cpu.BC);
-    ASSERT_FALSE(cpu.OF);
-    ASSERT_FALSE(cpu.NF);
+    ADC_IM_test(testCase);
 }
 
-#endif /* TEST_ADC_ZP_X */
+TEST_F(ADC_TEST, ADC_IM_AddTwoPostiveNumberWithCarry)
+{
+    // A:     1111 1111
+    // O:     0000 0001
+    // =: (1) 0000 0000
+
+    ADC_TestCase testCase;
+
+    testCase.A = 255;
+    testCase.O = 1;
+    testCase.C = 0;
+
+    testCase.ExpectedA = 0;
+    testCase.ExpectedC = true;
+    testCase.ExpectedN = false;
+    testCase.ExpectedV = false;
+    testCase.ExpectedZ = true;
+
+    ADC_IM_test(testCase);
+}
+
+TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbers)
+{
+    // A:     1000 0000
+    // O:     1111 1111
+    // =: (1) 0111 1111
+
+    ADC_TestCase testCase;
+
+    testCase.A = -128;
+    testCase.O = -1;
+    testCase.C = 0;
+
+    testCase.ExpectedA = 127;
+    testCase.ExpectedC = true;
+    testCase.ExpectedN = false;
+    testCase.ExpectedV = true;
+    testCase.ExpectedZ = false;
+
+    ADC_IM_test(testCase);
+}
+
+TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbers)
+{
+    // A: 0111 1111
+    // O: 0000 0001
+    // =: 1000 0000
+
+    ADC_TestCase testCase;
+
+    testCase.A = 127;
+    testCase.O = 1;
+    testCase.C = 0;
+
+    testCase.ExpectedA = 128;
+    testCase.ExpectedC = false;
+    testCase.ExpectedN = true;
+    testCase.ExpectedV = true;
+    testCase.ExpectedZ = false;
+
+    ADC_IM_test(testCase);
+}
+
+TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbersAndCarry)
+{
+    // C: 0000 0001
+    // A: 0111 1110
+    // O: 0000 0001
+    // =: 1000 0000
+
+    ADC_TestCase testCase;
+
+    testCase.A = 126;
+    testCase.O = 1;
+    testCase.C = 1;
+
+    testCase.ExpectedA = 128;
+    testCase.ExpectedC = false;
+    testCase.ExpectedN = true;
+    testCase.ExpectedV = true;
+    testCase.ExpectedZ = false;
+
+    ADC_IM_test(testCase);
+}
+
+TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbersAndCarry)
+{
+    // C:     0000 0001
+    // A:     1000 0000
+    // O:     1111 1110
+    // =: (1) 0111 1111
+
+    ADC_TestCase testCase;
+
+    testCase.A = -128;
+    testCase.O = -2;
+    testCase.C = 1;
+
+    testCase.ExpectedA = 127;
+    testCase.ExpectedC = true;
+    testCase.ExpectedN = false;
+    testCase.ExpectedV = true;
+    testCase.ExpectedZ = false;
+
+    ADC_IM_test(testCase);
+}

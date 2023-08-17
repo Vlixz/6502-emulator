@@ -51,7 +51,7 @@ typedef struct
      * The 8 bit accumulator is used all arithmetic and logical operations (with the exception of increments and decrements).
      *
      */
-    Byte AC;
+    Byte A;
 
     /**
      * Index register X
@@ -79,14 +79,14 @@ typedef struct
      * It can be explicitly set using the 'Set Carry Flag' (SEC) instruction and cleared with 'Clear Carry Flag' (CLC).
      *
      */
-    Byte CF : 1;
+    Byte C : 1;
 
     /**
      * Zero Flag
      *
      * The zero flag is set if the result of the last operation as was zero.
      */
-    Byte ZF : 1;
+    Byte Z : 1;
 
     /**
      * Interrupt Disable
@@ -95,7 +95,7 @@ typedef struct
      * While this flag is set the processor will not respond to interrupts from devices until it is cleared by a 'Clear Interrupt Disable' (CLI) instruction.
      *
      */
-    Byte ID : 1;
+    Byte I : 1;
 
     /**
      * Decimal Mode
@@ -104,7 +104,7 @@ typedef struct
      * The flag can be explicitly set using 'Set Decimal Flag' (SED) and cleared with 'Clear Decimal Flag' (CLD).
      *
      */
-    Byte DM : 1;
+    Byte D : 1;
 
     /**
      * Break Command
@@ -112,7 +112,7 @@ typedef struct
      * The break command bit is set when a BRK instruction has been executed and an interrupt has been generated to process it.
      *
      */
-    Byte BC : 1;
+    Byte B : 1;
 
     /**
      * Overflow Flag
@@ -122,7 +122,7 @@ typedef struct
      * bits 6 and 7 and between bit 7 and the carry flag.
      *
      */
-    Byte OF : 1;
+    Byte V : 1;
 
     /**
      * Negative Flag
@@ -130,7 +130,7 @@ typedef struct
      * The negative flag is set if the result of the last operation had bit 7 set to a one.
      *
      */
-    Byte NF : 1;
+    Byte N : 1;
 
     /**
      * Memory of the 6502
@@ -238,15 +238,6 @@ Byte ADC_IN_X(CPU_6502 *cpu);
  */
 Byte ADC_IN_Y(CPU_6502 *cpu);
 
-/**
- * Process after use:
- *
- *  Carry Flag: If overflow in bit 7
- *  Zero Flag: If AC = 0
- *  Overflow Flag: If sign bit is incorrect
- *  Negative Flag: If bit 7 set
- *
- */
-void ADC_UpdateRegisters(CPU_6502 *cpu, Byte AC, Byte CF, Byte MEM, unsigned int value);
+void ADC_Algorithmics(CPU_6502 *cpu, Byte O);
 
 #endif /* INC_CPU_H */
