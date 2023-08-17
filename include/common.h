@@ -11,6 +11,8 @@
 // =======================================
 #define BIT_MASK_SIGNED 0b10000000
 #define BIT_MASK_CARRY 0b100000000
+#define BIT_MASK_FIRST_BYTE 0x00FF
+#define BIT_MASK_LAST_BYTE 0xFF00
 
 // =======================================
 //              Reset values

@@ -10,19 +10,19 @@
 
 inline Byte AddressingMode_Immediate(const Byte *memory, Word *PC)
 {
-    return memory[*PC++];
+    return memory[(*PC)++];
 }
 
 inline Byte AddressingMode_ZeroPage(const Byte *memory, Word *PC)
 {
-    Byte zeroPageAddress = memory[*PC++];
+    Byte zeroPageAddress = memory[(*PC)++];
 
     return memory[zeroPageAddress];
 }
 
 inline Byte AddressingMode_ZeroPageX(const Byte *memory, Word *PC, const Byte X)
 {
-    Byte ZeroPageMemoryLocation = X + memory[*PC++];
+    Byte ZeroPageMemoryLocation = X + memory[(*PC)++];
 
     return memory[ZeroPageMemoryLocation];
 }
@@ -43,21 +43,34 @@ inline void AddressingMode_Relative(const Byte *memory, Word *PC)
 
 inline Byte AddressingMode_Absolute(const Byte *memory, Word *PC)
 {
-    Word address = memory[*PC++];
+    Byte LSB = memory[(*PC)++];
+    Byte MSB = memory[(*PC)++];
+
+    Word address = (Word)LSB | MSB << 8;
 
     return memory[address];
 }
 
 inline Byte AddressingMode_AbsoluteX(const Byte *memory, Word *PC, const Byte X)
 {
-    Word address = memory[*PC++] + X;
+    Byte LSB = memory[(*PC)++];
+    Byte MSB = memory[(*PC)++];
+
+    Word address = (Word)LSB | MSB << 8;
+
+    address += X;
 
     return memory[address];
 }
 
 inline Byte AddressingMode_AbsoluteY(const Byte *memory, Word *PC, const Byte Y)
 {
-    Word address = memory[*PC++] + Y;
+    Byte LSB = memory[(*PC)++];
+    Byte MSB = memory[(*PC)++];
+
+    Word address = (Word)LSB | MSB << 8;
+
+    address += Y;
 
     return memory[address];
 }
@@ -86,9 +99,6 @@ inline Byte AddressingMode_IndirectIndexed(const Byte *memory, Word *PC, Byte Y)
 // =======================================
 //             Add with Carry
 // =======================================
-
-void ADC_Algorithmics(CPU_6502 *cpu, Byte O);
-
 /**
  *
  * A,Z,C,N = A+M+C
@@ -97,6 +107,8 @@ void ADC_Algorithmics(CPU_6502 *cpu, Byte O);
  * occurs the carry bit is set.
  *
  */
+void ADC_Algorithmics(CPU_6502 *cpu, Byte O);
+
 inline void ADC_Algorithmics(CPU_6502 *cpu, Byte O)
 {
     bool areSignBitsEqual = !((cpu->A & BIT_MASK_SIGNED) ^ (O & BIT_MASK_SIGNED));
