@@ -39,6 +39,9 @@ protected:
         Word Address;
         Word ExpectedAddress;
 
+        Byte ZeroPageAddress;
+        Word IndirectAddress;
+
         Byte X;
         Byte Y;
     };
@@ -224,6 +227,42 @@ protected:
         ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
         ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     }
+
+    void ADC_INX_test(ADC_TestCase testCase)
+    {
+        cpu.A = testCase.A;
+        cpu.C = testCase.C;
+        cpu.X = testCase.X;
+
+        Byte LSB = testCase.IndirectAddress & BIT_MASK_FIRST_BYTE;
+        Byte MSB = testCase.IndirectAddress >> 8;
+
+        // Start inline program
+        cpu.memory[0xFFFC] = ADC_IN_X_OPCODE;
+        cpu.memory[0xFFFD] = testCase.Address;
+
+        cpu.memory[testCase.ZeroPageAddress] = LSB;
+        cpu.memory[testCase.ZeroPageAddress + 1] = MSB;
+
+        cpu.memory[testCase.ExpectedAddress] = testCase.O;
+        // End inline program
+
+        int cycles = execute_6502(&cpu, ADC_IN_X_CYCLES);
+
+        ASSERT_EQ(cycles, testCase.expectedCycles);
+
+        ASSERT_EQ(cpu.A, testCase.ExpectedA);
+
+        ASSERT_EQ(cpu.C, testCase.ExpectedC);
+        ASSERT_EQ(cpu.Z, testCase.ExpectedZ);
+        ASSERT_EQ(cpu.V, testCase.ExpectedV);
+        ASSERT_EQ(cpu.N, testCase.ExpectedN);
+
+        /* Make sure the rest are unaffected by the instruction */
+        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
+        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+    }
 };
 
 #define ADC_IM_TEST 1
@@ -232,6 +271,7 @@ protected:
 #define ADC_AB_TEST 1
 #define ADC_ABX_TEST 1
 #define ADC_ABY_TEST 1
+#define ADC_INX_TEST 1
 
 #if ADC_IM_TEST
 
@@ -834,3 +874,66 @@ TEST_F(ADC_TEST, ADC_ABY_AddTwoNegativeNumbersAndRunExtraCycle)
 }
 
 #endif /* ADC_ABY_TEST */
+
+#if ADC_INX_TEST
+
+TEST_F(ADC_TEST, ADC_INX_AddTwoPositiveNumbers)
+{
+    // A: 0000 0101
+    // O: 0000 0101
+    // =: 0000 1010
+
+    ADC_TestCase testCase;
+
+    testCase.A = 5;
+    testCase.O = 5;
+    testCase.C = 0;
+
+    testCase.ExpectedA = 10;
+    testCase.ExpectedC = false;
+    testCase.ExpectedN = false;
+    testCase.ExpectedV = false;
+    testCase.ExpectedZ = false;
+
+    testCase.X = 0x04;
+    testCase.Address = 0x20;
+    testCase.ZeroPageAddress = 0x24;
+    testCase.IndirectAddress = 0x2074;
+    testCase.ExpectedAddress = 0x2074;
+
+    testCase.expectedCycles = ADC_IN_X_CYCLES;
+
+    ADC_INX_test(testCase);
+}
+
+TEST_F(ADC_TEST, ADC_INX_AddTwoNegativeNumbersWithWrap)
+{
+    // A:     1111 1011
+    // O:     1111 1011
+    // =: (1) 1111 0110
+
+    ADC_TestCase testCase;
+
+    testCase.A = -5;
+    testCase.O = -5;
+    testCase.C = 0;
+
+    testCase.ExpectedA = -10;
+    testCase.ExpectedC = true;
+    testCase.ExpectedN = true;
+    testCase.ExpectedV = false;
+    testCase.ExpectedZ = false;
+
+    testCase.X = 0x80;
+    testCase.Address = 0xFF;
+    testCase.ZeroPageAddress = 0x7F;
+
+    testCase.IndirectAddress = 0x2000;
+    testCase.ExpectedAddress = 0x2000;
+
+    testCase.expectedCycles = ADC_IN_X_CYCLES;
+
+    ADC_INX_test(testCase);
+}
+
+#endif /* ADC_INX_TEST */
