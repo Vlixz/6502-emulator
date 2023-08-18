@@ -100,11 +100,20 @@ inline Byte AddressingMode_IndexedIndirect(const Byte *memory, Word *PC, Byte X)
     return memory[address];
 }
 
-inline Byte AddressingMode_IndirectIndexed(const Byte *memory, Word *PC, Byte Y)
+inline Byte AddressingMode_IndirectIndexed(const Byte *memory, Word *PC, Byte Y, int *cycles)
 {
-    fprintf(stderr, "Addressing mode Indirect Indexed not implemented yet.");
+    Byte zeroPageAddress = memory[(*PC)++];
 
-    exit(EXIT_FAILURE);
+    Byte LSB = memory[zeroPageAddress];
+    Byte MSB = memory[zeroPageAddress + 1];
+
+    Word absoluteAddress = (Word)LSB | MSB << 8;
+
+    (*cycles) = (Byte)(LSB + Y) < Y; // The addition wraped around +1 cycle.
+
+    Word address = absoluteAddress + Y;
+
+    return memory[address];
 }
 
 // =======================================
@@ -204,5 +213,11 @@ Byte ADC_IN_X(CPU_6502 *cpu)
 
 Byte ADC_IN_Y(CPU_6502 *cpu)
 {
-    return ADC_IN_Y_CYCLES;
+    int cycles = 0;
+
+    Byte O = AddressingMode_IndirectIndexed(cpu->memory, &cpu->PC, cpu->Y, &cycles);
+
+    ADC_Algorithmics(cpu, O);
+
+    return ADC_IN_Y_CYCLES + cycles;
 }

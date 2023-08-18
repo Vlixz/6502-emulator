@@ -225,7 +225,7 @@ Byte AddressingMode_IndexedIndirect(const Byte *memory, Word *PC, Byte X);
  * The Y register is dynamically added to this value to generated the actual target address for operation.
  *
  */
-Byte AddressingMode_IndirectIndexed(const Byte *memory, Word *PC, Byte Y);
+Byte AddressingMode_IndirectIndexed(const Byte *memory, Word *PC, Byte Y, int *cycles);
 
 // =======================================
 //             Add with Carry
