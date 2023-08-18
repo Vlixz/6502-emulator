@@ -4,10 +4,10 @@
 #include "common.h"
 #include "cpu.h"
 
-void reset_6502(CPU_6502 *cpu);
+void em6502_reset(CPU_6502 *cpu);
 
-void destroy_6502(CPU_6502 *cpu);
+void em6502_destroy(CPU_6502 *cpu);
 
-int execute_6502(CPU_6502 *cpu, int cycles);
+int em6502_execute(CPU_6502 *cpu, int cycles);
 
 #endif /* INC_6502_H */

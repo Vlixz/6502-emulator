@@ -2,7 +2,7 @@
 
 #include "stdlib.h"
 
-void reset_6502(CPU_6502 *cpu)
+void em6502_reset(CPU_6502 *cpu)
 {
     cpu->A = ACCUMULATOR_RESET_VALUE;
     cpu->B = BREAK_COMMAND_RESET_VALUE;
@@ -22,12 +22,12 @@ void reset_6502(CPU_6502 *cpu)
     cpu->memory = (Byte *)calloc(MEMORY_WORD_COUNT_6502, sizeof(Byte));
 }
 
-void destroy_6502(CPU_6502 *cpu)
+void em6502_destroy(CPU_6502 *cpu)
 {
     free(cpu->memory);
 }
 
-int execute_6502(CPU_6502 *cpu, int cycles)
+int em6502_execute(CPU_6502 *cpu, int cycles)
 {
     int runCycles = 0, temp = 0;
 

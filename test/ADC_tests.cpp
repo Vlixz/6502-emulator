@@ -12,12 +12,12 @@ protected:
 
     void SetUp() override
     {
-        reset_6502(&cpu);
+        em6502_reset(&cpu);
     }
 
     ~ADC_TEST() override
     {
-        destroy_6502(&cpu);
+        em6502_destroy(&cpu);
     }
 
     struct ADC_TestCase
@@ -56,7 +56,7 @@ protected:
         cpu.memory[0xFFFD] = testCase.O;
         // End inline program
 
-        int cycles = execute_6502(&cpu, ADC_IM_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_IM_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -84,7 +84,7 @@ protected:
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = execute_6502(&cpu, ADC_ZP_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_ZP_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -113,7 +113,7 @@ protected:
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = execute_6502(&cpu, ADC_ZP_X_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_ZP_X_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -145,7 +145,7 @@ protected:
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = execute_6502(&cpu, ADC_AB_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_AB_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -178,7 +178,7 @@ protected:
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = execute_6502(&cpu, ADC_AB_X_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_AB_X_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -211,7 +211,7 @@ protected:
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = execute_6502(&cpu, ADC_AB_Y_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_AB_Y_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -247,7 +247,7 @@ protected:
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = execute_6502(&cpu, ADC_IN_X_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_IN_X_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -283,7 +283,7 @@ protected:
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = execute_6502(&cpu, ADC_IN_Y_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_IN_Y_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
