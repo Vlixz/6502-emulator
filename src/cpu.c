@@ -386,7 +386,9 @@ Byte ASL_AB(CPU_6502 *cpu)
 
 Byte ASL_AB_X(CPU_6502 *cpu)
 {
-    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, NULL);
+    int cycles = 0;
+
+    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, &cycles);
 
     ASL_Algorithmics(cpu, O);
 
