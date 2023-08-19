@@ -75,7 +75,7 @@
 #define AND_AB_Y_CYCLES 4
 #define AND_IN_X_CYCLES 6
 #define AND_AB_X_CYCLES 4
-#define AND_IN_Y_CYCLES 6
+#define AND_IN_X_CYCLES 6
 /* Extra cycles is added when a page is crossed */
 #define AND_IN_Y_CYCLES 5
 

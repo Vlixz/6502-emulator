@@ -221,3 +221,47 @@ Byte ADC_IN_Y(CPU_6502 *cpu)
 
     return ADC_IN_Y_CYCLES + cycles;
 }
+
+// =======================================
+//             Logical AND
+// =======================================
+
+Byte AND_IM(CPU_6502 *cpu)
+{
+    return AND_IM_CYCLES;
+}
+
+Byte AND_ZP(CPU_6502 *cpu)
+{
+    return AND_ZP_CYCLES;
+}
+
+Byte AND_ZP_X(CPU_6502 *cpu)
+{
+    return AND_ZP_X_CYCLES;
+}
+
+Byte AND_AB(CPU_6502 *cpu)
+{
+    return AND_AB_CYCLES;
+}
+
+Byte AND_AB_X(CPU_6502 *cpu)
+{
+    return AND_AB_X_CYCLES;
+}
+
+Byte AND_AB_Y(CPU_6502 *cpu)
+{
+    return AND_AB_Y_CYCLES;
+}
+
+Byte AND_IN_X(CPU_6502 *cpu)
+{
+    return AND_IN_X_CYCLES;
+}
+
+Byte AND_IN_Y(CPU_6502 *cpu)
+{
+    return AND_IN_Y_CYCLES;
+}
