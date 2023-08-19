@@ -79,4 +79,20 @@
 /* Extra cycles is added when a page is crossed */
 #define AND_IN_Y_CYCLES 5
 
+// =======================================
+//        Arithmatic Shift Left
+// =======================================
+
+#define ASL_AC_OPCODE 0x0A
+#define ASL_ZP_OPCODE 0x06
+#define ASL_ZP_X_OPCODE 0x16
+#define ASL_AB_OPCODE 0x0E
+#define ASL_AB_X_OPCODE 0x1E
+
+#define ASL_AC_CYCLES 2
+#define ASL_ZP_CYCLES 5
+#define ASL_ZP_X_CYCLES 6
+#define ASL_AB_CYCLES 6
+#define ASL_AB_X_CYCLES 7
+
 #endif /* INC_COMMON_H*/
