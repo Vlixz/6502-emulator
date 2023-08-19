@@ -357,13 +357,13 @@ TEST_F(ASL_TEST, ASL_AB_X_ShiftLeftWithCarry)
 
     int cycles = em6502_execute(&cpu, ASL_AB_X_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_AB_X_CYCLES + 1);
+    ASSERT_EQ(cycles, ASL_AB_X_CYCLES);
 
     ASSERT_EQ(cpu.A, 0b00100010);
 
     ASSERT_TRUE(cpu.C);
     ASSERT_FALSE(cpu.Z);
-    ASSERT_TRUE(cpu.N);
+    ASSERT_FALSE(cpu.N);
 
     /* Make sure the rest are unaffected by the instruction */
     ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
