@@ -221,3 +221,104 @@ Byte ADC_IN_Y(CPU_6502 *cpu)
 
     return ADC_IN_Y_CYCLES + cycles;
 }
+
+// =======================================
+//             Logical AND
+// =======================================
+
+/**
+ *
+ * A,Z,N = A&M
+ *
+ * Logical AND operation on the accumulator contents using the contents of a byte of memory.
+ *
+ */
+void AND_Algorithmics(CPU_6502 *cpu, Byte O);
+
+inline void AND_Algorithmics(CPU_6502 *cpu, Byte O)
+{
+    cpu->A &= O;
+
+    cpu->Z = cpu->A <= 0;
+    cpu->N = (cpu->A & BIT_MASK_SIGNED) > 0;
+}
+
+Byte AND_IM(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_Immediate(cpu->memory, &cpu->PC);
+
+    AND_Algorithmics(cpu, O);
+
+    return AND_IM_CYCLES;
+}
+
+Byte AND_ZP(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_ZeroPage(cpu->memory, &cpu->PC);
+
+    AND_Algorithmics(cpu, O);
+
+    return AND_ZP_CYCLES;
+}
+
+Byte AND_ZP_X(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_ZeroPageX(cpu->memory, &cpu->PC, cpu->X);
+
+    AND_Algorithmics(cpu, O);
+
+    return AND_ZP_X_CYCLES;
+}
+
+Byte AND_AB(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_Absolute(cpu->memory, &cpu->PC);
+
+    AND_Algorithmics(cpu, O);
+
+    return AND_AB_CYCLES;
+}
+
+Byte AND_AB_X(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, &cycles);
+
+    AND_Algorithmics(cpu, O);
+
+    return AND_AB_X_CYCLES + cycles;
+}
+
+Byte AND_AB_Y(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    Byte O = AddressingMode_AbsoluteY(cpu->memory, &cpu->PC, cpu->Y, &cycles);
+
+    AND_Algorithmics(cpu, O);
+
+    return AND_AB_Y_CYCLES + cycles;
+}
+
+Byte AND_IN_X(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    Byte O = AddressingMode_IndexedIndirect(cpu->memory, &cpu->PC, cpu->X);
+
+    AND_Algorithmics(cpu, O);
+
+    return AND_IN_X_CYCLES;
+}
+
+Byte AND_IN_Y(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    Byte O = AddressingMode_IndirectIndexed(cpu->memory, &cpu->PC, cpu->Y, &cycles);
+
+    AND_Algorithmics(cpu, O);
+
+    return AND_IN_Y_CYCLES + cycles;
+}

@@ -327,4 +327,104 @@ Byte ADC_IN_X(CPU_6502 *cpu);
  */
 Byte ADC_IN_Y(CPU_6502 *cpu);
 
+// =======================================
+//             Logical AND
+// =======================================
+
+/**
+ * Logical AND - Immediate
+ *
+ * Opcode: 0x29
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte AND_IM(CPU_6502 *cpu);
+
+/**
+ * Logical AND - Zero Page
+ *
+ * Opcode: 0x25
+ * Bytes: 2
+ * Cycles: 3
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte AND_ZP(CPU_6502 *cpu);
+
+/**
+ * Logical AND - Zero Page X
+ *
+ * Opcode: 0x35
+ * Bytes: 2
+ * Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte AND_ZP_X(CPU_6502 *cpu);
+
+/**
+ * Logical AND - Absolute
+ *
+ * Opcode: 0x2D
+ * Bytes: 3
+ * Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte AND_AB(CPU_6502 *cpu);
+
+/**
+ * Logical AND - Absolute X
+ *
+ * Opcode: 0x3D
+ * Bytes: 3
+ * Cycles: 4 (+1 if page crossed)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte AND_AB_X(CPU_6502 *cpu);
+
+/**
+ * Logical AND - Absolute Y
+ *
+ * Opcode: 0x39
+ * Bytes: 3
+ * Cycles: 4 (+1 if page crossed)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte AND_AB_Y(CPU_6502 *cpu);
+
+/**
+ * Logical AND - Indirect X
+ *
+ * Opcode: 0x21
+ * Bytes: 2
+ * Cycles: 6
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte AND_IN_X(CPU_6502 *cpu);
+
+/**
+ * Logical AND - Indirect Y
+ *
+ * Opcode: 0x31
+ * Bytes: 2
+ * Cycles: 5 (+1 if page crossed)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte AND_IN_Y(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
