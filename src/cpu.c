@@ -350,25 +350,45 @@ inline void ASL_Algorithmics(CPU_6502 *cpu, Byte O)
 
 Byte ASL_AC(CPU_6502 *cpu)
 {
+    Byte O = cpu->A;
+
+    ASL_Algorithmics(cpu, O);
+
     return ASL_AC_CYCLES;
 }
 
 Byte ASL_ZP(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_ZeroPage(cpu->memory, &cpu->PC);
+
+    ASL_Algorithmics(cpu, O);
+
     return ASL_ZP_CYCLES;
 }
 
 Byte ASL_ZP_X(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_ZeroPageX(cpu->memory, &cpu->PC, cpu->X);
+
+    ASL_Algorithmics(cpu, O);
+
     return ASL_ZP_X_CYCLES;
 }
 
 Byte ASL_AB(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_Absolute(cpu->memory, &cpu->PC);
+
+    ASL_Algorithmics(cpu, O);
+
     return ASL_AB_CYCLES;
 }
 
 Byte ASL_AB_X(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, NULL);
+
+    ASL_Algorithmics(cpu, O);
+
     return ASL_AB_X_CYCLES;
 }
