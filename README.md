@@ -3,7 +3,7 @@
 Basic 6502 C emulator I am writing to get a better understanding of a basic CPU architecture.
 - For now I'm not going the be implementing decimal mode but maybe when I'm finished I'll add it.
 
-So far if added the following instructions:
+So far I've added the following instructions:
 - ADC
 - AND
 - ASL
