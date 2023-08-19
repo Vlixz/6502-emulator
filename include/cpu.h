@@ -15,7 +15,7 @@
 #define END_ZERO_PAGE 0x00FF
 
 /**
- * 6502 defenition (registers, etc.);
+ * 6502 defenition (registers, etc...);
  * Definitions of all the different instructions;
  *
  * Sources:
