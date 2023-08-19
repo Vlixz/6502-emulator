@@ -193,6 +193,56 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
             break;
 
+            /**
+             * Arithmatic Shift Left
+             *
+             */
+
+        case ASL_AC_OPCODE:
+
+            temp = ASL_AC(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case ASL_ZP_OPCODE:
+
+            temp = ASL_ZP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case ASL_ZP_X_OPCODE:
+
+            temp = ASL_ZP_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case ASL_AB_OPCODE:
+
+            temp = ASL_AB(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case ASL_AB_X_OPCODE:
+
+            temp = ASL_AB_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
         default:
             break;
         }

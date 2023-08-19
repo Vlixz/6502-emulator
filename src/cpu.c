@@ -138,7 +138,7 @@ inline void ADC_Algorithmics(CPU_6502 *cpu, Byte O)
     cpu->A = value;
 
     cpu->C = (value & BIT_MASK_CARRY) > 0;
-    cpu->Z = cpu->A <= 0;
+    cpu->Z = cpu->A == 0;
     cpu->N = (cpu->A & BIT_MASK_SIGNED) > 0;
 
     cpu->V = areSignBitsEqual * ((O & BIT_MASK_SIGNED) != (cpu->A & BIT_MASK_SIGNED));
@@ -239,7 +239,7 @@ inline void AND_Algorithmics(CPU_6502 *cpu, Byte O)
 {
     cpu->A &= O;
 
-    cpu->Z = cpu->A <= 0;
+    cpu->Z = cpu->A == 0;
     cpu->N = (cpu->A & BIT_MASK_SIGNED) > 0;
 }
 
@@ -321,4 +321,74 @@ Byte AND_IN_Y(CPU_6502 *cpu)
     AND_Algorithmics(cpu, O);
 
     return AND_IN_Y_CYCLES + cycles;
+}
+
+// =======================================
+//        Arithmatic Shift Left
+// =======================================
+
+/**
+ *
+ * A,Z,C,N = M*2 or M,Z,C,N = M*2
+ *
+ * ASL shift all the bits in the accumulator one bit to the left. Old bit 7 is placed in the Carry and bit 0 is set to zero.
+ *
+ */
+void ASL_Algorithmics(CPU_6502 *cpu, Byte O);
+
+inline void ASL_Algorithmics(CPU_6502 *cpu, Byte O)
+{
+    Word value = cpu->A << 1;
+
+    cpu->A = (Byte)value;
+
+    cpu->C = (value & 0x100) > 0;
+    cpu->Z = cpu->A == 0;
+
+    cpu->N = (cpu->A & BIT_MASK_SIGNED) > 0;
+}
+
+Byte ASL_AC(CPU_6502 *cpu)
+{
+    Byte O = cpu->A;
+
+    ASL_Algorithmics(cpu, O);
+
+    return ASL_AC_CYCLES;
+}
+
+Byte ASL_ZP(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_ZeroPage(cpu->memory, &cpu->PC);
+
+    ASL_Algorithmics(cpu, O);
+
+    return ASL_ZP_CYCLES;
+}
+
+Byte ASL_ZP_X(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_ZeroPageX(cpu->memory, &cpu->PC, cpu->X);
+
+    ASL_Algorithmics(cpu, O);
+
+    return ASL_ZP_X_CYCLES;
+}
+
+Byte ASL_AB(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_Absolute(cpu->memory, &cpu->PC);
+
+    ASL_Algorithmics(cpu, O);
+
+    return ASL_AB_CYCLES;
+}
+
+Byte ASL_AB_X(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, NULL);
+
+    ASL_Algorithmics(cpu, O);
+
+    return ASL_AB_X_CYCLES;
 }
