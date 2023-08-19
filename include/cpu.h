@@ -427,4 +427,68 @@ Byte AND_IN_X(CPU_6502 *cpu);
  */
 Byte AND_IN_Y(CPU_6502 *cpu);
 
+// =======================================
+//        Arithmatic Shift Left
+// =======================================
+
+/**
+ * Arithmetic Shift Left - Accumulator
+ *
+ * Opcode: 0x0A
+ * Bytes: 1
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte ASL_AC(CPU_6502 *cpu);
+
+/**
+ * Arithmetic Shift Left - Zero Page
+ *
+ * Opcode: 0x06
+ * Bytes: 2
+ * Cycles: 5
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte ASL_ZP(CPU_6502 *cpu);
+
+/**
+ * Arithmetic Shift Left - Zero Page X
+ *
+ * Opcode: 0x16
+ * Bytes: 2
+ * Cycles: 6
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte ASL_ZP_X(CPU_6502 *cpu);
+
+/**
+ * Arithmetic Shift Left - Absolute
+ *
+ * Opcode: 0x0E
+ * Bytes: 3
+ * Cycles: 6
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte ASL_AB(CPU_6502 *cpu);
+
+/**
+ * Arithmetic Shift Left - Absolute
+ *
+ * Opcode: 0x1E
+ * Bytes: 3
+ * Cycles: 7
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte ASL_AB_X(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
