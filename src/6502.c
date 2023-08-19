@@ -42,8 +42,6 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
             /**
              * Add with Carry
              *
-             * This instruction adds the contents of a memory location to the accumulator together with the carry bit.
-             * If overflow occurs the carry bit is set, this enables multiple byte addition to be performed.
              */
 
         case ADC_IM_OPCODE:
@@ -112,6 +110,83 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
         case ADC_IN_Y_OPCODE:
 
             temp = ADC_IN_Y(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Logical AND
+             *
+             */
+
+        case AND_IM_OPCODE:
+
+            temp = AND_IM(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case AND_ZP_OPCODE:
+
+            temp = AND_ZP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case AND_ZP_X_OPCODE:
+
+            temp = AND_ZP_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case AND_AB_OPCODE:
+
+            temp = AND_AB(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case AND_AB_X_OPCODE:
+
+            temp = AND_AB_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case AND_AB_Y_OPCODE:
+
+            temp = AND_AB_Y(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case AND_IN_X_OPCODE:
+
+            temp = AND_IN_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case AND_IN_Y_OPCODE:
+
+            temp = AND_IN_Y(cpu);
 
             cycles -= temp;
             runCycles += temp;
