@@ -320,5 +320,5 @@ Byte AND_IN_Y(CPU_6502 *cpu)
 
     AND_Algorithmics(cpu, O);
 
-    return AND_IN_Y_CYCLES;
+    return AND_IN_Y_CYCLES + cycles;
 }
