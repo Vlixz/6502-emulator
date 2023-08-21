@@ -7,5 +7,6 @@ So far I've added the following instructions:
 - ADC
 - AND
 - ASL
+- BCC
 
 I am writing all Unit Tests using gtest
