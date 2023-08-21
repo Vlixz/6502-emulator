@@ -1,7 +1,7 @@
 #ifndef INC_COMMON_H
 #define INC_COMMON_H
 
-#define Word unsigned long
+#define Word unsigned short
 #define Byte unsigned char
 
 #define MEMORY_WORD_COUNT_6502 0xFFFF
@@ -94,5 +94,14 @@
 #define ASL_ZP_X_CYCLES 6
 #define ASL_AB_CYCLES 6
 #define ASL_AB_X_CYCLES 7
+
+// =======================================
+//         Branch if Carry Clear
+// =======================================
+
+#define BCC_RE_OPCODE 0x90
+
+/* Extra cycles if branch succeeds and +2 if to a new page */
+#define BCC_RE_CYCLES 2
 
 #endif /* INC_COMMON_H*/

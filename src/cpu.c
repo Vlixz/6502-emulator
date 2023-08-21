@@ -34,11 +34,17 @@ inline Byte AddressingMode_ZeroPageY(const Byte *memory, Word *PC, const Byte Y)
     exit(EXIT_FAILURE);
 }
 
-inline void AddressingMode_Relative(const Byte *memory, Word *PC)
+inline void AddressingMode_Relative(const Byte *memory, Word *PC, int *cycles)
 {
-    fprintf(stderr, "Addressing mode Relative not implemented yet.");
+    (*cycles)++; // +1 for a succeeded branching operation.
 
-    exit(EXIT_FAILURE);
+    Byte offset = memory[(*PC)++];
+
+    Word tempPC = (*PC);
+
+    (*PC) += offset;
+
+    (*cycles) += (tempPC >> 8) != ((*PC) >> 8); // +1 if a page is crossed.
 }
 
 inline Byte AddressingMode_Absolute(const Byte *memory, Word *PC)
@@ -393,4 +399,26 @@ Byte ASL_AB_X(CPU_6502 *cpu)
     ASL_Algorithmics(cpu, O);
 
     return ASL_AB_X_CYCLES;
+}
+
+// =======================================
+//         Branch if Carry Clear
+// =======================================
+
+Byte BCC_RE(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    if (cpu->C) // TODO: Try to code this without using a if statement
+        AddressingMode_Relative(cpu->memory, &cpu->PC, &cycles);
+    else
+        /**
+         * We need to increment by one because we didn't run the fist cycle which is getting the increment.
+         *
+         *      +1 getting the increment.
+         *
+         */
+        cpu->PC++;
+
+    return BCC_RE_CYCLES + cycles;
 }

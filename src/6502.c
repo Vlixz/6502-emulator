@@ -243,6 +243,20 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
             break;
 
+            /**
+             * Branch if Carry Clear
+             *
+             */
+
+        case BCC_RE_OPCODE:
+
+            temp = BCC_RE(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
         default:
             break;
         }

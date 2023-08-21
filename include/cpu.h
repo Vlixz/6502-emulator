@@ -181,7 +181,7 @@ Byte AddressingMode_ZeroPageY(const Byte *memory, Word *PC, const Byte Y);
  * PS: This addressing mode is only used by branch instructions.
  *
  */
-void AddressingMode_Relative(const Byte *memory, Word *PC);
+void AddressingMode_Relative(const Byte *memory, Word *PC, int *cycles);
 
 /**
  * Absolute addressing mode returns the value at the given 16-bit address specifeid in the program code.
@@ -490,5 +490,21 @@ Byte ASL_AB(CPU_6502 *cpu);
  *
  */
 Byte ASL_AB_X(CPU_6502 *cpu);
+
+// =======================================
+//         Branch if Carry Clear
+// =======================================
+
+/**
+ * Branch if Carry Clear - Relative
+ *
+ * Opcode: 0x90
+ * Bytes: 2
+ * Cycles: 2 (+1 if branch successfull, +2 if to a new page)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte BCC_RE(CPU_6502 *cpu);
 
 #endif /* INC_CPU_H */
