@@ -539,4 +539,32 @@ Byte BCS_RE(CPU_6502 *cpu);
  */
 Byte BEQ_RE(CPU_6502 *cpu);
 
+// =======================================
+//              Bit Tests
+// =======================================
+
+/**
+ * Bit Test - Zero Page
+ *
+ * Opcode: 0x24
+ * Bytes: 2
+ * Cycles: 3
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte BIT_ZP(CPU_6502 *cpu);
+
+/**
+ * Bit Test - Absolute
+ *
+ * Opcode: 0x2C
+ * Bytes: 2
+ * Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte BIT_AB(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
