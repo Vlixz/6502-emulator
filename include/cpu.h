@@ -507,4 +507,20 @@ Byte ASL_AB_X(CPU_6502 *cpu);
  */
 Byte BCC_RE(CPU_6502 *cpu);
 
+// =======================================
+//          Branch if Carry Set
+// =======================================
+
+/**
+ * Branch if Carry Set - Relative
+ *
+ * Opcode: 0xB0
+ * Bytes: 2
+ * Cycles: 2 (+1 if branch successfull, +2 if to a new page)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte BCS_RE(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */

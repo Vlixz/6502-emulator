@@ -104,4 +104,13 @@
 /* Extra cycles if branch succeeds and +2 if to a new page */
 #define BCC_RE_CYCLES 2
 
+// =======================================
+//          Branch if Carry Set
+// =======================================
+
+#define BCS_RE_OPCODE 0xB0
+
+/* Extra cycles if branch succeeds and +2 if to a new page */
+#define BCS_RE_CYCLES 2
+
 #endif /* INC_COMMON_H*/
