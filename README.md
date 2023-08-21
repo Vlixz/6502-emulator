@@ -8,5 +8,6 @@ So far I've added the following instructions:
 - AND (Logical AND)
 - ASL (Arithmetic Shift Left)
 - BCC (Branch if Carry Clear)
+- BCS (Branch if Carry Set)
 
 I am writing all Unit Tests using gtest
