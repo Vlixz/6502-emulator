@@ -9,5 +9,6 @@ So far I've added the following instructions:
 - ASL (Arithmetic Shift Left)
 - BCC (Branch if Carry Clear)
 - BCS (Branch if Carry Set)
+- BEQ (Branch if Equal)
 
 I am writing all Unit Tests using gtest
