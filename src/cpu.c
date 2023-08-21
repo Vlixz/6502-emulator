@@ -466,3 +466,44 @@ Byte BEQ_RE(CPU_6502 *cpu)
 
     return BEQ_RE_CYCLES + cycles;
 }
+
+// =======================================
+//              Bit Tests
+// =======================================
+
+/**
+ * A & M, N = M7, V = M6
+ *
+ * The mask pattern in A is AND-ed with the value in memory to set of clear the zero flag.
+ *      Bit 7 and 6 of the value from memory are copied into the N and V flags.
+ *
+ */
+void BIT_Functionality(CPU_6502 *cpu, Byte O);
+
+inline void BIT_Functionality(CPU_6502 *cpu, Byte O)
+{
+    Byte result = cpu->A & O; // Result is not kept.
+
+    cpu->N = (O & 0b10000000) > 0;
+    cpu->V = (O & 0b01000000) > 0;
+
+    cpu->Z = (result == 0);
+}
+
+Byte BIT_ZP(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_ZeroPage(cpu->memory, &cpu->PC);
+
+    BIT_Functionality(cpu, O);
+
+    return BIT_ZP_CYCLES;
+}
+
+Byte BIT_AB(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_Absolute(cpu->memory, &cpu->PC);
+
+    BIT_Functionality(cpu, O);
+
+    return BIT_AB_CYCLES;
+}

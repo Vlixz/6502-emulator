@@ -285,6 +285,29 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
             break;
 
+            /**
+             * Bit Test
+             *
+             */
+
+        case BIT_ZP_OPCODE:
+
+            temp = BIT_ZP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case BIT_AB_OPCODE:
+
+            temp = BIT_AB(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
         default:
             break;
         }
