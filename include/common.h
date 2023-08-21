@@ -113,4 +113,13 @@
 /* Extra cycles if branch succeeds and +2 if to a new page */
 #define BCS_RE_CYCLES 2
 
+// =======================================
+//           Branch if Equal
+// =======================================
+
+#define BEQ_RE_OPCODE 0xF0
+
+/* Extra cycles if branch succeeds and +2 if to a new page */
+#define BEQ_RE_CYCLES 2
+
 #endif /* INC_COMMON_H*/

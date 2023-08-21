@@ -523,4 +523,20 @@ Byte BCC_RE(CPU_6502 *cpu);
  */
 Byte BCS_RE(CPU_6502 *cpu);
 
+// =======================================
+//           Branch if Equal
+// =======================================
+
+/**
+ * Branch if Equal - Relative
+ *
+ * Opcode: 0xF0
+ * Bytes: 2
+ * Cycles: 2 (+1 if branch successfull, +2 if to a new page)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte BEQ_RE(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
