@@ -181,7 +181,7 @@ Byte AddressingMode_ZeroPageY(const Byte *memory, Word *PC, const Byte Y);
  * PS: This addressing mode is only used by branch instructions.
  *
  */
-void AddressingMode_Relative(const Byte *memory, Word *PC);
+void AddressingMode_Relative(const Byte *memory, Word *PC, int *cycles);
 
 /**
  * Absolute addressing mode returns the value at the given 16-bit address specifeid in the program code.
