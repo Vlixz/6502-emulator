@@ -122,4 +122,14 @@
 /* Extra cycles if branch succeeds and +2 if to a new page */
 #define BEQ_RE_CYCLES 2
 
+// =======================================
+//              Bit Tests
+// =======================================
+
+#define BIT_ZP_OPCODE 0x24
+#define BIT_AB_OPCODE 0x2C
+
+#define BIT_ZP_CYCLES 3
+#define BIT_AB_CYCLES 4
+
 #endif /* INC_COMMON_H*/
