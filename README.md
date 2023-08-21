@@ -10,5 +10,6 @@ So far I've added the following instructions:
 - BCC (Branch if Carry Clear)
 - BCS (Branch if Carry Set)
 - BEQ (Branch if Equal)
+- BIT (Bit Test)
 
 I am writing all Unit Tests using gtest
