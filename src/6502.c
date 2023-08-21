@@ -271,6 +271,20 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
             break;
 
+            /**
+             * Branch if Equal
+             *
+             */
+
+        case BEQ_RE_OPCODE:
+
+            temp = BEQ_RE(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
         default:
             break;
         }

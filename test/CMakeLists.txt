@@ -8,6 +8,7 @@ add_executable(
   ASL_tests.cpp
   BCC_tests.cpp
   BCS_tests.cpp
+  BEQ_tests.cpp
 )
 
 # include the gtest and em6502 lib

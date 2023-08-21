@@ -442,5 +442,27 @@ Byte BCS_RE(CPU_6502 *cpu)
          */
         cpu->PC++;
 
-    return BCC_RE_CYCLES + cycles;
+    return BCS_RE_CYCLES + cycles;
+}
+
+// =======================================
+//           Branch if Equal
+// =======================================
+
+Byte BEQ_RE(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    if (cpu->Z) // TODO: Try to code this without using a if statement
+        AddressingMode_Relative(cpu->memory, &cpu->PC, &cycles);
+    else
+        /**
+         * We need to increment by one because we didn't run the fist cycle which is getting the increment.
+         *
+         *      +1 getting the increment.
+         *
+         */
+        cpu->PC++;
+
+    return BEQ_RE_CYCLES + cycles;
 }
