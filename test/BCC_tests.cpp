@@ -21,9 +21,9 @@ protected:
     }
 };
 
-TEST_F(BCC_TEST, BCC_RE_NoCarrySet)
+TEST_F(BCC_TEST, BCC_RE_CarrySetNoBranch)
 {
-    cpu.C = 0;
+    cpu.C = 1;
 
     // Start inline program
     cpu.memory[0xFFFC] = BCC_RE_OPCODE;
@@ -36,7 +36,7 @@ TEST_F(BCC_TEST, BCC_RE_NoCarrySet)
 
     ASSERT_EQ(cpu.PC, 0xFFFE);
 
-    ASSERT_FALSE(cpu.C);
+    ASSERT_TRUE(cpu.C);
 
     /* Make sure the rest are unaffected by the instruction */
     ASSERT_EQ(cpu.Z, ZERO_FLAG_RESET_VALUE);
@@ -47,9 +47,9 @@ TEST_F(BCC_TEST, BCC_RE_NoCarrySet)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BCC_TEST, BCC_RE_CarrySetJumpTwoBytesAndToANewPage)
+TEST_F(BCC_TEST, BCC_RE_NoCarrySetBranchJumpTwoBytesAndToANewPage)
 {
-    cpu.C = 1;
+    cpu.C = 0;
 
     // Start inline program
     cpu.memory[0xFFFC] = BCC_RE_OPCODE;
@@ -65,7 +65,7 @@ TEST_F(BCC_TEST, BCC_RE_CarrySetJumpTwoBytesAndToANewPage)
 
     ASSERT_EQ(cpu.PC, 0x0000);
 
-    ASSERT_TRUE(cpu.C);
+    ASSERT_FALSE(cpu.C);
 
     /* Make sure the rest are unaffected by the instruction */
     ASSERT_EQ(cpu.Z, ZERO_FLAG_RESET_VALUE);
@@ -76,9 +76,9 @@ TEST_F(BCC_TEST, BCC_RE_CarrySetJumpTwoBytesAndToANewPage)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BCC_TEST, BCC_RE_CarrySetJumpOneByteNoNewPage)
+TEST_F(BCC_TEST, BCC_RE_NoCarrySetBranchJumpOneByteNoNewPage)
 {
-    cpu.C = 1;
+    cpu.C = 0;
 
     // Start inline program
     cpu.memory[0xFFFC] = BCC_RE_OPCODE;
@@ -100,7 +100,7 @@ TEST_F(BCC_TEST, BCC_RE_CarrySetJumpOneByteNoNewPage)
 
     ASSERT_EQ(cpu.PC, 0x0005);
 
-    ASSERT_TRUE(cpu.C);
+    ASSERT_FALSE(cpu.C);
 
     /* Make sure the rest are unaffected by the instruction */
     ASSERT_EQ(cpu.Z, ZERO_FLAG_RESET_VALUE);
