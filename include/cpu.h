@@ -599,4 +599,20 @@ Byte BMI_RE(CPU_6502 *cpu);
  */
 Byte BNE_RE(CPU_6502 *cpu);
 
+// =======================================
+//            Branch if Positive
+// =======================================
+
+/**
+ * Branch if Positive - Relative
+ *
+ * Opcode: 0x10
+ * Bytes: 2
+ * Cycles: 2 (+1 if branch successfull, +2 if to a new page)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte BPL_RE(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */

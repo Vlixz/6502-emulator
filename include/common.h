@@ -150,4 +150,13 @@
 /* Extra cycles if branch succeeds and +2 if to a new page */
 #define BNE_RE_CYCLES 2
 
+// =======================================
+//            Branch if Positive
+// =======================================
+
+#define BPL_RE_OPCODE 0x10
+
+/* Extra cycles if branch succeeds and +2 if to a new page */
+#define BPL_RE_CYCLES 2
+
 #endif /* INC_COMMON_H*/
