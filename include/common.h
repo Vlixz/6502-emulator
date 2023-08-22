@@ -132,4 +132,13 @@
 #define BIT_ZP_CYCLES 3
 #define BIT_AB_CYCLES 4
 
+// =======================================
+//            Branch if Minus
+// =======================================
+
+#define BMI_RE_OPCODE 0x30
+
+/* Extra cycles if branch succeeds and +2 if to a new page */
+#define BMI_RE_CYCLES 2
+
 #endif /* INC_COMMON_H*/
