@@ -507,3 +507,25 @@ Byte BIT_AB(CPU_6502 *cpu)
 
     return BIT_AB_CYCLES;
 }
+
+// =======================================
+//            Branch if Minus
+// =======================================
+
+Byte BMI_RE(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    if (cpu->N) // TODO: Try to code this without using a if statement
+        AddressingMode_Relative(cpu->memory, &cpu->PC, &cycles);
+    else
+        /**
+         * We need to increment by one because we didn't run the fist cycle which is getting the increment.
+         *
+         *      +1 getting the increment.
+         *
+         */
+        cpu->PC++;
+
+    return BMI_RE_CYCLES + cycles;
+}
