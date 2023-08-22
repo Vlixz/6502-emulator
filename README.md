@@ -11,5 +11,6 @@ So far I've added the following instructions:
 - BCS (Branch if Carry Set)
 - BEQ (Branch if Equal)
 - BIT (Bit Test)
+- BMI (Branch if Minus)
 
 I am writing all Unit Tests using gtest
