@@ -141,4 +141,13 @@
 /* Extra cycles if branch succeeds and +2 if to a new page */
 #define BMI_RE_CYCLES 2
 
+// =======================================
+//            Branch if Not Equal
+// =======================================
+
+#define BNE_RE_OPCODE 0xD0
+
+/* Extra cycles if branch succeeds and +2 if to a new page */
+#define BNE_RE_CYCLES 2
+
 #endif /* INC_COMMON_H*/
