@@ -13,5 +13,6 @@ So far I've added the following instructions:
 - BIT   (Bit Test)
 - BMI   (Branch if Minus)
 - BNE   (Branch if Not Equal)
+- BPL   (Branch if Positive)
 
 I am writing all Unit Tests using gtest
