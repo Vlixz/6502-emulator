@@ -11,6 +11,7 @@ add_executable(
   BEQ_tests.cpp
   BIT_tests.cpp
   BMI_tests.cpp
+  BNE_tests.cpp
 )
 
 # include the gtest and em6502 lib
