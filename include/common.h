@@ -159,4 +159,13 @@
 /* Extra cycles if branch succeeds and +2 if to a new page */
 #define BPL_RE_CYCLES 2
 
+// =======================================
+//       Branch if Overflow Clear
+// =======================================
+
+#define BVC_RE_OPCODE 0x50
+
+/* Extra cycles if branch succeeds and +2 if to a new page */
+#define BVC_RE_CYCLES 2
+
 #endif /* INC_COMMON_H*/
