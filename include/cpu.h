@@ -647,4 +647,116 @@ Byte BVC_RE(CPU_6502 *cpu);
  */
 Byte BVS_RE(CPU_6502 *cpu);
 
+// =======================================
+//            Clear Carry Flag
+// =======================================
+
+/**
+ * Clear Carry Flag - Implied
+ *
+ * Opcode: 0x18
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte CLC_IP(CPU_6502 *cpu);
+
+// =======================================
+//          Clear Decimal Mode
+// =======================================
+
+/**
+ * Clear Decimal Mode - Implied
+ *
+ * Opcode: 0xD8
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte CLD_IP(CPU_6502 *cpu);
+
+// =======================================
+//        Clear Interrupt Disable
+// =======================================
+
+/**
+ * Clear Interrupt Disable - Implied
+ *
+ * Opcode: 0x58
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte CLI_IP(CPU_6502 *cpu);
+
+// =======================================
+//          Clear Overflow Flag
+// =======================================
+
+/**
+ * Clear Overflow Flag - Implied
+ *
+ * Opcode: 0xB8
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte CLV_IP(CPU_6502 *cpu);
+
+// =======================================
+//            Set Carry Flag
+// =======================================
+
+/**
+ * Set Carry Flag - Implied
+ *
+ * Opcode: 0x38
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte SEC_IP(CPU_6502 *cpu);
+
+// =======================================
+//           Set Decimal Mode
+// =======================================
+
+/**
+ * Set Decimal Mode - Implied
+ *
+ * Opcode: 0xF8
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte SED_IP(CPU_6502 *cpu);
+
+// =======================================
+//           Set Interrupt Disable
+// =======================================
+
+/**
+ * Set Interrupt Disable - Implied
+ *
+ * Opcode: 0x78
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte SEI_IP(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
