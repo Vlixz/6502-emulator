@@ -617,3 +617,84 @@ Byte BVS_RE(CPU_6502 *cpu)
 
     return BVS_RE_CYCLES + cycles;
 }
+
+// =======================================
+//            Clear Carry Flag
+// =======================================
+
+inline Byte CLC_IP(CPU_6502 *cpu)
+{
+    cpu->C = 0;
+
+    return CLC_IP_CYCLES;
+}
+
+// =======================================
+//          Clear Decimal Mode
+// =======================================
+
+inline Byte CLD_IP(CPU_6502 *cpu)
+{
+    cpu->D = 0;
+
+    return CLD_IP_CYCLES;
+}
+
+// =======================================
+//        Clear Interrupt Disable
+// =======================================
+
+inline Byte CLI_IP(CPU_6502 *cpu)
+{
+    cpu->I = 0;
+
+    return CLI_IP_CYCLES;
+}
+
+// =======================================
+//          Clear Overflow Flag
+// =======================================
+
+inline Byte CLV_IP(CPU_6502 *cpu)
+{
+    cpu->V = 0;
+
+    return CLV_IP_CYCLES;
+}
+
+// =======================================
+//            Set Carry Flag
+// =======================================
+
+inline Byte SEC_IP(CPU_6502 *cpu)
+{
+    cpu->C = 1;
+
+    return SEC_IP_CYCLES;
+}
+
+// =======================================
+//           Set Decimal Mode
+// =======================================
+
+inline Byte SED_IP(CPU_6502 *cpu)
+{
+    cpu->D = 1;
+
+    printf("SED: (Decimal mode not supported currently) \n");
+
+    exit(EXIT_FAILURE);
+
+    return SED_IP_OPCODE;
+}
+
+// =======================================
+//           Set Interrupt Disable
+// =======================================
+
+inline Byte SEI_IP(CPU_6502 *cpu)
+{
+    cpu->I = 1;
+
+    return SEI_IP_CYCLES;
+}
