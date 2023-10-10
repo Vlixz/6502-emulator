@@ -16,5 +16,12 @@ So far I've added the following instructions:
 - BPL   (Branch if Positive)
 - BVC   (Branch if Overflow Clear)
 - BVS   (Branch if Overflow Set)
+- CLC   (Clear Carry Flag)
+- CLD   (Clear Decimal Mode)
+- CLI   (Clear Interrupt Disable)
+- CLV   (Clear Overflow Flag)
+- SEC   (Set Carry Flag)
+- SED   (Set Decimal Mode) - Does not throw a error but not supported
+- SEI   (Set Interrupt Disabled)
 
 I am writing all Unit Tests using gtest

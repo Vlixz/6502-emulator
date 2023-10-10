@@ -177,4 +177,60 @@
 /* Extra cycles if branch succeeds and +2 if to a new page */
 #define BVS_RE_CYCLES 2
 
+// =======================================
+//            Clear Carry Flag
+// =======================================
+
+#define CLC_IP_OPCODE 0x18
+
+#define CLC_IP_CYCLES 2
+
+// =======================================
+//          Clear Decimal Mode
+// =======================================
+
+#define CLD_IP_OPCODE 0xD8
+
+#define CLD_IP_CYCLES 2
+
+// =======================================
+//        Clear Interrupt Disable
+// =======================================
+
+#define CLI_IP_OPCODE 0x58
+
+#define CLI_IP_CYCLES 2
+
+// =======================================
+//          Clear Overflow Flag
+// =======================================
+
+#define CLV_IP_OPCODE 0xB8
+
+#define CLV_IP_CYCLES 2
+
+// =======================================
+//            Set Carry Flag
+// =======================================
+
+#define SEC_IP_OPCODE 0x38
+
+#define SEC_IP_CYCLES 2
+
+// =======================================
+//           Set Decimal Mode
+// =======================================
+
+#define SED_IP_OPCODE 0xF8
+
+#define SED_IP_CYCLES 2
+
+// =======================================
+//           Set Interrupt Disable
+// =======================================
+
+#define SEI_IP_OPCODE 0x78
+
+#define SEI_IP_CYCLES 2
+
 #endif /* INC_COMMON_H*/
