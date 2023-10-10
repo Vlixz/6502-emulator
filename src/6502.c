@@ -441,7 +441,7 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
         case SEC_IP_OPCODE:
 
-            temp = CLV_IP(cpu);
+            temp = SEC_IP(cpu);
 
             cycles -= temp;
             runCycles += temp;
