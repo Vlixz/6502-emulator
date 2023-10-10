@@ -16,6 +16,7 @@ add_executable(
   BVC_tests.cpp
   BVS_tests.cpp
   CLC_tests.cpp
+  CLD_tests.cpp
 )
 
 # include the gtest and em6502 lib
