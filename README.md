@@ -15,5 +15,6 @@ So far I've added the following instructions:
 - BNE   (Branch if Not Equal)
 - BPL   (Branch if Positive)
 - BVC   (Branch if Overflow Clear)
+- BVS   (Branch if Overflow Set)
 
 I am writing all Unit Tests using gtest

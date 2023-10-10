@@ -364,6 +364,20 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
             break;
 
+            /**
+             * Branch if Overflow Set
+             *
+             */
+
+        case BVS_RE_OPCODE:
+
+            temp = BVS_RE(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
         default:
             break;
         }

@@ -631,4 +631,20 @@ Byte BPL_RE(CPU_6502 *cpu);
  */
 Byte BVC_RE(CPU_6502 *cpu);
 
+// =======================================
+//       Branch if Overflow Set
+// =======================================
+
+/**
+ * Branch if Overflow Set - Relative
+ *
+ * Opcode: 0x70
+ * Bytes: 2
+ * Cycles: 2 (+1 if branch successfull, +2 if to a new page)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte BVS_RE(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
