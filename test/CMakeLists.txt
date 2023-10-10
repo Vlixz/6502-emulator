@@ -18,6 +18,7 @@ add_executable(
   CLC_tests.cpp
   CLD_tests.cpp
   CLI_tests.cpp
+  CLV_tests.cpp
 )
 
 # include the gtest and em6502 lib
