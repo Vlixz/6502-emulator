@@ -378,6 +378,104 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
             break;
 
+            /**
+             * Clear Carry Flag
+             *
+             */
+
+        case CLC_IP_OPCODE:
+
+            temp = CLC_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Clear Decimal Mode
+             *
+             */
+
+        case CLD_IP_OPCODE:
+
+            temp = CLD_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Clear Interrupt Disable
+             *
+             */
+
+        case CLI_IP_OPCODE:
+
+            temp = CLI_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Clear Overflow Flag
+             *
+             */
+
+        case CLV_IP_OPCODE:
+
+            temp = CLV_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Set Carry Flag
+             *
+             */
+
+        case SEC_IP_OPCODE:
+
+            temp = CLV_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Set Decimal Mode
+             *
+             */
+
+        case SED_IP_OPCODE:
+
+            temp = SED_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Set Interrupt Disable
+             *
+             */
+
+        case SEI_IP_OPCODE:
+
+            temp = SEC_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
         default:
             break;
         }
