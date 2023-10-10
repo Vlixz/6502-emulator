@@ -683,9 +683,9 @@ inline Byte SED_IP(CPU_6502 *cpu)
 
     printf("SED: (Decimal mode not supported currently) \n");
 
-    exit(EXIT_FAILURE);
+    // exit(EXIT_FAILURE);
 
-    return SED_IP_OPCODE;
+    return SED_IP_CYCLES;
 }
 
 // =======================================
