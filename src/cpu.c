@@ -573,3 +573,25 @@ Byte BPL_RE(CPU_6502 *cpu)
 
     return BNE_RE_CYCLES + cycles;
 }
+
+// =======================================
+//       Branch if Overflow Clear
+// =======================================
+
+Byte BVC_RE(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    if (!cpu->V)
+        AddressingMode_Relative(cpu->memory, &cpu->PC, &cycles);
+    else
+        /**
+         * We need to increment by one because we didn't run the fist cycle which is getting the increment.
+         *
+         *      +1 getting the increment.
+         *
+         */
+        cpu->PC++;
+
+    return BVC_RE_CYCLES + cycles;
+}
