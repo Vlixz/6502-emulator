@@ -21,6 +21,7 @@ add_executable(
   CLV_tests.cpp
   SEC_tests.cpp
   SED_tests.cpp
+  SEI_tests.cpp
 )
 
 # include the gtest and em6502 lib
