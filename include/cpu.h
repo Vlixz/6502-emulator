@@ -636,7 +636,7 @@ Byte BVC_RE(CPU_6502 *cpu);
 // =======================================
 
 /**
- * Branch if OVerflow Set - Relative
+ * Branch if Overflow Set - Relative
  *
  * Opcode: 0x70
  * Bytes: 2
