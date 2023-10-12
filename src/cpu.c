@@ -698,3 +698,15 @@ inline Byte SEI_IP(CPU_6502 *cpu)
 
     return SEI_IP_CYCLES;
 }
+
+// =======================================
+//       Transfer Accumulator to X
+// =======================================
+
+inline Byte TAX_IP(CPU_6502 *cpu)
+{
+    cpu->X = cpu->A;
+
+    cpu->Z = (cpu->X == 0);
+    cpu->N = (cpu->X & BIT_MASK_SIGNED);
+}
