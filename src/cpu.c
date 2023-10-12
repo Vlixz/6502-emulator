@@ -703,12 +703,26 @@ inline Byte SEI_IP(CPU_6502 *cpu)
 //       Transfer Accumulator to X
 // =======================================
 
-inline Byte TAX_IP(CPU_6502 *cpu)
+Byte TAX_IP(CPU_6502 *cpu)
 {
     cpu->X = cpu->A;
 
     cpu->Z = (cpu->X == 0);
     cpu->N = IS_NEGATIVE(cpu->X);
+
+    return TAX_IP_CYCLES;
+}
+
+// =======================================
+//       Transfer Accumulator to Y
+// =======================================
+
+Byte TAY_IP(CPU_6502 *cpu)
+{
+    cpu->Y = cpu->A;
+
+    cpu->Z = cpu->Y == 0;
+    cpu->N = IS_NEGATIVE(cpu->Y);
 
     return TAX_IP_CYCLES;
 }

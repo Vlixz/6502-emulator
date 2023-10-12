@@ -497,7 +497,7 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
         case TAY_IP_OPCODE:
 
-            // temp = TAY_IP(cpu);
+            temp = TAY_IP(cpu);
 
             cycles -= temp;
             runCycles += temp;
