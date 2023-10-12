@@ -823,4 +823,104 @@ Byte TXA_IP(CPU_6502 *cpu);
  */
 Byte TYA_IP(CPU_6502 *cpu);
 
+// =======================================
+//            Load Accumulator
+// =======================================
+
+/**
+ * Load Accumulator - Immediate
+ *
+ * Opcode: 0xA9
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDA_IM(CPU_6502 *cpu);
+
+/**
+ * Load Accumulator - Zero Page
+ *
+ * Opcode: 0xA5
+ * Bytes: 2
+ * Cycles: 3
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDA_ZP(CPU_6502 *cpu);
+
+/**
+ * Load Accumulator - Zero Page X
+ *
+ * Opcode: 0xB5
+ * Bytes: 2
+ * Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDA_ZP_X(CPU_6502 *cpu);
+
+/**
+ * Load Accumulator - Absolute
+ *
+ * Opcode: 0xAD
+ * Bytes: 3
+ * Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDA_AB(CPU_6502 *cpu);
+
+/**
+ * Load Accumulator - Absolute X
+ *
+ * Opcode: 0xBD
+ * Bytes: 3
+ * Cycles: 4 (+1 if page crossed)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDA_AB_X(CPU_6502 *cpu);
+
+/**
+ * Load Accumulator - Absolute Y
+ *
+ * Opcode: 0xB9
+ * Bytes: 3
+ * Cycles: 4 (+1 if page crossed)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDA_AB_Y(CPU_6502 *cpu);
+
+/**
+ * Load Accumulator - Indirect X
+ *
+ * Opcode: 0xA1
+ * Bytes: 2
+ * Cycles: 6
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDA_IN_X(CPU_6502 *cpu);
+
+/**
+ * Load Accumulator - Indirect Y
+ *
+ * Opcode: 0xB1
+ * Bytes: 2
+ * Cycles: 5 (+1 if page crossed)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDA_IN_Y(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
