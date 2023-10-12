@@ -145,7 +145,7 @@ inline void ADC_Algorithmics(CPU_6502 *cpu, Byte O)
 
     cpu->C = (value & BIT_MASK_CARRY) > 0;
     cpu->Z = cpu->A == 0;
-    cpu->N = (cpu->A & BIT_MASK_SIGNED) > 0;
+    cpu->N = IS_NEGATIVE(cpu->A);
 
     cpu->V = areSignBitsEqual * ((O & BIT_MASK_SIGNED) != (cpu->A & BIT_MASK_SIGNED));
 }
@@ -246,7 +246,7 @@ inline void AND_Algorithmics(CPU_6502 *cpu, Byte O)
     cpu->A &= O;
 
     cpu->Z = cpu->A == 0;
-    cpu->N = (cpu->A & BIT_MASK_SIGNED) > 0;
+    cpu->N = IS_NEGATIVE(cpu->A);
 }
 
 Byte AND_IM(CPU_6502 *cpu)
@@ -351,7 +351,7 @@ inline void ASL_Algorithmics(CPU_6502 *cpu, Byte O)
     cpu->C = (value & 0x100) > 0;
     cpu->Z = cpu->A == 0;
 
-    cpu->N = (cpu->A & BIT_MASK_SIGNED) > 0;
+    cpu->N = IS_NEGATIVE(cpu->A);
 }
 
 Byte ASL_AC(CPU_6502 *cpu)
@@ -484,7 +484,7 @@ inline void BIT_Functionality(CPU_6502 *cpu, Byte O)
 {
     Byte result = cpu->A & O; // Result is not kept.
 
-    cpu->N = (O & 0b10000000) > 0;
+    cpu->N = IS_NEGATIVE(O);
     cpu->V = (O & 0b01000000) > 0;
 
     cpu->Z = (result == 0);
@@ -708,5 +708,7 @@ inline Byte TAX_IP(CPU_6502 *cpu)
     cpu->X = cpu->A;
 
     cpu->Z = (cpu->X == 0);
-    cpu->N = (cpu->X & BIT_MASK_SIGNED);
+    cpu->N = IS_NEGATIVE(cpu->X);
+
+    return TAX_IP_CYCLES;
 }

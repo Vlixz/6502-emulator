@@ -22,6 +22,7 @@ add_executable(
   SEC_tests.cpp
   SED_tests.cpp
   SEI_tests.cpp
+  TAX_tests.cpp
 )
 
 # include the gtest and em6502 lib
