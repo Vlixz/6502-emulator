@@ -759,4 +759,68 @@ Byte SED_IP(CPU_6502 *cpu);
  */
 Byte SEI_IP(CPU_6502 *cpu);
 
+// =======================================
+//       Transfer Accumulator to X
+// =======================================
+
+/**
+ * Transfer Accumulator to X - Implied
+ *
+ * Opcode: 0xAA
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte TAX_IP(CPU_6502 *cpu);
+
+// =======================================
+//       Transfer Accumulator to Y
+// =======================================
+
+/**
+ * Transfer Accumulator to Y - Implied
+ *
+ * Opcode: 0xA8
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte TAY_IP(CPU_6502 *cpu);
+
+// =======================================
+//       Transfer X to Accumulator
+// =======================================
+
+/**
+ * Transfer X to Accumulator - Implied
+ *
+ * Opcode: 0x8A
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte TXA_IP(CPU_6502 *cpu);
+
+// =======================================
+//       Transfer Y to Accumulator
+// =======================================
+
+/**
+ * Transfer Y to Accumulator - Implied
+ *
+ * Opcode: 0x98
+ * Bytes: 2
+ * Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte TYA_IP(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
