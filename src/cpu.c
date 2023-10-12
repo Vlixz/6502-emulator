@@ -726,3 +726,31 @@ Byte TAY_IP(CPU_6502 *cpu)
 
     return TAX_IP_CYCLES;
 }
+
+// =======================================
+//       Transfer X to Accumulator
+// =======================================
+
+Byte TXA_IP(CPU_6502 *cpu)
+{
+    cpu->A = cpu->X;
+
+    cpu->Z = cpu->A == 0;
+    cpu->N = IS_NEGATIVE(cpu->A);
+
+    return TXA_IP_CYCLES;
+}
+
+// =======================================
+//       Transfer Y to Accumulator
+// =======================================
+
+Byte TYA_IP(CPU_6502 *cpu)
+{
+    cpu->A = cpu->Y;
+
+    cpu->Z = cpu->A == 0;
+    cpu->N = IS_NEGATIVE(cpu->A);
+
+    return TYA_IP_CYCLES;
+}

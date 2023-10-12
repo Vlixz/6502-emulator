@@ -511,7 +511,7 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
         case TXA_IP_OPCODE:
 
-            // temp = TXA_IP(cpu);
+            temp = TXA_IP(cpu);
 
             cycles -= temp;
             runCycles += temp;
@@ -525,7 +525,7 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
         case TYA_IP_OPCODE:
 
-            // temp = TYA_IP(cpu);
+            temp = TYA_IP(cpu);
 
             cycles -= temp;
             runCycles += temp;
