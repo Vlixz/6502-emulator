@@ -25,6 +25,7 @@ add_executable(
   TAX_tests.cpp
   TAY_tests.cpp
   TXA_tests.cpp
+  TYA_tests.cpp
 )
 
 # include the gtest and em6502 lib
