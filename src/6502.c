@@ -476,6 +476,62 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
             break;
 
+            /**
+             * Transfer Accumulator to X
+             *
+             */
+
+        case TAX_IP_OPCODE:
+
+            //
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Transfer Accumulator to Y
+             *
+             */
+
+        case TAY_IP_OPCODE:
+
+            //
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Transfer X to Accumulator
+             *
+             */
+
+        case TXA_IP_OPCODE:
+
+            //
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Transfer Y to Accumulator
+             *
+             */
+
+        case TYA_IP_OPCODE:
+
+            //
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
         default:
             break;
         }
