@@ -27,6 +27,21 @@
 #define OVERFLOW_FLAG_RESET_VALUE 0
 #define ZERO_FLAG_RESET_VALUE 0
 
+/**
+ * Naming scheme Addressing Modes:
+ *  IP      = Implied
+ *  IM      = Immediate
+ *  ZP      = Zero Page
+ *  ZP_X    = Zero Page X
+ *  ZP_Y    = Zero Page Y
+ *  AB      = Absolute
+ *  AB_X    = Absolute X
+ *  AB_Y    = Absolute Y
+ *  IN      = Indirect
+ *  IN_X    = Indirect X (Indexed indirect)
+ *  IN_Y    = Indirect Y (Indirect indexed)
+ */
+
 // =======================================
 //             Add with Carry
 // =======================================
@@ -232,5 +247,37 @@
 #define SEI_IP_OPCODE 0x78
 
 #define SEI_IP_CYCLES 2
+
+// =======================================
+//       Transfer Accumulator to X
+// =======================================
+
+#define TAX_IP_OPCODE 0xAA
+
+#define TAX_IP_CYCLES 2
+
+// =======================================
+//       Transfer Accumulator to Y
+// =======================================
+
+#define TAY_IP_OPCODE 0xA8
+
+#define TAY_IP_CYCLES 2
+
+// =======================================
+//       Transfer X to Accumulator
+// =======================================
+
+#define TXA_IP_OPCODE 0x8A
+
+#define TXA_IP_CYCLES 2
+
+// =======================================
+//       Transfer Y to Accumulator
+// =======================================
+
+#define TYA_IP_OPCODE 0x98
+
+#define TYA_IP_CYCLES 2
 
 #endif /* INC_COMMON_H*/
