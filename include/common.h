@@ -5,6 +5,7 @@
 #define Byte unsigned char
 
 #define IS_NEGATIVE(x) (((x) & BIT_MASK_SIGNED) > 0)
+#define IS_ZERO(x) ((x) == 0)
 
 #define MEMORY_WORD_COUNT_6502 0xFFFF
 
