@@ -29,9 +29,9 @@ So far I've added the following instructions:
 - TAY   (Transfer Accumulator to Y)
 - TXA   (Transfer X to Accumulator)
 - TYA   (Transfer Y to Accumulator)
+- LDA   (Load Accumulator)
 
 Following have to be added:
-- LDA   (Load Accumulator)
 - LDX   (Load X Register)
 - LDY   (Load Y Register)
 - STA   (Store Accumulator)
