@@ -754,3 +754,47 @@ Byte TYA_IP(CPU_6502 *cpu)
 
     return TYA_IP_CYCLES;
 }
+
+// =======================================
+//            Load Accumulator
+// =======================================
+
+Byte LDA_IM(CPU_6502 *cpu)
+{
+    return LDA_IM_CYCLES;
+}
+
+Byte LDA_ZP(CPU_6502 *cpu)
+{
+    return LDA_ZP_CYCLES;
+}
+
+Byte LDA_ZP_X(CPU_6502 *cpu)
+{
+    return LDA_ZP_X_CYCLES;
+}
+
+Byte LDA_AB(CPU_6502 *cpu)
+{
+    return LDA_AB_CYCLES;
+}
+
+Byte LDA_AB_X(CPU_6502 *cpu)
+{
+    return LDA_AB_X_CYCLES;
+}
+
+Byte LDA_AB_Y(CPU_6502 *cpu)
+{
+    return LDA_AB_Y_CYCLES;
+}
+
+Byte LDA_IN_X(CPU_6502 *cpu)
+{
+    return LDA_IN_X_CYCLES;
+}
+
+Byte LDA_IN_Y(CPU_6502 *cpu)
+{
+    return LDA_IN_Y_CYCLES;
+}
