@@ -5,6 +5,7 @@
 #define Byte unsigned char
 
 #define IS_NEGATIVE(x) (((x) & BIT_MASK_SIGNED) > 0)
+#define IS_ZERO(x) ((x) == 0)
 
 #define MEMORY_WORD_COUNT_6502 0xFFFF
 
@@ -281,5 +282,30 @@
 #define TYA_IP_OPCODE 0x98
 
 #define TYA_IP_CYCLES 2
+
+// =======================================
+//            Load Accumulator
+// =======================================
+
+#define LDA_IM_OPCODE 0xA9
+#define LDA_ZP_OPCODE 0xA5
+#define LDA_ZP_X_OPCODE 0xB5
+#define LDA_AB_OPCODE 0xAD
+#define LDA_AB_X_OPCODE 0xBD
+#define LDA_AB_Y_OPCODE 0xB9
+#define LDA_IN_X_OPCODE 0xA1
+#define LDA_IN_Y_OPCODE 0xB1
+
+#define LDA_IM_CYCLES 2
+#define LDA_ZP_CYCLES 3
+#define LDA_ZP_X_CYCLES 4
+#define LDA_AB_CYCLES 4
+/* Extra cycles is added when a page is crossed */
+#define LDA_AB_X_CYCLES 4
+/* Extra cycles is added when a page is crossed */
+#define LDA_AB_Y_CYCLES 4
+#define LDA_IN_X_CYCLES 6
+/* Extra cycles is added when a page is crossed */
+#define LDA_IN_Y_CYCLES 5
 
 #endif /* INC_COMMON_H*/

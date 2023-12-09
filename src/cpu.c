@@ -144,7 +144,7 @@ inline void ADC_Algorithmics(CPU_6502 *cpu, Byte O)
     cpu->A = value;
 
     cpu->C = (value & BIT_MASK_CARRY) > 0;
-    cpu->Z = cpu->A == 0;
+    cpu->Z = IS_ZERO(cpu->A);
     cpu->N = IS_NEGATIVE(cpu->A);
 
     cpu->V = areSignBitsEqual * ((O & BIT_MASK_SIGNED) != (cpu->A & BIT_MASK_SIGNED));
@@ -245,7 +245,7 @@ inline void AND_Algorithmics(CPU_6502 *cpu, Byte O)
 {
     cpu->A &= O;
 
-    cpu->Z = cpu->A == 0;
+    cpu->Z = IS_ZERO(cpu->A);
     cpu->N = IS_NEGATIVE(cpu->A);
 }
 
@@ -349,7 +349,7 @@ inline void ASL_Algorithmics(CPU_6502 *cpu, Byte O)
     cpu->A = (Byte)value;
 
     cpu->C = (value & 0x100) > 0;
-    cpu->Z = cpu->A == 0;
+    cpu->Z = IS_ZERO(cpu->A);
 
     cpu->N = IS_NEGATIVE(cpu->A);
 }
@@ -487,7 +487,7 @@ inline void BIT_Functionality(CPU_6502 *cpu, Byte O)
     cpu->N = IS_NEGATIVE(O);
     cpu->V = (O & 0b01000000) > 0;
 
-    cpu->Z = (result == 0);
+    cpu->Z = IS_ZERO(result);
 }
 
 Byte BIT_ZP(CPU_6502 *cpu)
@@ -707,7 +707,7 @@ Byte TAX_IP(CPU_6502 *cpu)
 {
     cpu->X = cpu->A;
 
-    cpu->Z = (cpu->X == 0);
+    cpu->Z = IS_ZERO(cpu->X);
     cpu->N = IS_NEGATIVE(cpu->X);
 
     return TAX_IP_CYCLES;
@@ -721,7 +721,7 @@ Byte TAY_IP(CPU_6502 *cpu)
 {
     cpu->Y = cpu->A;
 
-    cpu->Z = cpu->Y == 0;
+    cpu->Z = IS_ZERO(cpu->Y);
     cpu->N = IS_NEGATIVE(cpu->Y);
 
     return TAX_IP_CYCLES;
@@ -735,7 +735,7 @@ Byte TXA_IP(CPU_6502 *cpu)
 {
     cpu->A = cpu->X;
 
-    cpu->Z = cpu->A == 0;
+    cpu->Z = IS_ZERO(cpu->A);
     cpu->N = IS_NEGATIVE(cpu->A);
 
     return TXA_IP_CYCLES;
@@ -749,8 +749,107 @@ Byte TYA_IP(CPU_6502 *cpu)
 {
     cpu->A = cpu->Y;
 
-    cpu->Z = cpu->A == 0;
+    cpu->Z = IS_ZERO(cpu->A);
     cpu->N = IS_NEGATIVE(cpu->A);
 
     return TYA_IP_CYCLES;
+}
+
+// =======================================
+//            Load Accumulator
+// =======================================
+
+/**
+ *
+ * A,Z,N = M
+ *
+ * Loads a byte of memory into the accumulator setting the zero and negative flags as appropriate.
+ *
+ */
+void LDA_Logics(CPU_6502 *cpu, Byte O);
+
+inline void LDA_Logics(CPU_6502 *cpu, Byte O)
+{
+    cpu->A = O;
+
+    cpu->Z = IS_ZERO(cpu->A);
+    cpu->N = IS_NEGATIVE(cpu->A);
+}
+
+Byte LDA_IM(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_Immediate(cpu->memory, &cpu->PC);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_IM_CYCLES;
+}
+
+Byte LDA_ZP(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_ZeroPage(cpu->memory, &cpu->PC);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_ZP_CYCLES;
+}
+
+Byte LDA_ZP_X(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_ZeroPageX(cpu->memory, &cpu->PC, cpu->X);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_ZP_X_CYCLES;
+}
+
+Byte LDA_AB(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_Absolute(cpu->memory, &cpu->PC);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_AB_CYCLES;
+}
+
+Byte LDA_AB_X(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, &cycles);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_AB_X_CYCLES + cycles;
+}
+
+Byte LDA_AB_Y(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    Byte O = AddressingMode_AbsoluteY(cpu->memory, &cpu->PC, cpu->Y, &cycles);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_AB_Y_CYCLES + cycles;
+}
+
+Byte LDA_IN_X(CPU_6502 *cpu)
+{
+    Byte O = AddressingMode_IndexedIndirect(cpu->memory, &cpu->PC, cpu->X);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_IN_X_CYCLES;
+}
+
+Byte LDA_IN_Y(CPU_6502 *cpu)
+{
+    int cycles = 0;
+
+    Byte O = AddressingMode_IndirectIndexed(cpu->memory, &cpu->PC, cpu->Y, &cycles);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_IN_Y_CYCLES + cycles;
 }

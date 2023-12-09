@@ -532,6 +532,83 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
             break;
 
+            /**
+             * Load Accumulator
+             *
+             */
+
+        case LDA_IM_OPCODE:
+
+            temp = LDA_IM(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDA_ZP_OPCODE:
+
+            temp = LDA_ZP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDA_ZP_X_OPCODE:
+
+            temp = LDA_ZP_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDA_AB_OPCODE:
+
+            temp = LDA_AB(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDA_AB_X_OPCODE:
+
+            temp = LDA_AB_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDA_AB_Y_OPCODE:
+
+            temp = LDA_AB_Y(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDA_IN_X_OPCODE:
+
+            temp = LDA_IN_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDA_IN_Y_OPCODE:
+
+            temp = LDA_IN_Y(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
         default:
             break;
         }
