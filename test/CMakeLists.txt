@@ -27,6 +27,7 @@ add_executable(
   TXA_tests.cpp
   TYA_tests.cpp
   LDA_tests.cpp
+  LDX_tests.cpp
 )
 
 # include the gtest and em6502 lib
