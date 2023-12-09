@@ -22,7 +22,7 @@ protected:
 };
 
 #define LDX_IM_TEST 1
-#define LDX_ZP_TEST 0
+#define LDX_ZP_TEST 1
 #define LDA_ZP_Y_TEST 0
 #define LDA_AB_TEST 0
 #define LDA_AB_Y_TEST 0
@@ -108,19 +108,19 @@ TEST_F(LDX_TEST, LDX_IM_SetsZeroFlag)
 
 #if LDX_ZP_TEST
 
-TEST_F(LDA_TEST, LDA_ZP_LoadsCorrectValueIntoAccumulator)
+TEST_F(LDX_TEST, LDX_ZP_LoadsCorrectValueIntoAccumulator)
 {
     // Start inline program
-    cpu.memory[0xFFFC] = LDA_ZP_OPCODE;
+    cpu.memory[0xFFFC] = LDX_ZP_OPCODE;
     cpu.memory[0xFFFD] = 0xF4;
     cpu.memory[0x00F4] = 0x65;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDA_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, LDX_ZP_CYCLES);
 
-    ASSERT_EQ(cycles, LDA_ZP_CYCLES);
+    ASSERT_EQ(cycles, LDX_ZP_CYCLES);
 
-    ASSERT_EQ(cpu.A, 0x65);
+    ASSERT_EQ(cpu.X, 0x65);
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, false);
@@ -131,21 +131,22 @@ TEST_F(LDA_TEST, LDA_ZP_LoadsCorrectValueIntoAccumulator)
     ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+    ASSERT_EQ(cpu.A, ACCUMULATOR_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_ZP_SetsNegativeFlag)
+TEST_F(LDX_TEST, LDX_ZP_SetsNegativeFlag)
 {
     // Start inline program
-    cpu.memory[0xFFFC] = LDA_ZP_OPCODE;
+    cpu.memory[0xFFFC] = LDX_ZP_OPCODE;
     cpu.memory[0xFFFD] = 0x64;
     cpu.memory[0x0064] = -42; // 0xD6 (two compliment)
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDA_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, LDX_ZP_CYCLES);
 
-    ASSERT_EQ(cycles, LDA_ZP_CYCLES);
+    ASSERT_EQ(cycles, LDX_ZP_CYCLES);
 
-    ASSERT_EQ(cpu.A, (unsigned char)-42); // 0xD6 (two compliment)
+    ASSERT_EQ(cpu.X, (unsigned char)-42); // 0xD6 (two compliment)
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, true);
@@ -156,21 +157,22 @@ TEST_F(LDA_TEST, LDA_ZP_SetsNegativeFlag)
     ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+    ASSERT_EQ(cpu.A, ACCUMULATOR_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_ZP_SetsZeroFlag)
+TEST_F(LDX_TEST, LDX_ZP_SetsZeroFlag)
 {
     // Start inline program
-    cpu.memory[0xFFFC] = LDA_ZP_OPCODE;
+    cpu.memory[0xFFFC] = LDX_ZP_OPCODE;
     cpu.memory[0xFFFD] = 0x41;
     cpu.memory[0x0041] = 0x00;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDA_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, LDX_ZP_CYCLES);
 
-    ASSERT_EQ(cycles, LDA_ZP_CYCLES);
+    ASSERT_EQ(cycles, LDX_ZP_CYCLES);
 
-    ASSERT_EQ(cpu.A, 0x00);
+    ASSERT_EQ(cpu.X, 0x00);
 
     ASSERT_EQ(cpu.Z, true);
     ASSERT_EQ(cpu.N, false);
@@ -181,6 +183,7 @@ TEST_F(LDA_TEST, LDA_ZP_SetsZeroFlag)
     ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+    ASSERT_EQ(cpu.A, ACCUMULATOR_RESET_VALUE);
 }
 
 #endif // LDA_ZP_TEST
