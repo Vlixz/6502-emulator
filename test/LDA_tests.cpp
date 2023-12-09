@@ -27,6 +27,7 @@ protected:
 #define LDA_AB_TEST 1
 #define LDA_AB_X_TEST 1
 #define LDA_AB_Y_TEST 1
+#define LDA_IN_X_TEST 1
 
 #if LDA_IM_TEST
 
@@ -525,3 +526,94 @@ TEST_F(LDA_TEST, LDA_AB_Y_SetsZeroFlag)
 }
 
 #endif // LDA_AB_Y_TEST
+
+#if LDA_IN_X_TEST
+
+TEST_F(LDA_TEST, LDA_IN_X_LoadsCorrectValueIntoAccumulator)
+{
+    cpu.X = 0x01;
+
+    // Start inline program
+    cpu.memory[0xFFFC] = LDA_IN_X_OPCODE;
+    cpu.memory[0xFFFD] = 0x20; // 0x20 + 0x01 = 0x21
+    cpu.memory[0x0021] = 0x56;
+    cpu.memory[0x0022] = 0xFF; // 0xFF56
+    cpu.memory[0xFF56] = 0x65;
+    // End inline program
+
+    int cycles = em6502_execute(&cpu, LDA_IN_X_CYCLES);
+
+    ASSERT_EQ(cycles, LDA_IN_X_CYCLES); // Takes an extra cycle if page boundary is crossed
+
+    ASSERT_EQ(cpu.A, 0x65);
+
+    ASSERT_EQ(cpu.Z, false);
+    ASSERT_EQ(cpu.N, false);
+
+    /* Make sure the rest are unaffected by the instruction */
+    ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
+    ASSERT_EQ(cpu.C, CARRY_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+    ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+}
+
+TEST_F(LDA_TEST, LDA_IN_X_SetsNegativeFlag)
+{
+    cpu.X = 0x28;
+
+    // Start inline program
+    cpu.memory[0xFFFC] = LDA_IN_X_OPCODE;
+    cpu.memory[0xFFFD] = 0x24; // 0x24 + 0x28 = 0x4C
+    cpu.memory[0x004C] = 0x01;
+    cpu.memory[0x004D] = 0x01; // 0x0101
+    cpu.memory[0x0101] = -42;  // 0xD6 (two compliment)
+    // End inline program
+
+    int cycles = em6502_execute(&cpu, LDA_IN_X_CYCLES);
+
+    ASSERT_EQ(cycles, LDA_IN_X_CYCLES);
+
+    ASSERT_EQ(cpu.A, (unsigned char)-42); // 0xD6 (two compliment)
+
+    ASSERT_EQ(cpu.Z, false);
+    ASSERT_EQ(cpu.N, true);
+
+    /* Make sure the rest are unaffected by the instruction */
+    ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
+    ASSERT_EQ(cpu.C, CARRY_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+    ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+}
+
+TEST_F(LDA_TEST, LDA_IN_X_SetsZeroFlag)
+{
+    cpu.X = 0x80;
+
+    // Start inline program
+    cpu.memory[0xFFFC] = LDA_IN_X_OPCODE;
+    cpu.memory[0xFFFD] = 0x00; // 0x00 + 0x80 = 0x80
+    cpu.memory[0x0080] = 0xFF;
+    cpu.memory[0x0081] = 0x43; // 0x43FF + 0x80 = 0x447F
+    cpu.memory[0x447F] = 0x00;
+    // End inline program
+
+    int cycles = em6502_execute(&cpu, LDA_IN_X_CYCLES);
+
+    ASSERT_EQ(cycles, LDA_IN_X_CYCLES); // Takes an extra cycle if page boundary is crossed
+
+    ASSERT_EQ(cpu.A, 0x00);
+
+    ASSERT_EQ(cpu.Z, true);
+    ASSERT_EQ(cpu.N, false);
+
+    /* Make sure the rest are unaffected by the instruction */
+    ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
+    ASSERT_EQ(cpu.C, CARRY_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+    ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+}
+
+#endif // LDA_IN_X_TEST
