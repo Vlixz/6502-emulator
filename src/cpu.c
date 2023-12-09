@@ -778,40 +778,78 @@ inline void LDA_Logics(CPU_6502 *cpu, Byte O)
 
 Byte LDA_IM(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_Immediate(cpu->memory, &cpu->PC);
+
+    LDA_Logics(cpu, O);
+
     return LDA_IM_CYCLES;
 }
 
 Byte LDA_ZP(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_ZeroPage(cpu->memory, &cpu->PC);
+
+    LDA_Logics(cpu, O);
+
     return LDA_ZP_CYCLES;
 }
 
 Byte LDA_ZP_X(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_ZeroPageX(cpu->memory, &cpu->PC, cpu->X);
+
+    LDA_Logics(cpu, O);
+
     return LDA_ZP_X_CYCLES;
 }
 
 Byte LDA_AB(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_Absolute(cpu->memory, &cpu->PC);
+
+    LDA_Logics(cpu, O);
+
     return LDA_AB_CYCLES;
 }
 
 Byte LDA_AB_X(CPU_6502 *cpu)
 {
-    return LDA_AB_X_CYCLES;
+    int cycles = 0;
+
+    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, &cycles);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_AB_X_CYCLES + cycles;
 }
 
 Byte LDA_AB_Y(CPU_6502 *cpu)
 {
-    return LDA_AB_Y_CYCLES;
+    int cycles = 0;
+
+    Byte O = AddressingMode_AbsoluteY(cpu->memory, &cpu->PC, cpu->Y, &cycles);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_AB_Y_CYCLES + cycles;
 }
 
 Byte LDA_IN_X(CPU_6502 *cpu)
 {
+    Byte O = AddressingMode_IndexedIndirect(cpu->memory, &cpu->PC, cpu->X);
+
+    LDA_Logics(cpu, O);
+
     return LDA_IN_X_CYCLES;
 }
 
 Byte LDA_IN_Y(CPU_6502 *cpu)
 {
-    return LDA_IN_Y_CYCLES;
+    int cycles = 0;
+
+    Byte O = AddressingMode_IndirectIndexed(cpu->memory, &cpu->PC, cpu->Y, &cycles);
+
+    LDA_Logics(cpu, O);
+
+    return LDA_IN_Y_CYCLES + cycles;
 }
