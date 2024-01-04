@@ -28,6 +28,7 @@ So far I've added the following instructions:
 - TXA   (Transfer X to Accumulator)
 - TYA   (Transfer Y to Accumulator)
 - LDA   (Load Accumulator)
+- NOP   (No Operation)
 
 Following have to be added:
 - LDX   (Load X Register)
@@ -67,7 +68,6 @@ Following have to be added:
 - RTS   (Return from subroutine)
 
 - BRK   (Force an interrupt)
-- NOP   (No Operation)
 - RTI   (Return from interrupt)
 
 So a long way to go xD (almost half way there)
