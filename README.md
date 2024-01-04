@@ -1,7 +1,4 @@
 # 6502-emulator
-
-*Haven't had much time to continue developing this but I want to finish implementing all instructions by the end of the year (:*
-
 Basic 6502 C emulator I am writing to get a better understanding of a basic CPU architecture.
 - For now I'm not going the be implementing decimal mode but maybe when I'm finished I'll add it.
 - I am writing all Unit Tests using gtest.
