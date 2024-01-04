@@ -308,4 +308,12 @@
 /* Extra cycles is added when a page is crossed */
 #define LDA_IN_Y_CYCLES 5
 
+// =======================================
+//            No Operation
+// =======================================
+
+#define NOP_IP_OPCODE 0xEA
+
+#define NOP_IP_CYCLES 2
+
 #endif /* INC_COMMON_H*/

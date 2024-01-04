@@ -853,3 +853,12 @@ Byte LDA_IN_Y(CPU_6502 *cpu)
 
     return LDA_IN_Y_CYCLES + cycles;
 }
+
+// =======================================
+//            No Operation
+// =======================================
+
+inline Byte NOP_IP(CPU_6502 *cpu)
+{
+    return NOP_IP_CYCLES;
+}
