@@ -609,6 +609,20 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
 
             break;
 
+            /**
+             * No Operation
+             *
+             */
+
+        case NOP_IP_OPCODE:
+            
+                temp = NOP_IP(cpu);
+    
+                cycles -= temp;
+                runCycles += temp;
+    
+                break;
+    
         default:
             break;
         }
