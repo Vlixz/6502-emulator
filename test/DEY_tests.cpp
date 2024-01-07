@@ -5,7 +5,7 @@ extern "C"
 
 #include <gtest/gtest.h>
 
-class DEX_TEST : public ::testing::Test
+class DEY_TEST : public ::testing::Test
 {
 protected:
     CPU_6502 cpu;
@@ -15,25 +15,25 @@ protected:
         em6502_reset(&cpu);
     }
 
-    ~DEX_TEST() override
+    ~DEY_TEST() override
     {
         em6502_destroy(&cpu);
     }
 };
 
-TEST_F(DEX_TEST, DEX_IP_DecrementsXZeroNonNegative)
+TEST_F(DEY_TEST, DEY_IP_DecrementsXZeroNonNegative)
 {
-    cpu.X = 0x01;
+    cpu.Y = 0x01;
 
     // Start inline program
-    cpu.memory[0xFFFC] = DEX_IP_OPCODE;
+    cpu.memory[0xFFFC] = DEY_IP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, DEX_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, DEY_IP_CYCLES);
 
-    ASSERT_EQ(cycles, DEX_IP_CYCLES);
+    ASSERT_EQ(cycles, DEY_IP_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x00);
+    ASSERT_EQ(cpu.Y, 0x00);
     ASSERT_TRUE(cpu.Z);
     ASSERT_FALSE(cpu.N);
 
@@ -45,19 +45,19 @@ TEST_F(DEX_TEST, DEX_IP_DecrementsXZeroNonNegative)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNegative)
+TEST_F(DEY_TEST, DEY_IP_DecrementsXNonZeroNegative)
 {
-    cpu.X = 0x00;
+    cpu.Y = 0x00;
 
     // Start inline program
-    cpu.memory[0xFFFC] = DEX_IP_OPCODE;
+    cpu.memory[0xFFFC] = DEY_IP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, DEX_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, DEY_IP_CYCLES);
 
-    ASSERT_EQ(cycles, DEX_IP_CYCLES);
+    ASSERT_EQ(cycles, DEY_IP_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0xFF);
+    ASSERT_EQ(cpu.Y, 0xFF);
     ASSERT_TRUE(cpu.N);
     ASSERT_FALSE(cpu.Z);
 
@@ -69,19 +69,19 @@ TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNegative)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNonNegative)
+TEST_F(DEY_TEST, DEY_IP_DecrementsXNonZeroNonNegative)
 {
-    cpu.X = 0x02;
+    cpu.Y = 0x02;
 
     // Start inline program
-    cpu.memory[0xFFFC] = DEX_IP_OPCODE;
+    cpu.memory[0xFFFC] = DEY_IP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, DEX_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, DEY_IP_CYCLES);
 
-    ASSERT_EQ(cycles, DEX_IP_CYCLES);
+    ASSERT_EQ(cycles, DEY_IP_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x01);
+    ASSERT_EQ(cpu.Y, 0x01);
     ASSERT_FALSE(cpu.N);
     ASSERT_FALSE(cpu.Z);
 

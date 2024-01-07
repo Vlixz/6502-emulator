@@ -876,3 +876,17 @@ Byte DEX_IP(CPU_6502 *cpu) {
 
     return DEX_IP_CYCLES;
 }
+
+// =======================================
+//            Decrement Y
+// =======================================
+
+Byte DEY_IP(CPU_6502 *cpu) {
+
+    cpu->Y--;
+
+    cpu->Z = IS_ZERO(cpu->Y);
+    cpu->N = IS_NEGATIVE(cpu->Y);
+
+    return DEY_IP_CYCLES;
+}

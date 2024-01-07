@@ -638,6 +638,20 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
     
                 break;
                 
+            /**
+             * Decrement Y
+             *
+             */
+
+        case DEY_IP_OPCODE:
+            
+                temp = DEY_IP(cpu);
+    
+                cycles -= temp;
+                runCycles += temp;
+    
+                break;
+
         default:
             break;
         }
