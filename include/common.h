@@ -324,4 +324,13 @@
 
 #define DEX_IP_CYCLES 2
 
+// =======================================
+//            Decrement Y
+// =======================================
+
+#define DEY_IP_OPCODE 0x88
+
+#define DEY_IP_CYCLES 2
+
+
 #endif /* INC_COMMON_H*/
