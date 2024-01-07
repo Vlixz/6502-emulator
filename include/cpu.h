@@ -944,5 +944,21 @@ Byte LDA_IN_Y(CPU_6502 *cpu);
  */
 Byte NOP_IP(CPU_6502 *cpu);
 
+// =======================================
+//            Decrement X
+// =======================================
+
+/**
+ * @brief Decrement X - Implied
+ *
+ * @note Opcode: 0xCA
+ * @note Bytes: 1
+ * @note Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte DEX_IP(CPU_6502 *cpu);
+
 
 #endif /* INC_CPU_H */
