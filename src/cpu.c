@@ -862,3 +862,17 @@ inline Byte NOP_IP(CPU_6502 *cpu)
 {
     return NOP_IP_CYCLES;
 }
+
+// =======================================
+//            Decrement X
+// =======================================
+
+Byte DEX_IP(CPU_6502 *cpu) {
+
+    cpu->X--;
+
+    cpu->Z = IS_ZERO(cpu->X);
+    cpu->N = IS_NEGATIVE(cpu->X);
+
+    return DEX_IP_CYCLES;
+}
