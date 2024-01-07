@@ -960,5 +960,20 @@ Byte NOP_IP(CPU_6502 *cpu);
  */
 Byte DEX_IP(CPU_6502 *cpu);
 
+// =======================================
+//            Decrement Y
+// =======================================
+
+/**
+ * @brief Decrement Y - Implied
+ *
+ * @note Opcode: 0x88
+ * @note Bytes: 1
+ * @note Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte DEY_IP(CPU_6502 *cpu);
 
 #endif /* INC_CPU_H */
