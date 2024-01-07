@@ -29,6 +29,7 @@ So far I've added the following instructions:
 - TYA   (Transfer Y to Accumulator)
 - LDA   (Load Accumulator)
 - NOP   (No Operation)
+- DEX   (Decrement the X register)
 
 Following have to be added:
 - LDX   (Load X Register)
@@ -56,7 +57,6 @@ Following have to be added:
 - INX   (Increment the X register)
 - INY   (Increment the Y register)
 - DEC   (Decrement a memory location)
-- DEX   (Decrement the X register)
 - DEY   (Decrement the Y register)
 
 - LSR   (Logical Shift Right)
