@@ -623,6 +623,21 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
     
                 break;
     
+
+            /**
+             * Decrement X
+             *
+             */
+
+        case DEX_IP_OPCODE:
+            
+                temp = DEX_IP(cpu);
+    
+                cycles -= temp;
+                runCycles += temp;
+    
+                break;
+                
         default:
             break;
         }
