@@ -316,4 +316,12 @@
 
 #define NOP_IP_CYCLES 2
 
+// =======================================
+//            Decrement X
+// =======================================
+
+#define DEX_IP_OPCODE 0xCA
+
+#define DEX_IP_CYCLES 2
+
 #endif /* INC_COMMON_H*/
