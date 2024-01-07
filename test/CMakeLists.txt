@@ -28,6 +28,7 @@ add_executable(
   TYA_tests.cpp
   LDA_tests.cpp
   NOP_tests.cpp
+  DEX_tests.cpp
 )
 
 # include the gtest and em6502 lib
