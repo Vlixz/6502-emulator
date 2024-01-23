@@ -1,24 +1,16 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class ASL_TEST : public ::testing::Test
-{
-protected:
+class ASL_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~ASL_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~ASL_TEST() override { em6502_destroy(&cpu); }
 };
 
 #define ASL_AC_TEST 1
@@ -29,8 +21,7 @@ protected:
 
 #if ASL_AC_TEST
 
-TEST_F(ASL_TEST, ASL_AC_ShiftLeftNoCarry)
-{
+TEST_F(ASL_TEST, ASL_AC_ShiftLeftNoCarry) {
     cpu.A = 0b01010101;
 
     // Start inline program
@@ -54,8 +45,7 @@ TEST_F(ASL_TEST, ASL_AC_ShiftLeftNoCarry)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(ASL_TEST, ASL_AC_ShiftLeftWithCarry)
-{
+TEST_F(ASL_TEST, ASL_AC_ShiftLeftWithCarry) {
     cpu.A = 0b10001111;
 
     // Start inline program
@@ -83,8 +73,7 @@ TEST_F(ASL_TEST, ASL_AC_ShiftLeftWithCarry)
 
 #if ASL_ZP_TEST
 
-TEST_F(ASL_TEST, ASL_ZP_ShiftLeftNoCarry)
-{
+TEST_F(ASL_TEST, ASL_ZP_ShiftLeftNoCarry) {
     cpu.A = 0b01001111;
 
     // Start inline program
@@ -110,8 +99,7 @@ TEST_F(ASL_TEST, ASL_ZP_ShiftLeftNoCarry)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(ASL_TEST, ASL_ZP_ShiftLeftWithCarry)
-{
+TEST_F(ASL_TEST, ASL_ZP_ShiftLeftWithCarry) {
     cpu.A = 0b10001111;
 
     // Start inline program
@@ -141,8 +129,7 @@ TEST_F(ASL_TEST, ASL_ZP_ShiftLeftWithCarry)
 
 #if ASL_ZP_X_TEST
 
-TEST_F(ASL_TEST, ASL_ZP_X_ShiftLeftNoCarry)
-{
+TEST_F(ASL_TEST, ASL_ZP_X_ShiftLeftNoCarry) {
     cpu.A = 0b00110011;
     cpu.X = 0xFF;
 
@@ -169,8 +156,7 @@ TEST_F(ASL_TEST, ASL_ZP_X_ShiftLeftNoCarry)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(ASL_TEST, ASL_ZP_X_ShiftLeftWithCarry)
-{
+TEST_F(ASL_TEST, ASL_ZP_X_ShiftLeftWithCarry) {
     cpu.A = 0b10110011;
     cpu.X = 0xFF;
 
@@ -201,8 +187,7 @@ TEST_F(ASL_TEST, ASL_ZP_X_ShiftLeftWithCarry)
 
 #if ASL_AB_TEST
 
-TEST_F(ASL_TEST, ASL_AB_ShiftLeftNoCarry)
-{
+TEST_F(ASL_TEST, ASL_AB_ShiftLeftNoCarry) {
     cpu.A = 0b01010101;
 
     Word AbsoluteAddress = 0x7849;
@@ -234,8 +219,7 @@ TEST_F(ASL_TEST, ASL_AB_ShiftLeftNoCarry)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(ASL_TEST, ASL_AB_ShiftLeftWithCarry)
-{
+TEST_F(ASL_TEST, ASL_AB_ShiftLeftWithCarry) {
     cpu.A = 0b11010101;
 
     Word AbsoluteAddress = 0x7849;
@@ -267,8 +251,7 @@ TEST_F(ASL_TEST, ASL_AB_ShiftLeftWithCarry)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(ASL_TEST, ASL_AB_ShiftLeftWithCarryNegative)
-{
+TEST_F(ASL_TEST, ASL_AB_ShiftLeftWithCarryNegative) {
     cpu.A = 0b10000000;
 
     Word AbsoluteAddress = 0x7849;
@@ -304,8 +287,7 @@ TEST_F(ASL_TEST, ASL_AB_ShiftLeftWithCarryNegative)
 
 #if ASL_AB_X_TEST
 
-TEST_F(ASL_TEST, ASL_AB_X_ShiftLeftNoCarry)
-{
+TEST_F(ASL_TEST, ASL_AB_X_ShiftLeftNoCarry) {
     cpu.A = 0b01001000;
     cpu.X = 0x09;
 
@@ -338,8 +320,7 @@ TEST_F(ASL_TEST, ASL_AB_X_ShiftLeftNoCarry)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(ASL_TEST, ASL_AB_X_ShiftLeftWithCarry)
-{
+TEST_F(ASL_TEST, ASL_AB_X_ShiftLeftWithCarry) {
     cpu.A = 0b10010001;
     cpu.X = 0x09;
 

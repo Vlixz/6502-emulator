@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class CLV_TEST : public ::testing::Test
-{
-protected:
+class CLV_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~CLV_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~CLV_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(CLV_TEST, CLV_IP_OverflowFlagCleared)
-{
+TEST_F(CLV_TEST, CLV_IP_OverflowFlagCleared) {
     cpu.V = 1;
 
     // Start inline program
@@ -44,8 +35,7 @@ TEST_F(CLV_TEST, CLV_IP_OverflowFlagCleared)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(CLV_TEST, CLV_IP_DoesNotChangeClearedOverflowFlag)
-{
+TEST_F(CLV_TEST, CLV_IP_DoesNotChangeClearedOverflowFlag) {
     cpu.V = 1;
 
     // Start inline program

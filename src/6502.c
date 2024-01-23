@@ -2,8 +2,7 @@
 
 #include "stdlib.h"
 
-void em6502_reset(CPU_6502 *cpu)
-{
+void em6502_reset(CPU_6502 *cpu) {
     cpu->A = ACCUMULATOR_RESET_VALUE;
     cpu->B = BREAK_COMMAND_RESET_VALUE;
     cpu->C = CARRY_FLAG_RESET_VALUE;
@@ -22,22 +21,16 @@ void em6502_reset(CPU_6502 *cpu)
     cpu->memory = (Byte *)calloc(MEMORY_WORD_COUNT_6502, sizeof(Byte));
 }
 
-void em6502_destroy(CPU_6502 *cpu)
-{
-    free(cpu->memory);
-}
+void em6502_destroy(CPU_6502 *cpu) { free(cpu->memory); }
 
-int em6502_execute(CPU_6502 *cpu, int cycles)
-{
+int em6502_execute(CPU_6502 *cpu, int cycles) {
     int runCycles = 0, temp = 0;
 
-    while (cycles > 0)
-    {
+    while (cycles > 0) {
 
         Word opcode = cpu->memory[cpu->PC++];
 
-        switch (opcode)
-        {
+        switch (opcode) {
 
             /**
              * Add with Carry
@@ -615,14 +608,13 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
              */
 
         case NOP_IP_OPCODE:
-            
-                temp = NOP_IP(cpu);
-    
-                cycles -= temp;
-                runCycles += temp;
-    
-                break;
-    
+
+            temp = NOP_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
 
             /**
              * Decrement X
@@ -630,27 +622,27 @@ int em6502_execute(CPU_6502 *cpu, int cycles)
              */
 
         case DEX_IP_OPCODE:
-            
-                temp = DEX_IP(cpu);
-    
-                cycles -= temp;
-                runCycles += temp;
-    
-                break;
-                
+
+            temp = DEX_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
             /**
              * Decrement Y
              *
              */
 
         case DEY_IP_OPCODE:
-            
-                temp = DEY_IP(cpu);
-    
-                cycles -= temp;
-                runCycles += temp;
-    
-                break;
+
+            temp = DEY_IP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
 
         default:
             break;
