@@ -27,9 +27,9 @@ inline Byte AddressingMode_ZeroPageX(const Byte *memory, Word *PC,
 
 inline Byte AddressingMode_ZeroPageY(const Byte *memory, Word *PC,
                                      const Byte Y) {
-    fprintf(stderr, "Addressing mode Zero Page Y not implemented yet.");
+    Byte ZeroPageMemoryLocation = Y + memory[(*PC)++];
 
-    exit(EXIT_FAILURE);
+    return memory[ZeroPageMemoryLocation];
 }
 
 inline void AddressingMode_Relative(const Byte *memory, Word *PC, int *cycles) {

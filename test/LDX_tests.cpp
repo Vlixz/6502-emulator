@@ -15,6 +15,7 @@ class LDX_TEST : public ::testing::Test {
 
 #define LDX_IM_TEST 1
 #define LDX_ZP_TEST 1
+#define LDX_ZP_Y_TEST 1
 
 #if LDX_IM_TEST
 
@@ -164,3 +165,85 @@ TEST_F(LDX_TEST, LDX_ZP_SetsZeroFlag) {
 }
 
 #endif // LDX_ZP_TEST
+
+#if LDX_ZP_Y_TEST
+
+TEST_F(LDX_TEST, LDX_ZP_X_LoadsCorrectValueIntoAccumulator) {
+    cpu.Y = 0x10;
+
+    // Start inline program
+    cpu.memory[0xFFFC] = LDX_ZP_Y_OPCODE;
+    cpu.memory[0xFFFD] = 0x56; // 0x56 + 0x10 = 0x66
+    cpu.memory[0x0066] = 0x65;
+    // End inline program
+
+    int cycles = em6502_execute(&cpu, LDX_ZP_Y_CYCLES);
+
+    ASSERT_EQ(cycles, LDX_ZP_Y_CYCLES);
+
+    ASSERT_EQ(cpu.X, 0x65);
+
+    ASSERT_EQ(cpu.Z, false);
+    ASSERT_EQ(cpu.N, false);
+
+    /* Make sure the rest are unaffected by the instruction */
+    ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
+    ASSERT_EQ(cpu.C, CARRY_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+    ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+}
+
+TEST_F(LDX_TEST, LDX_ZP_Y_SetsNegativeFlag) {
+    cpu.Y = 0x1;
+
+    // Start inline program
+    cpu.memory[0xFFFC] = LDX_ZP_Y_OPCODE;
+    cpu.memory[0xFFFD] = 0x64; // 0x64 + 0x1 = 0x65
+    cpu.memory[0x0065] = -42;  // 0xD6 (two compliment)
+    // End inline program
+
+    int cycles = em6502_execute(&cpu, LDX_ZP_Y_CYCLES);
+
+    ASSERT_EQ(cycles, LDX_ZP_Y_CYCLES);
+
+    ASSERT_EQ(cpu.X, (unsigned char)-42); // 0xD6 (two compliment)
+
+    ASSERT_EQ(cpu.Z, false);
+    ASSERT_EQ(cpu.N, true);
+
+    /* Make sure the rest are unaffected by the instruction */
+    ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
+    ASSERT_EQ(cpu.C, CARRY_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+    ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+}
+
+TEST_F(LDX_TEST, LDX_ZP_Y_SetsZeroFlag) {
+    cpu.Y = 0xFF;
+
+    // Start inline program
+    cpu.memory[0xFFFC] = LDX_ZP_Y_OPCODE;
+    cpu.memory[0xFFFD] = 0x80; // 0x80 + 0xFF = 0x17F (wrapps around so 0x7F)
+    cpu.memory[0x007F] = 0x00;
+    // End inline program
+
+    int cycles = em6502_execute(&cpu, LDX_ZP_Y_CYCLES);
+
+    ASSERT_EQ(cycles, LDX_ZP_Y_CYCLES);
+
+    ASSERT_EQ(cpu.X, 0x00);
+
+    ASSERT_EQ(cpu.Z, true);
+    ASSERT_EQ(cpu.N, false);
+
+    /* Make sure the rest are unaffected by the instruction */
+    ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
+    ASSERT_EQ(cpu.C, CARRY_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.V, OVERFLOW_FLAG_RESET_VALUE);
+    ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+    ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
+}
+
+#endif // LDA_ZP_Y_TEST
