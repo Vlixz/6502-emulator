@@ -332,5 +332,4 @@
 
 #define DEY_IP_CYCLES 2
 
-
 #endif /* INC_COMMON_H*/

@@ -1,24 +1,16 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class LDA_TEST : public ::testing::Test
-{
-protected:
+class LDA_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~LDA_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~LDA_TEST() override { em6502_destroy(&cpu); }
 };
 
 #define LDA_IM_TEST 1
@@ -32,8 +24,7 @@ protected:
 
 #if LDA_IM_TEST
 
-TEST_F(LDA_TEST, LDA_IM_LoadsCorrectValueIntoAccumulator)
-{
+TEST_F(LDA_TEST, LDA_IM_LoadsCorrectValueIntoAccumulator) {
     // Start inline program
     cpu.memory[0xFFFC] = LDA_IM_OPCODE;
     cpu.memory[0xFFFD] = 0x42;
@@ -56,8 +47,7 @@ TEST_F(LDA_TEST, LDA_IM_LoadsCorrectValueIntoAccumulator)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_IM_SetsNegativeFlag)
-{
+TEST_F(LDA_TEST, LDA_IM_SetsNegativeFlag) {
     // Start inline program
     cpu.memory[0xFFFC] = LDA_IM_OPCODE;
     cpu.memory[0xFFFD] = -42; // 0xD6 (two compliment)
@@ -80,8 +70,7 @@ TEST_F(LDA_TEST, LDA_IM_SetsNegativeFlag)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_IM_SetsZeroFlag)
-{
+TEST_F(LDA_TEST, LDA_IM_SetsZeroFlag) {
     // Start inline program
     cpu.memory[0xFFFC] = LDA_IM_OPCODE;
     cpu.memory[0xFFFD] = 0x00;
@@ -108,8 +97,7 @@ TEST_F(LDA_TEST, LDA_IM_SetsZeroFlag)
 
 #if LDA_ZP_TEST
 
-TEST_F(LDA_TEST, LDA_ZP_LoadsCorrectValueIntoAccumulator)
-{
+TEST_F(LDA_TEST, LDA_ZP_LoadsCorrectValueIntoAccumulator) {
     // Start inline program
     cpu.memory[0xFFFC] = LDA_ZP_OPCODE;
     cpu.memory[0xFFFD] = 0xF4;
@@ -133,8 +121,7 @@ TEST_F(LDA_TEST, LDA_ZP_LoadsCorrectValueIntoAccumulator)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_ZP_SetsNegativeFlag)
-{
+TEST_F(LDA_TEST, LDA_ZP_SetsNegativeFlag) {
     // Start inline program
     cpu.memory[0xFFFC] = LDA_ZP_OPCODE;
     cpu.memory[0xFFFD] = 0x64;
@@ -158,8 +145,7 @@ TEST_F(LDA_TEST, LDA_ZP_SetsNegativeFlag)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_ZP_SetsZeroFlag)
-{
+TEST_F(LDA_TEST, LDA_ZP_SetsZeroFlag) {
     // Start inline program
     cpu.memory[0xFFFC] = LDA_ZP_OPCODE;
     cpu.memory[0xFFFD] = 0x41;
@@ -187,8 +173,7 @@ TEST_F(LDA_TEST, LDA_ZP_SetsZeroFlag)
 
 #if LDA_ZP_X_TEST
 
-TEST_F(LDA_TEST, LDA_ZP_X_LoadsCorrectValueIntoAccumulator)
-{
+TEST_F(LDA_TEST, LDA_ZP_X_LoadsCorrectValueIntoAccumulator) {
     cpu.X = 0x10;
 
     // Start inline program
@@ -214,8 +199,7 @@ TEST_F(LDA_TEST, LDA_ZP_X_LoadsCorrectValueIntoAccumulator)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_ZP_X_SetsNegativeFlag)
-{
+TEST_F(LDA_TEST, LDA_ZP_X_SetsNegativeFlag) {
     cpu.X = 0x1;
 
     // Start inline program
@@ -241,8 +225,7 @@ TEST_F(LDA_TEST, LDA_ZP_X_SetsNegativeFlag)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_ZP_X_SetsZeroFlag)
-{
+TEST_F(LDA_TEST, LDA_ZP_X_SetsZeroFlag) {
     cpu.X = 0xFF;
 
     // Start inline program
@@ -272,8 +255,7 @@ TEST_F(LDA_TEST, LDA_ZP_X_SetsZeroFlag)
 
 #if LDA_AB_TEST
 
-TEST_F(LDA_TEST, LDA_AB_LoadsCorrectValueIntoAccumulator)
-{
+TEST_F(LDA_TEST, LDA_AB_LoadsCorrectValueIntoAccumulator) {
     // Start inline program
     cpu.memory[0xFFFC] = LDA_AB_OPCODE;
     cpu.memory[0xFFFD] = 0x56;
@@ -298,8 +280,7 @@ TEST_F(LDA_TEST, LDA_AB_LoadsCorrectValueIntoAccumulator)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_AB_SetsNegativeFlag)
-{
+TEST_F(LDA_TEST, LDA_AB_SetsNegativeFlag) {
     // Start inline program
     cpu.memory[0xFFFC] = LDA_AB_OPCODE;
     cpu.memory[0xFFFD] = 0x64;
@@ -324,8 +305,7 @@ TEST_F(LDA_TEST, LDA_AB_SetsNegativeFlag)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_AB_SetsZeroFlag)
-{
+TEST_F(LDA_TEST, LDA_AB_SetsZeroFlag) {
     // Start inline program
     cpu.memory[0xFFFC] = LDA_AB_OPCODE;
     cpu.memory[0xFFFD] = 0x80;
@@ -354,8 +334,7 @@ TEST_F(LDA_TEST, LDA_AB_SetsZeroFlag)
 
 #if LDA_AB_X_TEST
 
-TEST_F(LDA_TEST, LDA_AB_X_LoadsCorrectValueIntoAccumulator)
-{
+TEST_F(LDA_TEST, LDA_AB_X_LoadsCorrectValueIntoAccumulator) {
     cpu.X = 0x01;
 
     // Start inline program
@@ -367,7 +346,9 @@ TEST_F(LDA_TEST, LDA_AB_X_LoadsCorrectValueIntoAccumulator)
 
     int cycles = em6502_execute(&cpu, LDA_AB_X_CYCLES);
 
-    ASSERT_EQ(cycles, LDA_AB_X_CYCLES + 1); // Takes an extra cycle if page boundary is crossed
+    ASSERT_EQ(cycles,
+              LDA_AB_X_CYCLES +
+                  1); // Takes an extra cycle if page boundary is crossed
 
     ASSERT_EQ(cpu.A, 0x65);
 
@@ -382,8 +363,7 @@ TEST_F(LDA_TEST, LDA_AB_X_LoadsCorrectValueIntoAccumulator)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_AB_X_SetsNegativeFlag)
-{
+TEST_F(LDA_TEST, LDA_AB_X_SetsNegativeFlag) {
     cpu.X = 0x28;
 
     // Start inline program
@@ -410,8 +390,7 @@ TEST_F(LDA_TEST, LDA_AB_X_SetsNegativeFlag)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_AB_X_SetsZeroFlag)
-{
+TEST_F(LDA_TEST, LDA_AB_X_SetsZeroFlag) {
     cpu.X = 0x80;
 
     // Start inline program
@@ -423,7 +402,9 @@ TEST_F(LDA_TEST, LDA_AB_X_SetsZeroFlag)
 
     int cycles = em6502_execute(&cpu, LDA_AB_X_CYCLES);
 
-    ASSERT_EQ(cycles, LDA_AB_X_CYCLES + 1); // Takes an extra cycle if page boundary is crossed
+    ASSERT_EQ(cycles,
+              LDA_AB_X_CYCLES +
+                  1); // Takes an extra cycle if page boundary is crossed
 
     ASSERT_EQ(cpu.A, 0x00);
 
@@ -442,8 +423,7 @@ TEST_F(LDA_TEST, LDA_AB_X_SetsZeroFlag)
 
 #if LDA_AB_Y_TEST
 
-TEST_F(LDA_TEST, LDA_AB_Y_LoadsCorrectValueIntoAccumulator)
-{
+TEST_F(LDA_TEST, LDA_AB_Y_LoadsCorrectValueIntoAccumulator) {
     cpu.Y = 0x01;
 
     // Start inline program
@@ -455,7 +435,9 @@ TEST_F(LDA_TEST, LDA_AB_Y_LoadsCorrectValueIntoAccumulator)
 
     int cycles = em6502_execute(&cpu, LDA_AB_Y_CYCLES);
 
-    ASSERT_EQ(cycles, LDA_AB_Y_CYCLES + 1); // Takes an extra cycle if page boundary is crossed
+    ASSERT_EQ(cycles,
+              LDA_AB_Y_CYCLES +
+                  1); // Takes an extra cycle if page boundary is crossed
 
     ASSERT_EQ(cpu.A, 0x65);
 
@@ -470,8 +452,7 @@ TEST_F(LDA_TEST, LDA_AB_Y_LoadsCorrectValueIntoAccumulator)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_AB_Y_SetsNegativeFlag)
-{
+TEST_F(LDA_TEST, LDA_AB_Y_SetsNegativeFlag) {
     cpu.Y = 0x28;
 
     // Start inline program
@@ -498,8 +479,7 @@ TEST_F(LDA_TEST, LDA_AB_Y_SetsNegativeFlag)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_AB_Y_SetsZeroFlag)
-{
+TEST_F(LDA_TEST, LDA_AB_Y_SetsZeroFlag) {
     cpu.Y = 0x80;
 
     // Start inline program
@@ -511,7 +491,9 @@ TEST_F(LDA_TEST, LDA_AB_Y_SetsZeroFlag)
 
     int cycles = em6502_execute(&cpu, LDA_AB_Y_CYCLES);
 
-    ASSERT_EQ(cycles, LDA_AB_Y_CYCLES + 1); // Takes an extra cycle if page boundary is crossed
+    ASSERT_EQ(cycles,
+              LDA_AB_Y_CYCLES +
+                  1); // Takes an extra cycle if page boundary is crossed
 
     ASSERT_EQ(cpu.A, 0x00);
 
@@ -530,8 +512,7 @@ TEST_F(LDA_TEST, LDA_AB_Y_SetsZeroFlag)
 
 #if LDA_IN_X_TEST
 
-TEST_F(LDA_TEST, LDA_IN_X_LoadsCorrectValueIntoAccumulator)
-{
+TEST_F(LDA_TEST, LDA_IN_X_LoadsCorrectValueIntoAccumulator) {
     cpu.X = 0x01;
 
     // Start inline program
@@ -559,8 +540,7 @@ TEST_F(LDA_TEST, LDA_IN_X_LoadsCorrectValueIntoAccumulator)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_IN_X_SetsNegativeFlag)
-{
+TEST_F(LDA_TEST, LDA_IN_X_SetsNegativeFlag) {
     cpu.X = 0x28;
 
     // Start inline program
@@ -588,8 +568,7 @@ TEST_F(LDA_TEST, LDA_IN_X_SetsNegativeFlag)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_IN_X_SetsZeroFlag)
-{
+TEST_F(LDA_TEST, LDA_IN_X_SetsZeroFlag) {
     cpu.X = 0x80;
 
     // Start inline program
@@ -621,8 +600,7 @@ TEST_F(LDA_TEST, LDA_IN_X_SetsZeroFlag)
 
 #if LDA_IN_Y_TEST
 
-TEST_F(LDA_TEST, LDA_IN_Y_LoadsCorrectValueIntoAccumulator)
-{
+TEST_F(LDA_TEST, LDA_IN_Y_LoadsCorrectValueIntoAccumulator) {
     cpu.Y = 0x01;
 
     // Start inline program
@@ -650,8 +628,7 @@ TEST_F(LDA_TEST, LDA_IN_Y_LoadsCorrectValueIntoAccumulator)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_IN_Y_SetsNegativeFlag)
-{
+TEST_F(LDA_TEST, LDA_IN_Y_SetsNegativeFlag) {
     cpu.Y = 0x28;
 
     // Start inline program
@@ -679,8 +656,7 @@ TEST_F(LDA_TEST, LDA_IN_Y_SetsNegativeFlag)
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDA_TEST, LDA_IN_Y_SetsZeroFlag)
-{
+TEST_F(LDA_TEST, LDA_IN_Y_SetsZeroFlag) {
     cpu.Y = 0x80;
 
     // Start inline program
@@ -693,7 +669,9 @@ TEST_F(LDA_TEST, LDA_IN_Y_SetsZeroFlag)
 
     int cycles = em6502_execute(&cpu, LDA_IN_Y_CYCLES);
 
-    ASSERT_EQ(cycles, LDA_IN_Y_CYCLES + 1); // Takes an extra cycle if page boundary is crossed
+    ASSERT_EQ(cycles,
+              LDA_IN_Y_CYCLES +
+                  1); // Takes an extra cycle if page boundary is crossed
 
     ASSERT_EQ(cpu.A, 0x00);
 

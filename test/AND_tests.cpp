@@ -1,24 +1,16 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class AND_TEST : public ::testing::Test
-{
-protected:
+class AND_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~AND_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~AND_TEST() override { em6502_destroy(&cpu); }
 };
 
 #define AND_IM_TEST 1
@@ -32,8 +24,7 @@ protected:
 
 #if AND_IM_TEST
 
-TEST_F(AND_TEST, AND_IM_LogicalAndNoNegative)
-{
+TEST_F(AND_TEST, AND_IM_LogicalAndNoNegative) {
     cpu.A = 0xF0;
 
     // Start inline program
@@ -58,8 +49,7 @@ TEST_F(AND_TEST, AND_IM_LogicalAndNoNegative)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(AND_TEST, AND_IM_LogicalAndNegative)
-{
+TEST_F(AND_TEST, AND_IM_LogicalAndNegative) {
     cpu.A = 0xF0;
 
     // Start inline program
@@ -84,8 +74,7 @@ TEST_F(AND_TEST, AND_IM_LogicalAndNegative)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(AND_TEST, AND_IM_LogicalAndZero)
-{
+TEST_F(AND_TEST, AND_IM_LogicalAndZero) {
     cpu.A = 0xF0;
 
     // Start inline program
@@ -114,8 +103,7 @@ TEST_F(AND_TEST, AND_IM_LogicalAndZero)
 
 #if AND_ZP_TEST
 
-TEST_F(AND_TEST, AND_ZP_LogicalAnd)
-{
+TEST_F(AND_TEST, AND_ZP_LogicalAnd) {
     cpu.A = 0x0F;
 
     // Start inline program
@@ -145,8 +133,7 @@ TEST_F(AND_TEST, AND_ZP_LogicalAnd)
 
 #if AND_ZP_X_TEST
 
-TEST_F(AND_TEST, AND_ZP_X_LogicalAnd)
-{
+TEST_F(AND_TEST, AND_ZP_X_LogicalAnd) {
     cpu.A = 0x07;
     cpu.X = 0xFF;
 
@@ -177,8 +164,7 @@ TEST_F(AND_TEST, AND_ZP_X_LogicalAnd)
 
 #if AND_AB_TEST
 
-TEST_F(AND_TEST, AND_AB_LogicalAnd)
-{
+TEST_F(AND_TEST, AND_AB_LogicalAnd) {
     cpu.A = 0x76;
 
     Word AbsoluteAddress = 0x7849;
@@ -214,8 +200,7 @@ TEST_F(AND_TEST, AND_AB_LogicalAnd)
 
 #if AND_AB_X_TEST
 
-TEST_F(AND_TEST, AND_AB_X_LogicalAndNoExtraCycles)
-{
+TEST_F(AND_TEST, AND_AB_X_LogicalAndNoExtraCycles) {
     cpu.A = 0x87;
     cpu.X = 0x09;
 
@@ -248,8 +233,7 @@ TEST_F(AND_TEST, AND_AB_X_LogicalAndNoExtraCycles)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(AND_TEST, AND_AB_X_LogicalAndExtraCycles)
-{
+TEST_F(AND_TEST, AND_AB_X_LogicalAndExtraCycles) {
     cpu.A = 0x87;
     cpu.X = 0x09;
 
@@ -286,8 +270,7 @@ TEST_F(AND_TEST, AND_AB_X_LogicalAndExtraCycles)
 
 #if AND_AB_Y_TEST
 
-TEST_F(AND_TEST, AND_AB_Y_LogicalAndNoExtraCycles)
-{
+TEST_F(AND_TEST, AND_AB_Y_LogicalAndNoExtraCycles) {
     cpu.A = 0x87;
     cpu.Y = 0x09;
 
@@ -320,8 +303,7 @@ TEST_F(AND_TEST, AND_AB_Y_LogicalAndNoExtraCycles)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(AND_TEST, AND_AB_Y_LogicalAndExtraCycles)
-{
+TEST_F(AND_TEST, AND_AB_Y_LogicalAndExtraCycles) {
     cpu.A = 0x87;
     cpu.Y = 0x09;
 
@@ -358,8 +340,7 @@ TEST_F(AND_TEST, AND_AB_Y_LogicalAndExtraCycles)
 
 #if AND_IN_X_TEST
 
-TEST_F(AND_TEST, AND_IN_X_LogicalAnd)
-{
+TEST_F(AND_TEST, AND_IN_X_LogicalAnd) {
     cpu.A = 0x16;
     cpu.X = 0x01;
 
@@ -399,8 +380,7 @@ TEST_F(AND_TEST, AND_IN_X_LogicalAnd)
 
 #if AND_IN_Y_TEST
 
-TEST_F(AND_TEST, AND_IN_Y_LogicalAndNoExtraCycles)
-{
+TEST_F(AND_TEST, AND_IN_Y_LogicalAndNoExtraCycles) {
     cpu.A = 0x65;
     cpu.Y = 0x89;
 
@@ -436,8 +416,7 @@ TEST_F(AND_TEST, AND_IN_Y_LogicalAndNoExtraCycles)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(AND_TEST, AND_IN_Y_LogicalAndExtraCycles)
-{
+TEST_F(AND_TEST, AND_IN_Y_LogicalAndExtraCycles) {
     cpu.A = 0x65;
     cpu.Y = 0x01;
 

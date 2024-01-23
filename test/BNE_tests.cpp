@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class BNE_TEST : public ::testing::Test
-{
-protected:
+class BNE_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~BNE_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~BNE_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(BNE_TEST, BNE_TEST_ZeroFlagSetNoBranch)
-{
+TEST_F(BNE_TEST, BNE_TEST_ZeroFlagSetNoBranch) {
     cpu.Z = 1;
 
     // Start inline program
@@ -47,8 +38,7 @@ TEST_F(BNE_TEST, BNE_TEST_ZeroFlagSetNoBranch)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BNE_TEST, BNE_RE_NoZeroFlagSetBranchJumpTwoBytesAndToANewPage)
-{
+TEST_F(BNE_TEST, BNE_RE_NoZeroFlagSetBranchJumpTwoBytesAndToANewPage) {
     cpu.Z = 0;
 
     // Start inline program
@@ -76,16 +66,16 @@ TEST_F(BNE_TEST, BNE_RE_NoZeroFlagSetBranchJumpTwoBytesAndToANewPage)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BNE_TEST, BNE_RE_NoZeroFlagSetBranchJumpOneByteNoNewPage)
-{
+TEST_F(BNE_TEST, BNE_RE_NoZeroFlagSetBranchJumpOneByteNoNewPage) {
     cpu.Z = 0;
 
     // Start inline program
     cpu.memory[0xFFFC] = BNE_RE_OPCODE;
-    cpu.memory[0xFFFD] = 0x02;          // Jump 2 bytes
-    cpu.memory[0xFFFE] = 0x00;          // skipped
-    cpu.memory[0xFFFF] = 0x00;          // skipped
-    cpu.memory[0x0001] = BNE_RE_OPCODE; // Run instruction again without going to a new page
+    cpu.memory[0xFFFD] = 0x02; // Jump 2 bytes
+    cpu.memory[0xFFFE] = 0x00; // skipped
+    cpu.memory[0xFFFF] = 0x00; // skipped
+    cpu.memory[0x0001] =
+        BNE_RE_OPCODE; // Run instruction again without going to a new page
     cpu.memory[0x0002] = 0x02;          // Jump 2 bytes
     cpu.memory[0x0003] = 0x00;          // skipped
     cpu.memory[0x0004] = 0x00;          // skipped
@@ -94,7 +84,8 @@ TEST_F(BNE_TEST, BNE_RE_NoZeroFlagSetBranchJumpOneByteNoNewPage)
 
     int cycles = em6502_execute(&cpu, (BNE_RE_CYCLES + 2) + BNE_RE_CYCLES);
 
-    cycles -= BNE_RE_CYCLES + 2; // Remove the cycles which are used to jump the PC to 0x0001
+    cycles -= BNE_RE_CYCLES +
+              2; // Remove the cycles which are used to jump the PC to 0x0001
 
     ASSERT_EQ(cycles, BNE_RE_CYCLES + 1);
 

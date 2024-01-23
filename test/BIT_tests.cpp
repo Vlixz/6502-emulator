@@ -1,24 +1,16 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class BIT_TEST : public ::testing::Test
-{
-protected:
+class BIT_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~BIT_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~BIT_TEST() override { em6502_destroy(&cpu); }
 };
 
 #define BIT_ZP_TEST 1
@@ -26,8 +18,7 @@ protected:
 
 #if BIT_ZP_TEST
 
-TEST_F(BIT_TEST, BIT_ZP_CheckBitSixNoVNoN)
-{
+TEST_F(BIT_TEST, BIT_ZP_CheckBitSixNoVNoN) {
     // A: 0010 0111
     // M: 0010 0000
     // R: 0010 0000
@@ -56,8 +47,7 @@ TEST_F(BIT_TEST, BIT_ZP_CheckBitSixNoVNoN)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BIT_TEST, BIT_ZP_CheckBitSixVAndN)
-{
+TEST_F(BIT_TEST, BIT_ZP_CheckBitSixVAndN) {
     // A: 0010 0111
     // M: 1110 0000
     // R: 0010 0000
@@ -86,8 +76,7 @@ TEST_F(BIT_TEST, BIT_ZP_CheckBitSixVAndN)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BIT_TEST, BIT_ZP_CheckBitZero)
-{
+TEST_F(BIT_TEST, BIT_ZP_CheckBitZero) {
     // A: 0010 0111
     // M: 0100 0000
     // R: 0010 0000
@@ -120,8 +109,7 @@ TEST_F(BIT_TEST, BIT_ZP_CheckBitZero)
 
 #if BIT_AB_TEST
 
-TEST_F(BIT_TEST, BIT_AB_CheckBitSixNoVNoN)
-{
+TEST_F(BIT_TEST, BIT_AB_CheckBitSixNoVNoN) {
     // A: 0010 0111
     // M: 0010 0000
     // R: 0010 0000
@@ -156,8 +144,7 @@ TEST_F(BIT_TEST, BIT_AB_CheckBitSixNoVNoN)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BIT_TEST, BIT_AB_CheckBitSixVAndN)
-{
+TEST_F(BIT_TEST, BIT_AB_CheckBitSixVAndN) {
     // A: 0010 0111
     // M: 1110 0000
     // R: 0010 0000
@@ -192,8 +179,7 @@ TEST_F(BIT_TEST, BIT_AB_CheckBitSixVAndN)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BIT_TEST, BIT_AB_CheckBitZero)
-{
+TEST_F(BIT_TEST, BIT_AB_CheckBitZero) {
     // A: 0010 0111
     // M: 0100 0000
     // R: 0010 0000

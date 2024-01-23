@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class SED_TEST : public ::testing::Test
-{
-protected:
+class SED_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~SED_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~SED_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(SED_TEST, SED_IP_DecimalFlagSet)
-{
+TEST_F(SED_TEST, SED_IP_DecimalFlagSet) {
     cpu.D = 0;
 
     // Start inline program
@@ -44,8 +35,7 @@ TEST_F(SED_TEST, SED_IP_DecimalFlagSet)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(SED_TEST, SED_IP_DecimalFlagStaysSetWhenSettingItMultipleTimes)
-{
+TEST_F(SED_TEST, SED_IP_DecimalFlagStaysSetWhenSettingItMultipleTimes) {
     cpu.D = 0;
 
     // Start inline program

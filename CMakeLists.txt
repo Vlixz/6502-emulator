@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # All warning as errors
-set(CMAKE_COMPILE_WARNING_AS_ERROR ON) 
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 include(FetchContent)
 

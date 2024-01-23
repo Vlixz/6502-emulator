@@ -1,27 +1,18 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class ADC_TEST : public ::testing::Test
-{
-protected:
+class ADC_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~ADC_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~ADC_TEST() override { em6502_destroy(&cpu); }
 
-    struct ADC_TestCase
-    {
+    struct ADC_TestCase {
         /* Input */
         bool C; // Carry Value
         Byte A; // Accumulator value
@@ -46,8 +37,7 @@ protected:
         Byte Y;
     };
 
-    void ADC_IM_test(ADC_TestCase testCase)
-    {
+    void ADC_IM_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
 
@@ -73,8 +63,7 @@ protected:
         ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     }
 
-    void ADC_ZP_test(ADC_TestCase testCase)
-    {
+    void ADC_ZP_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
 
@@ -101,8 +90,7 @@ protected:
         ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     }
 
-    void ADC_ZP_X_test(ADC_TestCase testCase)
-    {
+    void ADC_ZP_X_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
         cpu.X = testCase.X;
@@ -130,8 +118,7 @@ protected:
         ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     }
 
-    void ADC_AB_test(ADC_TestCase testCase)
-    {
+    void ADC_AB_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
 
@@ -162,8 +149,7 @@ protected:
         ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     }
 
-    void ADC_AB_X_test(ADC_TestCase testCase)
-    {
+    void ADC_AB_X_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
         cpu.X = testCase.X;
@@ -195,8 +181,7 @@ protected:
         ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     }
 
-    void ADC_AB_Y_test(ADC_TestCase testCase)
-    {
+    void ADC_AB_Y_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
         cpu.Y = testCase.Y;
@@ -228,8 +213,7 @@ protected:
         ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     }
 
-    void ADC_IN_X_test(ADC_TestCase testCase)
-    {
+    void ADC_IN_X_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
         cpu.X = testCase.X;
@@ -264,8 +248,7 @@ protected:
         ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     }
 
-    void ADC_IN_Y_test(ADC_TestCase testCase)
-    {
+    void ADC_IN_Y_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
         cpu.Y = testCase.Y;
@@ -315,8 +298,7 @@ protected:
 
 #if ADC_IM_TEST
 
-TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbers)
-{
+TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbers) {
     // A: 0000 0101
     // O: 0000 0101
     // =: 0000 1010
@@ -338,8 +320,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbers)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbersAndCarry)
-{
+TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbersAndCarry) {
     // C: 0000 0001
     // A: 0000 0101
     // O: 0000 0101
@@ -362,8 +343,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbersAndCarry)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbers)
-{
+TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbers) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -385,8 +365,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbers)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbersAndCarry)
-{
+TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbersAndCarry) {
     // C:     0000 0001
     // A:     1111 1011
     // O:     1111 1011
@@ -409,8 +388,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbersAndCarry)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumber)
-{
+TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumber) {
     // A:     1111 1011
     // O:     0000 1010
     // =: (1) 0000 0101
@@ -432,8 +410,7 @@ TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumber)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumberAndCarry)
-{
+TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumberAndCarry) {
     // C:     0000 0001
     // A:     1111 1011
     // O:     0000 1010
@@ -456,8 +433,7 @@ TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumberAndCarry)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_AddTwoPostiveNumberWithCarry)
-{
+TEST_F(ADC_TEST, ADC_IM_AddTwoPostiveNumberWithCarry) {
     // A:     1111 1111
     // O:     0000 0001
     // =: (1) 0000 0000
@@ -479,8 +455,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoPostiveNumberWithCarry)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbers)
-{
+TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbers) {
     // A:     1000 0000
     // O:     1111 1111
     // =: (1) 0111 1111
@@ -502,8 +477,7 @@ TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbers)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbers)
-{
+TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbers) {
     // A: 0111 1111
     // O: 0000 0001
     // =: 1000 0000
@@ -525,8 +499,7 @@ TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbers)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbersAndCarry)
-{
+TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbersAndCarry) {
     // C: 0000 0001
     // A: 0111 1110
     // O: 0000 0001
@@ -549,8 +522,7 @@ TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbersAndCarry)
     ADC_IM_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbersAndCarry)
-{
+TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbersAndCarry) {
     // C:     0000 0001
     // A:     1000 0000
     // O:     1111 1110
@@ -577,8 +549,7 @@ TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbersAndCarry)
 
 #if ADC_ZP_TEST
 
-TEST_F(ADC_TEST, ADC_ZP_AddTwoPositiveNumbers)
-{
+TEST_F(ADC_TEST, ADC_ZP_AddTwoPositiveNumbers) {
     // A: 0000 0101
     // O: 0000 0101
     // =: 0000 1010
@@ -603,8 +574,7 @@ TEST_F(ADC_TEST, ADC_ZP_AddTwoPositiveNumbers)
     ADC_ZP_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_ZP_AddTwoNegativeNumbers)
-{
+TEST_F(ADC_TEST, ADC_ZP_AddTwoNegativeNumbers) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -633,8 +603,7 @@ TEST_F(ADC_TEST, ADC_ZP_AddTwoNegativeNumbers)
 
 #if ADC_ZP_X_TEST
 
-TEST_F(ADC_TEST, ADC_ZP_X_AddTwoPositiveNumbersWithWrap)
-{
+TEST_F(ADC_TEST, ADC_ZP_X_AddTwoPositiveNumbersWithWrap) {
     // A: 0000 0101
     // O: 0000 0101
     // =: 0000 1010
@@ -660,8 +629,7 @@ TEST_F(ADC_TEST, ADC_ZP_X_AddTwoPositiveNumbersWithWrap)
     ADC_ZP_X_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_ZP_X_AddTwoNegativeNumbersNoWrap)
-{
+TEST_F(ADC_TEST, ADC_ZP_X_AddTwoNegativeNumbersNoWrap) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -691,8 +659,7 @@ TEST_F(ADC_TEST, ADC_ZP_X_AddTwoNegativeNumbersNoWrap)
 
 #if ADC_AB_TEST
 
-TEST_F(ADC_TEST, ADC_AB_AddTwoPositiveNumbers)
-{
+TEST_F(ADC_TEST, ADC_AB_AddTwoPositiveNumbers) {
     // A: 0000 0101
     // O: 0000 0101
     // =: 0000 1010
@@ -717,8 +684,7 @@ TEST_F(ADC_TEST, ADC_AB_AddTwoPositiveNumbers)
     ADC_AB_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_AB_AddTwoNegativeNumbers)
-{
+TEST_F(ADC_TEST, ADC_AB_AddTwoNegativeNumbers) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -747,8 +713,7 @@ TEST_F(ADC_TEST, ADC_AB_AddTwoNegativeNumbers)
 
 #if ADC_AB_X_TEST
 
-TEST_F(ADC_TEST, ADC_AB_X_AddTwoPositiveNumbers)
-{
+TEST_F(ADC_TEST, ADC_AB_X_AddTwoPositiveNumbers) {
     // A: 0000 0101
     // O: 0000 0101
     // =: 0000 1010
@@ -774,8 +739,7 @@ TEST_F(ADC_TEST, ADC_AB_X_AddTwoPositiveNumbers)
     ADC_AB_X_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_AB_X_AddTwoNegativeNumbers)
-{
+TEST_F(ADC_TEST, ADC_AB_X_AddTwoNegativeNumbers) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -801,8 +765,7 @@ TEST_F(ADC_TEST, ADC_AB_X_AddTwoNegativeNumbers)
     ADC_AB_X_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_AB_X_AddTwoNegativeNumbersAndRunExtraCycle)
-{
+TEST_F(ADC_TEST, ADC_AB_X_AddTwoNegativeNumbersAndRunExtraCycle) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -832,8 +795,7 @@ TEST_F(ADC_TEST, ADC_AB_X_AddTwoNegativeNumbersAndRunExtraCycle)
 
 #if ADC_AB_Y_TEST
 
-TEST_F(ADC_TEST, ADC_AB_Y_AddTwoPositiveNumbers)
-{
+TEST_F(ADC_TEST, ADC_AB_Y_AddTwoPositiveNumbers) {
     // A: 0000 0101
     // O: 0000 0101
     // =: 0000 1010
@@ -859,8 +821,7 @@ TEST_F(ADC_TEST, ADC_AB_Y_AddTwoPositiveNumbers)
     ADC_AB_Y_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_AB_Y_AddTwoNegativeNumbers)
-{
+TEST_F(ADC_TEST, ADC_AB_Y_AddTwoNegativeNumbers) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -886,8 +847,7 @@ TEST_F(ADC_TEST, ADC_AB_Y_AddTwoNegativeNumbers)
     ADC_AB_Y_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_AB_Y_AddTwoNegativeNumbersAndRunExtraCycle)
-{
+TEST_F(ADC_TEST, ADC_AB_Y_AddTwoNegativeNumbersAndRunExtraCycle) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -917,8 +877,7 @@ TEST_F(ADC_TEST, ADC_AB_Y_AddTwoNegativeNumbersAndRunExtraCycle)
 
 #if ADC_IN_X_TEST
 
-TEST_F(ADC_TEST, ADC_IN_X_AddTwoPositiveNumbers)
-{
+TEST_F(ADC_TEST, ADC_IN_X_AddTwoPositiveNumbers) {
     // A: 0000 0101
     // O: 0000 0101
     // =: 0000 1010
@@ -946,8 +905,7 @@ TEST_F(ADC_TEST, ADC_IN_X_AddTwoPositiveNumbers)
     ADC_IN_X_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IN_X_AddTwoNegativeNumbersWithWrap)
-{
+TEST_F(ADC_TEST, ADC_IN_X_AddTwoNegativeNumbersWithWrap) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -980,8 +938,7 @@ TEST_F(ADC_TEST, ADC_IN_X_AddTwoNegativeNumbersWithWrap)
 
 #if ADC_IN_Y_TEST
 
-TEST_F(ADC_TEST, ADC_IN_Y_AddTwoPositiveNumbers)
-{
+TEST_F(ADC_TEST, ADC_IN_Y_AddTwoPositiveNumbers) {
     // A: 0000 0101
     // O: 0000 0101
     // =: 0000 1010
@@ -1008,8 +965,7 @@ TEST_F(ADC_TEST, ADC_IN_Y_AddTwoPositiveNumbers)
     ADC_IN_Y_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IN_X_AddTwoNegativeNumbers)
-{
+TEST_F(ADC_TEST, ADC_IN_X_AddTwoNegativeNumbers) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -1036,8 +992,7 @@ TEST_F(ADC_TEST, ADC_IN_X_AddTwoNegativeNumbers)
     ADC_IN_Y_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IN_Y_AddTwoNegativeNumbersAndRunExtraCycle)
-{
+TEST_F(ADC_TEST, ADC_IN_Y_AddTwoNegativeNumbersAndRunExtraCycle) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110

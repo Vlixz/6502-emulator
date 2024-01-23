@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class TAY_TEST : public ::testing::Test
-{
-protected:
+class TAY_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~TAY_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~TAY_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoY)
-{
+TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoY) {
     cpu.A = 0x0F;
 
     // Start inline program
@@ -46,8 +37,7 @@ TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoY)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoYNegative)
-{
+TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoYNegative) {
     cpu.A = 0b10001111;
 
     // Start inline program
@@ -71,8 +61,7 @@ TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoYNegative)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoYZero)
-{
+TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoYZero) {
     cpu.A = 0x00;
 
     // Start inline program

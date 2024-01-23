@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class CLD_TEST : public ::testing::Test
-{
-protected:
+class CLD_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~CLD_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~CLD_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(CLD_TEST, CLD_IP_DecimalFlagCleared)
-{
+TEST_F(CLD_TEST, CLD_IP_DecimalFlagCleared) {
     cpu.D = 1;
 
     // Start inline program
@@ -44,8 +35,7 @@ TEST_F(CLD_TEST, CLD_IP_DecimalFlagCleared)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(CLD_TEST, CLD_IP_DoesNotChangeClearedDecimalFlag)
-{
+TEST_F(CLD_TEST, CLD_IP_DoesNotChangeClearedDecimalFlag) {
     cpu.D = 1;
 
     // Start inline program

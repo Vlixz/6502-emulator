@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class TYA_TEST : public ::testing::Test
-{
-protected:
+class TYA_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~TYA_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~TYA_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(TYA_TEST, TYA_IP_TransferYIntoAccumulator)
-{
+TEST_F(TYA_TEST, TYA_IP_TransferYIntoAccumulator) {
     cpu.Y = 0x0F;
 
     // Start inline program
@@ -46,8 +37,7 @@ TEST_F(TYA_TEST, TYA_IP_TransferYIntoAccumulator)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TYA_TEST, TYA_IP_TransferYIntoAccumulatorNegative)
-{
+TEST_F(TYA_TEST, TYA_IP_TransferYIntoAccumulatorNegative) {
     cpu.Y = 0b10001111;
 
     // Start inline program
@@ -71,8 +61,7 @@ TEST_F(TYA_TEST, TYA_IP_TransferYIntoAccumulatorNegative)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TYA_TEST, TYA_IP_TransferYIntoAccumulatorZero)
-{
+TEST_F(TYA_TEST, TYA_IP_TransferYIntoAccumulatorZero) {
     cpu.Y = 0x00;
 
     // Start inline program

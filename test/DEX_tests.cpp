@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class DEX_TEST : public ::testing::Test
-{
-protected:
+class DEX_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~DEX_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~DEX_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(DEX_TEST, DEX_IP_DecrementsXZeroNonNegative)
-{
+TEST_F(DEX_TEST, DEX_IP_DecrementsXZeroNonNegative) {
     cpu.X = 0x01;
 
     // Start inline program
@@ -45,8 +36,7 @@ TEST_F(DEX_TEST, DEX_IP_DecrementsXZeroNonNegative)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNegative)
-{
+TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNegative) {
     cpu.X = 0x00;
 
     // Start inline program
@@ -69,8 +59,7 @@ TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNegative)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNonNegative)
-{
+TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNonNegative) {
     cpu.X = 0x02;
 
     // Start inline program

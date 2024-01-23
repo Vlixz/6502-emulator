@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class BCS_TEST : public ::testing::Test
-{
-protected:
+class BCS_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~BCS_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~BCS_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(BCS_TEST, BCS_RE_NoCarrySetNoBranch)
-{
+TEST_F(BCS_TEST, BCS_RE_NoCarrySetNoBranch) {
     cpu.C = 0;
 
     // Start inline program
@@ -47,8 +38,7 @@ TEST_F(BCS_TEST, BCS_RE_NoCarrySetNoBranch)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BCS_TEST, BCS_RE_CarrySetBranchJumpTwoBytesAndToANewPage)
-{
+TEST_F(BCS_TEST, BCS_RE_CarrySetBranchJumpTwoBytesAndToANewPage) {
     cpu.C = 1;
 
     // Start inline program
@@ -76,16 +66,16 @@ TEST_F(BCS_TEST, BCS_RE_CarrySetBranchJumpTwoBytesAndToANewPage)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BCS_TEST, BCC_RE_CarrySetBranchJumpOneByteNoNewPage)
-{
+TEST_F(BCS_TEST, BCC_RE_CarrySetBranchJumpOneByteNoNewPage) {
     cpu.C = 1;
 
     // Start inline program
     cpu.memory[0xFFFC] = BCS_RE_OPCODE;
-    cpu.memory[0xFFFD] = 0x02;          // Jump 2 bytes
-    cpu.memory[0xFFFE] = 0x00;          // skipped
-    cpu.memory[0xFFFF] = 0x00;          // skipped
-    cpu.memory[0x0001] = BCS_RE_OPCODE; // Run instruction again without going to a new page
+    cpu.memory[0xFFFD] = 0x02; // Jump 2 bytes
+    cpu.memory[0xFFFE] = 0x00; // skipped
+    cpu.memory[0xFFFF] = 0x00; // skipped
+    cpu.memory[0x0001] =
+        BCS_RE_OPCODE; // Run instruction again without going to a new page
     cpu.memory[0x0002] = 0x02;          // Jump 2 bytes
     cpu.memory[0x0003] = 0x00;          // skipped
     cpu.memory[0x0004] = 0x00;          // skipped
@@ -94,7 +84,8 @@ TEST_F(BCS_TEST, BCC_RE_CarrySetBranchJumpOneByteNoNewPage)
 
     int cycles = em6502_execute(&cpu, (BCS_RE_CYCLES + 2) + BCS_RE_CYCLES);
 
-    cycles -= BCS_RE_CYCLES + 2; // Remove the cycles which are used to jump the PC to 0x0001
+    cycles -= BCS_RE_CYCLES +
+              2; // Remove the cycles which are used to jump the PC to 0x0001
 
     ASSERT_EQ(cycles, BCS_RE_CYCLES + 1);
 

@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class NOP_TEST : public ::testing::Test
-{
-protected:
+class NOP_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~NOP_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~NOP_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(NOP_TEST, NOP_IP_DoesNothing)
-{
+TEST_F(NOP_TEST, NOP_IP_DoesNothing) {
     // Start inline program
     cpu.memory[0xFFFC] = NOP_IP_OPCODE;
     // End inline program

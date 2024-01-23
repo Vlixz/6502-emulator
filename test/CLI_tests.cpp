@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class CLI_TEST : public ::testing::Test
-{
-protected:
+class CLI_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~CLI_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~CLI_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(CLI_TEST, CLI_IP_InterruptFlagCleared)
-{
+TEST_F(CLI_TEST, CLI_IP_InterruptFlagCleared) {
     cpu.I = 1;
 
     // Start inline program
@@ -44,8 +35,7 @@ TEST_F(CLI_TEST, CLI_IP_InterruptFlagCleared)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(CLI_TEST, CLI_IP_DoesNotChangeClearedInterruptFlag)
-{
+TEST_F(CLI_TEST, CLI_IP_DoesNotChangeClearedInterruptFlag) {
     cpu.I = 1;
 
     // Start inline program

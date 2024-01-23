@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class BMI_TEST : public ::testing::Test
-{
-protected:
+class BMI_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~BMI_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~BMI_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(BMI_TEST, BMI_RE_NoNegativeFlagSetNoBranch)
-{
+TEST_F(BMI_TEST, BMI_RE_NoNegativeFlagSetNoBranch) {
     cpu.N = 0;
 
     // Start inline program
@@ -47,8 +38,7 @@ TEST_F(BMI_TEST, BMI_RE_NoNegativeFlagSetNoBranch)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BMI_TEST, BMI_RE_NegativeFlagSetBranchJumpTwoBytesAndToANewPage)
-{
+TEST_F(BMI_TEST, BMI_RE_NegativeFlagSetBranchJumpTwoBytesAndToANewPage) {
     cpu.N = 1;
 
     // Start inline program
@@ -76,16 +66,16 @@ TEST_F(BMI_TEST, BMI_RE_NegativeFlagSetBranchJumpTwoBytesAndToANewPage)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BMI_TEST, BMI_RE_NegativeFlagSetBranchJumpOneByteNoNewPage)
-{
+TEST_F(BMI_TEST, BMI_RE_NegativeFlagSetBranchJumpOneByteNoNewPage) {
     cpu.N = 1;
 
     // Start inline program
     cpu.memory[0xFFFC] = BMI_RE_OPCODE;
-    cpu.memory[0xFFFD] = 0x02;          // Jump 2 bytes
-    cpu.memory[0xFFFE] = 0x00;          // skipped
-    cpu.memory[0xFFFF] = 0x00;          // skipped
-    cpu.memory[0x0001] = BMI_RE_OPCODE; // Run instruction again without going to a new page
+    cpu.memory[0xFFFD] = 0x02; // Jump 2 bytes
+    cpu.memory[0xFFFE] = 0x00; // skipped
+    cpu.memory[0xFFFF] = 0x00; // skipped
+    cpu.memory[0x0001] =
+        BMI_RE_OPCODE; // Run instruction again without going to a new page
     cpu.memory[0x0002] = 0x02;          // Jump 2 bytes
     cpu.memory[0x0003] = 0x00;          // skipped
     cpu.memory[0x0004] = 0x00;          // skipped
@@ -94,7 +84,8 @@ TEST_F(BMI_TEST, BMI_RE_NegativeFlagSetBranchJumpOneByteNoNewPage)
 
     int cycles = em6502_execute(&cpu, (BMI_RE_CYCLES + 2) + BMI_RE_CYCLES);
 
-    cycles -= BMI_RE_CYCLES + 2; // Remove the cycles which are used to jump the PC to 0x0001
+    cycles -= BMI_RE_CYCLES +
+              2; // Remove the cycles which are used to jump the PC to 0x0001
 
     ASSERT_EQ(cycles, BMI_RE_CYCLES + 1);
 

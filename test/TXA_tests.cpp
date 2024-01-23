@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class TXA_TEST : public ::testing::Test
-{
-protected:
+class TXA_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~TXA_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~TXA_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulator)
-{
+TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulator) {
     cpu.X = 0x0F;
 
     // Start inline program
@@ -46,8 +37,7 @@ TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulator)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulatorNegative)
-{
+TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulatorNegative) {
     cpu.X = 0b10001111;
 
     // Start inline program
@@ -71,8 +61,7 @@ TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulatorNegative)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulatorZero)
-{
+TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulatorZero) {
     cpu.X = 0x00;
 
     // Start inline program

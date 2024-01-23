@@ -1,28 +1,19 @@
-extern "C"
-{
+extern "C" {
 #include "6502.h"
 }
 
 #include <gtest/gtest.h>
 
-class CLC_TEST : public ::testing::Test
-{
-protected:
+class CLC_TEST : public ::testing::Test {
+  protected:
     CPU_6502 cpu;
 
-    void SetUp() override
-    {
-        em6502_reset(&cpu);
-    }
+    void SetUp() override { em6502_reset(&cpu); }
 
-    ~CLC_TEST() override
-    {
-        em6502_destroy(&cpu);
-    }
+    ~CLC_TEST() override { em6502_destroy(&cpu); }
 };
 
-TEST_F(CLC_TEST, CLC_IP_ClearsCarryFlag)
-{
+TEST_F(CLC_TEST, CLC_IP_ClearsCarryFlag) {
     cpu.C = 1;
 
     // Start inline program
@@ -44,8 +35,7 @@ TEST_F(CLC_TEST, CLC_IP_ClearsCarryFlag)
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(CLC_TEST, CLC_IP_DoesNotChangeClearedCarryFlag)
-{
+TEST_F(CLC_TEST, CLC_IP_DoesNotChangeClearedCarryFlag) {
     cpu.C = 1;
 
     // Start inline program
