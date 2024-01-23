@@ -333,7 +333,7 @@
 #define DEY_IP_CYCLES 2
 
 // =======================================
-//            Load X Regiter
+//            Load X Register
 // =======================================
 
 #define LDX_IM_OPCODE 0xA2
