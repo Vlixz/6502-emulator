@@ -648,6 +648,7 @@ int em6502_execute(CPU_6502 *cpu, int cycles) {
              * Load X register
              *
              */
+
         case LDX_IM_OPCODE:
             temp = LDX_IM(cpu);
 
@@ -682,6 +683,51 @@ int em6502_execute(CPU_6502 *cpu, int cycles) {
 
         case LDX_AB_Y_OPCODE:
             temp = LDX_AB_Y(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+            /**
+             * Load Y register
+             *
+             */
+
+        case LDY_IM_OPCODE:
+            temp = LDY_IM(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDY_ZP_OPCODE:
+            temp = LDY_ZP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDY_ZP_X_OPCODE:
+            temp = LDY_ZP_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDY_AB_OPCODE:
+            temp = LDY_AB(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case LDY_AB_X_OPCODE:
+            temp = LDY_AB_X(cpu);
 
             cycles -= temp;
             runCycles += temp;

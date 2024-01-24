@@ -1114,7 +1114,7 @@ Byte LDY_ZP(CPU_6502 *cpu);
  * @return number of cycles executed
  *
  */
-Byte LDY_ZP_Y(CPU_6502 *cpu);
+Byte LDY_ZP_X(CPU_6502 *cpu);
 
 /**
  * @brief Load Y Register - Absolute
