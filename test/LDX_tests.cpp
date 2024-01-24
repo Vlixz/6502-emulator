@@ -171,7 +171,7 @@ TEST_F(LDX_TEST, LDX_ZP_SetsZeroFlag) {
 
 #if LDX_ZP_Y_TEST
 
-TEST_F(LDX_TEST, LDX_ZP_X_LoadsCorrectValueIntoAccumulator) {
+TEST_F(LDX_TEST, LDX_ZP_X_LoadsCorrectValueIntoXRegister) {
     cpu.Y = 0x10;
 
     // Start inline program
