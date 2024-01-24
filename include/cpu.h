@@ -1076,4 +1076,68 @@ Byte LDX_AB(CPU_6502 *cpu);
  */
 Byte LDX_AB_Y(CPU_6502 *cpu);
 
+// =======================================
+//            Load Y Register
+// =======================================
+
+/**
+ * @brief Load Y Register - Immediate
+ *
+ * @note Opcode: 0xA0
+ * @note Bytes: 2
+ * @note Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDY_IM(CPU_6502 *cpu);
+
+/**
+ * @brief Load Y Register - Zero Page
+ *
+ * @note Opcode: 0xA4
+ * @note Bytes: 2
+ * @note Cycles: 3
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDY_ZP(CPU_6502 *cpu);
+
+/**
+ * @brief Load Y Register - Zero Page X
+ *
+ * @note Opcode: 0xB4
+ * @note Bytes: 2
+ * @note Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDY_ZP_Y(CPU_6502 *cpu);
+
+/**
+ * @brief Load Y Register - Absolute
+ *
+ * @note Opcode: 0xAC
+ * @note Bytes: 3
+ * @note Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDY_AB(CPU_6502 *cpu);
+
+/**
+ * @brief Load Y Register - Absolute X
+ *
+ * @note Opcode: 0xBC
+ * @note Bytes: 3
+ * @note Cycles: 4 (+1 if page crossed)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDY_AB_X(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
