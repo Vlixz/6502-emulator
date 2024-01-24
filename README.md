@@ -31,9 +31,9 @@ So far I've added the following instructions:
 - NOP   (No Operation)
 - DEX   (Decrement the X register)
 - DEY   (Decrement the Y register)
+- LDX   (Load X Register)
 
 Following have to be added:
-- LDX   (Load X Register)
 - LDY   (Load Y Register)
 - STA   (Store Accumulator)
 - STX   (Store X Register)
