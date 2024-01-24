@@ -349,4 +349,21 @@
 /* Extra cycles is added when a page is crossed */
 #define LDX_AB_Y_CYCLES 4
 
+// =======================================
+//            Load Y Register
+// =======================================
+
+#define LDY_IM_OPCODE 0xA0
+#define LDY_ZP_OPCODE 0xA4
+#define LDY_ZP_X_OPCODE 0xB4
+#define LDY_AB_OPCODE 0xAC
+#define LDY_AB_X_OPCODE 0xBC
+
+#define LDY_IM_CYCLES 2
+#define LDY_ZP_CYCLES 3
+#define LDY_ZP_X_CYCLES 4
+#define LDY_AB_CYCLES 4
+/* Extra cycles is added when a page is crossed */
+#define LDY_AB_X_CYCLES 4
+
 #endif /* INC_COMMON_H*/
