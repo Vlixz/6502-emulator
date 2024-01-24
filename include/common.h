@@ -332,4 +332,21 @@
 
 #define DEY_IP_CYCLES 2
 
+// =======================================
+//            Load X Register
+// =======================================
+
+#define LDX_IM_OPCODE 0xA2
+#define LDX_ZP_OPCODE 0xA6
+#define LDX_ZP_Y_OPCODE 0xB6
+#define LDX_AB_OPCODE 0xAE
+#define LDX_AB_Y_OPCODE 0xBE
+
+#define LDX_IM_CYCLES 2
+#define LDX_ZP_CYCLES 3
+#define LDX_ZP_Y_CYCLES 4
+#define LDX_AB_CYCLES 4
+/* Extra cycles is added when a page is crossed */
+#define LDX_AB_Y_CYCLES 4
+
 #endif /* INC_COMMON_H*/

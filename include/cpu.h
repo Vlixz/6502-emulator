@@ -1012,4 +1012,68 @@ Byte DEX_IP(CPU_6502 *cpu);
  */
 Byte DEY_IP(CPU_6502 *cpu);
 
+// =======================================
+//            Load X Register
+// =======================================
+
+/**
+ * @brief Load X Register - Immediate
+ *
+ * @note Opcode: 0xA2
+ * @note Bytes: 2
+ * @note Cycles: 2
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDX_IM(CPU_6502 *cpu);
+
+/**
+ * @brief Load X Register - Zero Page
+ *
+ * @note Opcode: 0xA6
+ * @note Bytes: 2
+ * @note Cycles: 3
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDX_ZP(CPU_6502 *cpu);
+
+/**
+ * @brief Load X Register - Zero Page Y
+ *
+ * @note Opcode: 0xB6
+ * @note Bytes: 2
+ * @note Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDX_ZP_Y(CPU_6502 *cpu);
+
+/**
+ * @brief Load X Register - Absolute
+ *
+ * @note Opcode: 0xAE
+ * @note Bytes: 3
+ * @note Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDX_AB(CPU_6502 *cpu);
+
+/**
+ * @brief Load X Register - Absolute Y
+ *
+ * @note Opcode: 0xBE
+ * @note Bytes: 3
+ * @note Cycles: 4 (+1 if page crossed)
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte LDX_AB_Y(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
