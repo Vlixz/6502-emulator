@@ -366,4 +366,24 @@
 /* Extra cycles is added when a page is crossed */
 #define LDY_AB_X_CYCLES 4
 
+// =======================================
+//            Store Accumulator
+// =======================================
+
+#define STA_ZP_OPCODE 0x85
+#define STA_ZP_X_OPCODE 0x95
+#define STA_AB_OPCODE 0x8D
+#define STA_AB_X_OPCODE 0x9D
+#define STA_AB_Y_OPCODE 0x99
+#define STA_IN_X_OPCODE 0x81
+#define STA_IN_Y_OPCODE 0x91
+
+#define STA_ZP_CYCLES 3
+#define STA_ZP_X_CYCLES 4
+#define STA_AB_CYCLES 4
+#define STA_AB_X_CYCLES 5
+#define STA_AB_Y_CYCLES 5
+#define STA_IN_X_CYCLES 6
+#define STA_IN_Y_CYCLES 6
+
 #endif /* INC_COMMON_H*/
