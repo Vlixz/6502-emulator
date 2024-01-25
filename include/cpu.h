@@ -1140,4 +1140,92 @@ Byte LDY_AB(CPU_6502 *cpu);
  */
 Byte LDY_AB_X(CPU_6502 *cpu);
 
+// =======================================
+//            Store Accumulator
+// =======================================
+
+/**
+ * @brief Store Accumulator - Zero Page
+ *
+ * @note Opcode: 0x85
+ * @note Bytes: 2
+ * @note Cycles: 3
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte STA_ZP(CPU_6502 *cpu);
+
+/**
+ * @brief Store Accumulator - Zero Page X
+ *
+ * @note Opcode: 0x95
+ * @note Bytes: 2
+ * @note Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte STA_ZP_X(CPU_6502 *cpu);
+
+/**
+ * @brief Store Accumulator - Absolute
+ *
+ * @note Opcode: 0x8D
+ * @note Bytes: 3
+ * @note Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte STA_AB(CPU_6502 *cpu);
+
+/**
+ * @brief Store Accumulator - Absolute X
+ *
+ * @note Opcode: 0x9D
+ * @note Bytes: 3
+ * @note Cycles: 4
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte STA_AB_X(CPU_6502 *cpu);
+
+/**
+ * @brief Store Accumulator - Absolute Y
+ *
+ * @note Opcode: 0x99
+ * @note Bytes: 3
+ * @note Cycles: 5
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte STA_AB_Y(CPU_6502 *cpu);
+
+/**
+ * @brief Store Accumulator - Indirect X
+ *
+ * @note Opcode: 0x81
+ * @note Bytes: 2
+ * @note Cycles: 6
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte STA_IN_Y(CPU_6502 *cpu);
+
+/**
+ * @brief Store Accumulator - Indirect Y
+ *
+ * @note Opcode: 0x91
+ * @note Bytes: 2
+ * @note Cycles: 6
+ *
+ * @return number of cycles executed
+ *
+ */
+Byte STA_IN_X(CPU_6502 *cpu);
+
 #endif /* INC_CPU_H */
