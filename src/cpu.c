@@ -898,3 +898,53 @@ Byte LDX_AB_Y(CPU_6502 *cpu) {
 
     return LDX_AB_Y_CYCLES + cycles;
 }
+
+// =======================================
+//            Load Y Register
+// =======================================
+
+void LDY_Logics(CPU_6502 *cpu, Byte O);
+
+inline void LDY_Logics(CPU_6502 *cpu, Byte O) {
+    cpu->Y = O;
+
+    cpu->Z = IS_ZERO(cpu->Y);
+    cpu->N = IS_NEGATIVE(cpu->Y);
+}
+
+Byte LDY_IM(CPU_6502 *cpu) {
+    Byte O = AddressingMode_Immediate(cpu->memory, &cpu->PC);
+
+    LDY_Logics(cpu, O);
+
+    return LDY_IM_CYCLES;
+}
+
+Byte LDY_ZP(CPU_6502 *cpu) {
+    Byte O = AddressingMode_ZeroPage(cpu->memory, &cpu->PC);
+
+    LDY_Logics(cpu, O);
+
+    return LDY_ZP_CYCLES;
+}
+
+Byte LDY_ZP_X(CPU_6502 *cpu) {
+    Byte O = AddressingMode_ZeroPageX(cpu->memory, &cpu->PC, cpu->X);
+
+    LDY_Logics(cpu, O);
+
+    return LDY_ZP_X_CYCLES;
+}
+
+Byte LDY_AB(CPU_6502 *cpu) {
+    Byte O = AddressingMode_Absolute(cpu->memory, &cpu->PC);
+
+    LDY_Logics(cpu, O);
+
+    return LDY_AB_CYCLES;
+}
+
+Byte LDY_AB_X(CPU_6502 *cpu) {
+    int cycles = 0;
+    Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, &cycles);
+}
