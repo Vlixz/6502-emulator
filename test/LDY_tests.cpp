@@ -249,7 +249,7 @@ TEST_F(LDY_TEST, LDY_ZP_X_SetsZeroFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-#endif // LDX_ZP_Y_TEST
+#endif // LDX_ZP_X_TEST
 
 #if LDY_AB_TEST
 
