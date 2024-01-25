@@ -171,7 +171,7 @@ TEST_F(LDY_TEST, LDY_ZP_SetsZeroFlag) {
 
 #if LDY_ZP_X_TEST
 
-TEST_F(LDY_TEST, LDY_ZP_Y_LoadsCorrectValueIntoYRegister) {
+TEST_F(LDY_TEST, LDY_ZP_X_LoadsCorrectValueIntoYRegister) {
     cpu.X = 0x10;
 
     // Start inline program
