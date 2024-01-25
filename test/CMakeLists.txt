@@ -31,6 +31,7 @@ add_executable(
   DEX_tests.cpp
   DEY_tests.cpp
   LDX_tests.cpp
+  LDY_tests.cpp
 )
 
 # include the gtest and em6502 lib

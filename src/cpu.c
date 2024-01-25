@@ -947,4 +947,9 @@ Byte LDY_AB(CPU_6502 *cpu) {
 Byte LDY_AB_X(CPU_6502 *cpu) {
     int cycles = 0;
     Byte O = AddressingMode_AbsoluteX(cpu->memory, &cpu->PC, cpu->X, &cycles);
+    
+    LDY_Logics(cpu, O);
+
+    return LDY_AB_X_CYCLES + cycles;
 }
+
