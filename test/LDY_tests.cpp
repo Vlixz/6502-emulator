@@ -332,7 +332,7 @@ TEST_F(LDY_TEST, LDY_AB_SetsZeroFlag) {
 
 #if LDY_AB_X_TEST
 
-TEST_F(LDY_TEST, LDY_AB_Y_LoadsCorrectValueIntoYRegister) {
+TEST_F(LDY_TEST, LDY_AB_X_LoadsCorrectValueIntoYRegister) {
     cpu.X = 0x01;
 
     // Start inline program
