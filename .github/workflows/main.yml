@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: configure
       run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Werror" ..
-    - name: make
+    - name: make -j4
       run: cd build && make
     - name: Run Test
       run: /home/runner/work/6502-emulator/6502-emulator/build/test/unit_tests
