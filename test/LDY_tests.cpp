@@ -5,34 +5,34 @@ extern "C" {
 
 #include <gtest/gtest.h>
 
-class LDX_TEST : public ::testing::Test {
+class LDY_TEST : public ::testing::Test {
   protected:
     CPU_6502 cpu;
 
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~LDX_TEST() override { em6502_destroy(&cpu); }
+    ~LDY_TEST() override { em6502_destroy(&cpu); }
 };
 
-#define LDX_IM_TEST 1
-#define LDX_ZP_TEST 1
-#define LDX_ZP_Y_TEST 1
-#define LDX_AB_TEST 1
-#define LDX_AB_Y_TEST 1
+#define LDY_IM_TEST 1
+#define LDY_ZP_TEST 1
+#define LDY_ZP_X_TEST 1
+#define LDY_AB_TEST 1
+#define LDY_AB_X_TEST 1
 
-#if LDX_IM_TEST
+#if LDY_IM_TEST
 
-TEST_F(LDX_TEST, LDX_IM_LoadsCorrectValueIntoXRegister) {
+TEST_F(LDY_TEST, LDY_IM_LoadsCorrectValueIntoYRegister) {
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_IM_OPCODE;
+    cpu.memory[0xFFFC] = LDY_IM_OPCODE;
     cpu.memory[0xFFFD] = 0x42;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_IM_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_IM_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_IM_CYCLES);
+    ASSERT_EQ(cycles, LDY_IM_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x42);
+    ASSERT_EQ(cpu.Y, 0x42);
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, false);
@@ -45,17 +45,17 @@ TEST_F(LDX_TEST, LDX_IM_LoadsCorrectValueIntoXRegister) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_IM_SetsNegativeFlag) {
+TEST_F(LDY_TEST, LDY_IM_SetsNegativeFlag) {
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_IM_OPCODE;
+    cpu.memory[0xFFFC] = LDY_IM_OPCODE;
     cpu.memory[0xFFFD] = -42; // 0xD6 (two compliment)
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_IM_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_IM_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_IM_CYCLES);
+    ASSERT_EQ(cycles, LDY_IM_CYCLES);
 
-    ASSERT_EQ(cpu.X, (unsigned char)-42); // 0xD6 (two compliment)
+    ASSERT_EQ(cpu.Y, (unsigned char)-42); // 0xD6 (two compliment)
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, true);
@@ -68,17 +68,17 @@ TEST_F(LDX_TEST, LDX_IM_SetsNegativeFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_IM_SetsZeroFlag) {
+TEST_F(LDY_TEST, LDY_IM_SetsZeroFlag) {
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_IM_OPCODE;
+    cpu.memory[0xFFFC] = LDY_IM_OPCODE;
     cpu.memory[0xFFFD] = 0x00;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_IM_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_IM_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_IM_CYCLES);
+    ASSERT_EQ(cycles, LDY_IM_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x00);
+    ASSERT_EQ(cpu.Y, 0x00);
 
     ASSERT_EQ(cpu.Z, true);
     ASSERT_EQ(cpu.N, false);
@@ -91,22 +91,22 @@ TEST_F(LDX_TEST, LDX_IM_SetsZeroFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-#endif // LDX_IM_TEST
+#endif // LDY_IM_TEST
 
-#if LDX_ZP_TEST
+#if LDY_ZP_TEST
 
-TEST_F(LDX_TEST, LDX_ZP_LoadsCorrectValueIntoXRegister) {
+TEST_F(LDY_TEST, LDY_ZP_LoadsCorrectValueIntoYRegister) {
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_ZP_OPCODE;
+    cpu.memory[0xFFFC] = LDY_ZP_OPCODE;
     cpu.memory[0xFFFD] = 0xF4;
     cpu.memory[0x00F4] = 0x65;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_ZP_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_ZP_CYCLES);
+    ASSERT_EQ(cycles, LDY_ZP_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x65);
+    ASSERT_EQ(cpu.Y, 0x65);
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, false);
@@ -119,18 +119,18 @@ TEST_F(LDX_TEST, LDX_ZP_LoadsCorrectValueIntoXRegister) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_ZP_SetsNegativeFlag) {
+TEST_F(LDY_TEST, LDY_ZP_SetsNegativeFlag) {
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_ZP_OPCODE;
+    cpu.memory[0xFFFC] = LDY_ZP_OPCODE;
     cpu.memory[0xFFFD] = 0x64;
     cpu.memory[0x0064] = -42; // 0xD6 (two compliment)
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_ZP_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_ZP_CYCLES);
+    ASSERT_EQ(cycles, LDY_ZP_CYCLES);
 
-    ASSERT_EQ(cpu.X, (unsigned char)-42); // 0xD6 (two compliment)
+    ASSERT_EQ(cpu.Y, (unsigned char)-42); // 0xD6 (two compliment)
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, true);
@@ -143,18 +143,18 @@ TEST_F(LDX_TEST, LDX_ZP_SetsNegativeFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_ZP_SetsZeroFlag) {
+TEST_F(LDY_TEST, LDY_ZP_SetsZeroFlag) {
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_ZP_OPCODE;
+    cpu.memory[0xFFFC] = LDY_ZP_OPCODE;
     cpu.memory[0xFFFD] = 0x41;
     cpu.memory[0x0041] = 0x00;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_ZP_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_ZP_CYCLES);
+    ASSERT_EQ(cycles, LDY_ZP_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x00);
+    ASSERT_EQ(cpu.Y, 0x00);
 
     ASSERT_EQ(cpu.Z, true);
     ASSERT_EQ(cpu.N, false);
@@ -167,24 +167,24 @@ TEST_F(LDX_TEST, LDX_ZP_SetsZeroFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-#endif // LDX_ZP_TEST
+#endif // LDY_ZP_TEST
 
-#if LDX_ZP_Y_TEST
+#if LDY_ZP_X_TEST
 
-TEST_F(LDX_TEST, LDX_ZP_X_LoadsCorrectValueIntoXRegister) {
-    cpu.Y = 0x10;
+TEST_F(LDY_TEST, LDY_ZP_X_LoadsCorrectValueIntoYRegister) {
+    cpu.X = 0x10;
 
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_ZP_Y_OPCODE;
+    cpu.memory[0xFFFC] = LDY_ZP_X_OPCODE;
     cpu.memory[0xFFFD] = 0x56; // 0x56 + 0x10 = 0x66
     cpu.memory[0x0066] = 0x65;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_ZP_Y_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_ZP_X_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_ZP_Y_CYCLES);
+    ASSERT_EQ(cycles, LDY_ZP_X_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x65);
+    ASSERT_EQ(cpu.Y, 0x65);
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, false);
@@ -197,20 +197,20 @@ TEST_F(LDX_TEST, LDX_ZP_X_LoadsCorrectValueIntoXRegister) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_ZP_Y_SetsNegativeFlag) {
-    cpu.Y = 0x1;
+TEST_F(LDY_TEST, LDY_ZP_X_SetsNegativeFlag) {
+    cpu.X = 0x1;
 
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_ZP_Y_OPCODE;
+    cpu.memory[0xFFFC] = LDY_ZP_X_OPCODE;
     cpu.memory[0xFFFD] = 0x64; // 0x64 + 0x1 = 0x65
     cpu.memory[0x0065] = -42;  // 0xD6 (two compliment)
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_ZP_Y_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_ZP_X_OPCODE);
 
-    ASSERT_EQ(cycles, LDX_ZP_Y_CYCLES);
+    ASSERT_EQ(cycles, LDY_ZP_X_OPCODE);
 
-    ASSERT_EQ(cpu.X, (unsigned char)-42); // 0xD6 (two compliment)
+    ASSERT_EQ(cpu.Y, (unsigned char)-42); // 0xD6 (two compliment)
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, true);
@@ -223,20 +223,20 @@ TEST_F(LDX_TEST, LDX_ZP_Y_SetsNegativeFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_ZP_Y_SetsZeroFlag) {
-    cpu.Y = 0xFF;
+TEST_F(LDY_TEST, LDY_ZP_X_SetsZeroFlag) {
+    cpu.X = 0xFF;
 
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_ZP_Y_OPCODE;
+    cpu.memory[0xFFFC] = LDY_ZP_X_OPCODE;
     cpu.memory[0xFFFD] = 0x80; // 0x80 + 0xFF = 0x17F (wrapps around so 0x7F)
     cpu.memory[0x007F] = 0x00;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_ZP_Y_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_ZP_X_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_ZP_Y_CYCLES);
+    ASSERT_EQ(cycles, LDY_ZP_X_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x00);
+    ASSERT_EQ(cpu.Y, 0x00);
 
     ASSERT_EQ(cpu.Z, true);
     ASSERT_EQ(cpu.N, false);
@@ -249,23 +249,23 @@ TEST_F(LDX_TEST, LDX_ZP_Y_SetsZeroFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-#endif // LDX_ZP_Y_TEST
+#endif // LDX_ZP_X_TEST
 
-#if LDX_AB_TEST
+#if LDY_AB_TEST
 
-TEST_F(LDX_TEST, LDX_AB_LoadsCorrectValueIntoXRegister) {
+TEST_F(LDY_TEST, LDY_AB_LoadsCorrectValueIntoYRegister) {
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_AB_OPCODE;
+    cpu.memory[0xFFFC] = LDY_AB_OPCODE;
     cpu.memory[0xFFFD] = 0x56;
     cpu.memory[0xFFFE] = 0xFF; // 0xFF56
     cpu.memory[0xFF56] = 0x65;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_AB_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_AB_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_AB_CYCLES);
+    ASSERT_EQ(cycles, LDY_AB_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x65);
+    ASSERT_EQ(cpu.Y, 0x65);
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, false);
@@ -278,19 +278,19 @@ TEST_F(LDX_TEST, LDX_AB_LoadsCorrectValueIntoXRegister) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_AB_SetsNegativeFlag) {
+TEST_F(LDY_TEST, LDY_AB_SetsNegativeFlag) {
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_AB_OPCODE;
+    cpu.memory[0xFFFC] = LDY_AB_OPCODE;
     cpu.memory[0xFFFD] = 0x64;
     cpu.memory[0xFFFE] = 0x01; // 0x0164
     cpu.memory[0x0164] = -42;  // 0xD6 (two compliment)
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_AB_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_AB_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_AB_CYCLES);
+    ASSERT_EQ(cycles, LDY_AB_CYCLES);
 
-    ASSERT_EQ(cpu.X, (unsigned char)-42); // 0xD6 (two compliment)
+    ASSERT_EQ(cpu.Y, (unsigned char)-42); // 0xD6 (two compliment)
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, true);
@@ -303,19 +303,19 @@ TEST_F(LDX_TEST, LDX_AB_SetsNegativeFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_AB_SetsZeroFlag) {
+TEST_F(LDY_TEST, LDY_AB_SetsZeroFlag) {
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_AB_OPCODE;
+    cpu.memory[0xFFFC] = LDY_AB_OPCODE;
     cpu.memory[0xFFFD] = 0x80;
     cpu.memory[0xFFFE] = 0x00; // 0x0080
     cpu.memory[0x0080] = 0x00;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_AB_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_AB_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_AB_CYCLES);
+    ASSERT_EQ(cycles, LDY_AB_CYCLES);
 
-    ASSERT_EQ(cpu.X, 0x00);
+    ASSERT_EQ(cpu.Y, 0x00);
 
     ASSERT_EQ(cpu.Z, true);
     ASSERT_EQ(cpu.N, false);
@@ -328,27 +328,27 @@ TEST_F(LDX_TEST, LDX_AB_SetsZeroFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-#endif // LDX_AB_TEST
+#endif // LDY_AB_TEST
 
-#if LDX_AB_Y_TEST
+#if LDY_AB_X_TEST
 
-TEST_F(LDX_TEST, LDX_AB_Y_LoadsCorrectValueIntoXRegister) {
-    cpu.Y = 0x01;
+TEST_F(LDY_TEST, LDY_AB_X_LoadsCorrectValueIntoYRegister) {
+    cpu.X = 0x01;
 
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_AB_Y_OPCODE;
+    cpu.memory[0xFFFC] = LDY_AB_X_OPCODE;
     cpu.memory[0xFFFD] = 0xFF;
     cpu.memory[0xFFFE] = 0x20; // 0x20FF + 0x01 = 0x2100
     cpu.memory[0x2100] = 0x65;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_AB_Y_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_AB_X_CYCLES);
 
     ASSERT_EQ(cycles,
-              LDX_AB_Y_CYCLES +
+              LDY_AB_X_CYCLES +
                   1); // Takes an extra cycle if page boundary is crossed
 
-    ASSERT_EQ(cpu.X, 0x65);
+    ASSERT_EQ(cpu.Y, 0x65);
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, false);
@@ -361,21 +361,21 @@ TEST_F(LDX_TEST, LDX_AB_Y_LoadsCorrectValueIntoXRegister) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_AB_Y_SetsNegativeFlag) {
-    cpu.Y = 0x28;
+TEST_F(LDY_TEST, LDY_AB_X_SetsNegativeFlag) {
+    cpu.X = 0x28;
 
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_AB_Y_OPCODE;
+    cpu.memory[0xFFFC] = LDY_AB_X_OPCODE;
     cpu.memory[0xFFFD] = 0x64;
     cpu.memory[0xFFFE] = 0x01; // 0x0164 + 0x28 = 0x018C
     cpu.memory[0x018C] = -42;  // 0xD6 (two compliment)
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_AB_Y_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_AB_X_CYCLES);
 
-    ASSERT_EQ(cycles, LDX_AB_Y_CYCLES);
+    ASSERT_EQ(cycles, LDY_AB_X_CYCLES);
 
-    ASSERT_EQ(cpu.X, (unsigned char)-42); // 0xD6 (two compliment)
+    ASSERT_EQ(cpu.Y, (unsigned char)-42); // 0xD6 (two compliment)
 
     ASSERT_EQ(cpu.Z, false);
     ASSERT_EQ(cpu.N, true);
@@ -388,23 +388,23 @@ TEST_F(LDX_TEST, LDX_AB_Y_SetsNegativeFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-TEST_F(LDX_TEST, LDX_AB_Y_SetsZeroFlag) {
-    cpu.Y = 0x80;
+TEST_F(LDY_TEST, LDY_AB_X_SetsZeroFlag) {
+    cpu.X = 0x80;
 
     // Start inline program
-    cpu.memory[0xFFFC] = LDX_AB_Y_OPCODE;
+    cpu.memory[0xFFFC] = LDY_AB_X_OPCODE;
     cpu.memory[0xFFFD] = 0x80;
     cpu.memory[0xFFFE] = 0x00; // 0x0080 + 0x80 = 0x0100
     cpu.memory[0x0100] = 0x00;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDX_AB_Y_CYCLES);
+    int cycles = em6502_execute(&cpu, LDY_AB_X_CYCLES);
 
     ASSERT_EQ(cycles,
-              LDX_AB_Y_CYCLES +
+              LDY_AB_X_CYCLES +
                   1); // Takes an extra cycle if page boundary is crossed
 
-    ASSERT_EQ(cpu.X, 0x00);
+    ASSERT_EQ(cpu.Y, 0x00);
 
     ASSERT_EQ(cpu.Z, true);
     ASSERT_EQ(cpu.N, false);
@@ -417,4 +417,4 @@ TEST_F(LDX_TEST, LDX_AB_Y_SetsZeroFlag) {
     ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
 }
 
-#endif // LDX_AB_Y_TEST
+#endif // LDY_AB_X_TEST
