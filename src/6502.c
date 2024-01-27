@@ -734,6 +734,67 @@ int em6502_execute(CPU_6502 *cpu, int cycles) {
 
             break;
 
+            /**
+             * Load Y register
+             *
+             */
+
+        case STA_ZP_OPCODE:
+            temp = STA_ZP(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case STA_ZP_X_OPCODE:
+            temp = STA_ZP_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case STA_AB_OPCODE:
+            temp = STA_AB(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case STA_AB_X_OPCODE:
+            temp = STA_AB_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case STA_AB_Y_OPCODE:
+            temp = STA_AB_Y(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case STA_IN_X_OPCODE:
+            temp = STA_IN_X(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
+        case STA_IN_Y_OPCODE:
+            temp = STA_IN_Y(cpu);
+
+            cycles -= temp;
+            runCycles += temp;
+
+            break;
+
         default:
             break;
         }
