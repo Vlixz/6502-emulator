@@ -2,7 +2,6 @@
 #define INC_CPU_H
 
 #include "common.h"
-#include <stdint.h>
 
 /**
  * 6502 supports a 256 byte stack located between 0x0100 and 0x01FF.
