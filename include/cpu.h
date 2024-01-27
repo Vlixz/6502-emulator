@@ -2,6 +2,7 @@
 #define INC_CPU_H
 
 #include "common.h"
+#include <stdint.h>
 
 /**
  * 6502 supports a 256 byte stack located between 0x0100 and 0x01FF.
@@ -161,6 +162,15 @@ typedef struct {
     Byte *memory;
 
 } CPU_6502;
+
+typedef struct {
+    char *name;
+
+    Byte (*opcode)(void);
+    Byte (*mode)(void);
+
+    uint8_t cycles;
+} instruction;
 
 // =======================================
 //            Addressing Modes
