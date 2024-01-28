@@ -69,10 +69,10 @@ TEST_F(BCC_TEST, BCC_RE_NoCarrySetBranchJumpOneByteNoNewPage) {
 
     // Start inline program
     cpu.memory[0xFFFC] = BCC_RE_OPCODE;
-    cpu.memory[0xFFFD] = 0x02; // Jump 2 bytes
-    cpu.memory[0xFFFE] = 0x00; // skipped
-    cpu.memory[0xFFFF] = 0x00; // skipped
-    cpu.memory[0x0000] = BCC_RE_OPCODE; // Run instruction again 
+    cpu.memory[0xFFFD] = 0x02;          // Jump 2 bytes
+    cpu.memory[0xFFFE] = 0x00;          // skipped
+    cpu.memory[0xFFFF] = 0x00;          // skipped
+    cpu.memory[0x0000] = BCC_RE_OPCODE; // Run instruction again
     cpu.memory[0x0001] = 0x02;          // Jump 2 bytes
     cpu.memory[0x0002] = 0x00;          // skipped
     cpu.memory[0x0003] = 0x00;          // skipped
