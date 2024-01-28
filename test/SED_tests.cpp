@@ -8,19 +8,19 @@ class SED_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~SED_TEST() override { em6502_destroy(&cpu); }
+    ~SED_TEST() override { }
 };
 
-TEST_F(SED_TEST, SED_IP_DecimalFlagSet) {
+TEST_F(SED_TEST, SED_IMP_DecimalFlagSet) {
     cpu.D = 0;
 
     // Start inline program
-    cpu.memory[0xFFFC] = SED_IP_OPCODE;
+    cpu.memory[0xFFFC] = SED_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, SED_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, SED_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, SED_IP_CYCLES);
+    ASSERT_EQ(cycles, SED_IMP_CYCLES);
 
     ASSERT_TRUE(cpu.D);
 
@@ -33,17 +33,17 @@ TEST_F(SED_TEST, SED_IP_DecimalFlagSet) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(SED_TEST, SED_IP_DecimalFlagStaysSetWhenSettingItMultipleTimes) {
+TEST_F(SED_TEST, SED_IMP_DecimalFlagStaysSetWhenSettingItMultipleTimes) {
     cpu.D = 0;
 
     // Start inline program
-    cpu.memory[0xFFFC] = SED_IP_OPCODE;
-    cpu.memory[0xFFFD] = SED_IP_OPCODE; // Run instruction again
+    cpu.memory[0xFFFC] = SED_IMP_OPCODE;
+    cpu.memory[0xFFFD] = SED_IMP_OPCODE; // Run instruction again
     // End inline program
 
-    int cycles = em6502_execute(&cpu, SED_IP_CYCLES * 2);
+    int cycles = em6502_execute(&cpu, SED_IMP_CYCLES * 2);
 
-    ASSERT_EQ(cycles, SED_IP_CYCLES * 2);
+    ASSERT_EQ(cycles, SED_IMP_CYCLES * 2);
 
     ASSERT_TRUE(cpu.D);
 

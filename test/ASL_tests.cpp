@@ -8,7 +8,7 @@ class ASL_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~ASL_TEST() override { em6502_destroy(&cpu); }
+    ~ASL_TEST() override { }
 };
 
 #define ASL_AC_TEST 1
@@ -23,12 +23,12 @@ TEST_F(ASL_TEST, ASL_AC_ShiftLeftNoCarry) {
     cpu.A = 0b01010101;
 
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_AC_OPCODE;
+    cpu.memory[0xFFFC] = ASL_ACC_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_AC_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_ACC_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_AC_CYCLES);
+    ASSERT_EQ(cycles, ASL_ACC_CYCLES);
 
     ASSERT_EQ(cpu.A, 0b10101010);
 
@@ -47,12 +47,12 @@ TEST_F(ASL_TEST, ASL_AC_ShiftLeftWithCarry) {
     cpu.A = 0b10001111;
 
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_AC_OPCODE;
+    cpu.memory[0xFFFC] = ASL_ACC_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_AC_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_ACC_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_AC_CYCLES);
+    ASSERT_EQ(cycles, ASL_ACC_CYCLES);
 
     ASSERT_EQ(cpu.A, 0b00011110);
 
@@ -73,14 +73,14 @@ TEST_F(ASL_TEST, ASL_AC_ShiftLeftWithCarry) {
 
 TEST_F(ASL_TEST, ASL_ZP_ShiftLeftNoCarry) {
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_ZP_OPCODE;
+    cpu.memory[0xFFFC] = ASL_ZP0_OPCODE;
     cpu.memory[0xFFFD] = 0xF9;
     cpu.memory[0x00F9] = 0b01001111;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_ZP0_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_ZP_CYCLES);
+    ASSERT_EQ(cycles, ASL_ZP0_CYCLES);
 
     ASSERT_EQ(cpu.memory[0x00F9], 0b10011110);
 
@@ -97,14 +97,14 @@ TEST_F(ASL_TEST, ASL_ZP_ShiftLeftNoCarry) {
 
 TEST_F(ASL_TEST, ASL_ZP_ShiftLeftWithCarry) {
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_ZP_OPCODE;
+    cpu.memory[0xFFFC] = ASL_ZP0_OPCODE;
     cpu.memory[0xFFFD] = 0xF9;
     cpu.memory[0x00F9] = 0b10001111;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_ZP0_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_ZP_CYCLES);
+    ASSERT_EQ(cycles, ASL_ZP0_CYCLES);
 
     ASSERT_EQ(cpu.memory[0x00F9], 0b00011110);
 
@@ -127,14 +127,14 @@ TEST_F(ASL_TEST, ASL_ZP_X_ShiftLeftNoCarry) {
     cpu.X = 0xFF;
 
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_ZP_X_OPCODE;
+    cpu.memory[0xFFFC] = ASL_ZPX_OPCODE;
     cpu.memory[0xFFFD] = 0x80;
     cpu.memory[0x007F] = 0b00110011;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_ZP_X_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_ZPX_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_ZP_X_CYCLES);
+    ASSERT_EQ(cycles, ASL_ZPX_CYCLES);
 
     ASSERT_EQ(cpu.memory[0x007F], 0b01100110);
 
@@ -153,14 +153,14 @@ TEST_F(ASL_TEST, ASL_ZP_X_ShiftLeftWithCarry) {
     cpu.X = 0xFF;
 
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_ZP_X_OPCODE;
+    cpu.memory[0xFFFC] = ASL_ZPX_OPCODE;
     cpu.memory[0xFFFD] = 0x80;
     cpu.memory[0x007F] = 0b10110011;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_ZP_X_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_ZPX_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_ZP_X_CYCLES);
+    ASSERT_EQ(cycles, ASL_ZPX_CYCLES);
 
     ASSERT_EQ(cpu.memory[0x007F], 0b01100110);
 
@@ -186,15 +186,15 @@ TEST_F(ASL_TEST, ASL_AB_ShiftLeftNoCarry) {
     Byte MSB = AbsoluteAddress >> 8;
 
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_AB_OPCODE;
+    cpu.memory[0xFFFC] = ASL_AB0_OPCODE;
     cpu.memory[0xFFFD] = LSB;
     cpu.memory[0xFFFE] = MSB;
     cpu.memory[AbsoluteAddress] = 0b01010101;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_AB_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_AB0_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_AB_CYCLES);
+    ASSERT_EQ(cycles, ASL_AB0_CYCLES);
 
     ASSERT_EQ(cpu.memory[AbsoluteAddress], 0b10101010);
 
@@ -216,15 +216,15 @@ TEST_F(ASL_TEST, ASL_AB_ShiftLeftWithCarry) {
     Byte MSB = AbsoluteAddress >> 8;
 
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_AB_OPCODE;
+    cpu.memory[0xFFFC] = ASL_AB0_OPCODE;
     cpu.memory[0xFFFD] = LSB;
     cpu.memory[0xFFFE] = MSB;
     cpu.memory[AbsoluteAddress] = 0b11010101;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_AB_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_AB0_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_AB_CYCLES);
+    ASSERT_EQ(cycles, ASL_AB0_CYCLES);
 
     ASSERT_EQ(cpu.memory[AbsoluteAddress], 0b10101010);
 
@@ -246,15 +246,15 @@ TEST_F(ASL_TEST, ASL_AB_ShiftLeftWithCarryNegative) {
     Byte MSB = AbsoluteAddress >> 8;
 
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_AB_OPCODE;
+    cpu.memory[0xFFFC] = ASL_AB0_OPCODE;
     cpu.memory[0xFFFD] = LSB;
     cpu.memory[0xFFFE] = MSB;
     cpu.memory[AbsoluteAddress] = 0b10000000;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_AB_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_AB0_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_AB_CYCLES);
+    ASSERT_EQ(cycles, ASL_AB0_CYCLES);
 
     ASSERT_EQ(cpu.memory[AbsoluteAddress], 0b00000000);
 
@@ -282,15 +282,15 @@ TEST_F(ASL_TEST, ASL_AB_X_ShiftLeftNoCarry) {
     Byte MSB = AbsoluteAddress >> 8;
 
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_AB_X_OPCODE;
+    cpu.memory[0xFFFC] = ASL_ABX_OPCODE;
     cpu.memory[0xFFFD] = LSB;
     cpu.memory[0xFFFE] = MSB;
     cpu.memory[0x09F9] = 0b01001000;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_AB_X_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_ABX_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_AB_X_CYCLES);
+    ASSERT_EQ(cycles, ASL_ABX_CYCLES);
 
     ASSERT_EQ(cpu.memory[0x09F9], 0b10010000);
 
@@ -314,15 +314,15 @@ TEST_F(ASL_TEST, ASL_AB_X_ShiftLeftWithCarry) {
     Byte MSB = AbsoluteAddress >> 8;
 
     // Start inline program
-    cpu.memory[0xFFFC] = ASL_AB_X_OPCODE;
+    cpu.memory[0xFFFC] = ASL_ABX_OPCODE;
     cpu.memory[0xFFFD] = LSB;
     cpu.memory[0xFFFE] = MSB;
     cpu.memory[0x0A08] = 0b10010001;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, ASL_AB_X_CYCLES);
+    int cycles = em6502_execute(&cpu, ASL_ABX_CYCLES);
 
-    ASSERT_EQ(cycles, ASL_AB_X_CYCLES + 1);
+    ASSERT_EQ(cycles, ASL_ABX_CYCLES + 1);
 
     ASSERT_EQ(cpu.memory[0x0A08], 0b00100010);
 

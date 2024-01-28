@@ -8,19 +8,19 @@ class CLC_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~CLC_TEST() override { em6502_destroy(&cpu); }
+    ~CLC_TEST() override { }
 };
 
 TEST_F(CLC_TEST, CLC_IP_ClearsCarryFlag) {
     cpu.C = 1;
 
     // Start inline program
-    cpu.memory[0xFFFC] = CLC_IP_OPCODE;
+    cpu.memory[0xFFFC] = CLC_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, CLC_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, CLC_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, CLC_IP_CYCLES);
+    ASSERT_EQ(cycles, CLC_IMP_CYCLES);
 
     ASSERT_FALSE(cpu.C);
 
@@ -37,13 +37,13 @@ TEST_F(CLC_TEST, CLC_IP_DoesNotChangeClearedCarryFlag) {
     cpu.C = 1;
 
     // Start inline program
-    cpu.memory[0xFFFC] = CLC_IP_OPCODE;
-    cpu.memory[0xFFFD] = CLC_IP_OPCODE; // Run instruction again
+    cpu.memory[0xFFFC] = CLC_IMP_OPCODE;
+    cpu.memory[0xFFFD] = CLC_IMP_OPCODE; // Run instruction again
     // End inline program
 
-    int cycles = em6502_execute(&cpu, CLC_IP_CYCLES * 2);
+    int cycles = em6502_execute(&cpu, CLC_IMP_CYCLES * 2);
 
-    ASSERT_EQ(cycles, CLC_IP_CYCLES * 2);
+    ASSERT_EQ(cycles, CLC_IMP_CYCLES * 2);
 
     ASSERT_FALSE(cpu.C);
 

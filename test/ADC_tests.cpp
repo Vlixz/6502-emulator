@@ -8,7 +8,7 @@ class ADC_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~ADC_TEST() override { em6502_destroy(&cpu); }
+    ~ADC_TEST() override { }
 
     struct ADC_TestCase {
         /* Input */
@@ -40,11 +40,11 @@ class ADC_TEST : public ::testing::Test {
         cpu.C = testCase.C;
 
         // Start inline program
-        cpu.memory[0xFFFC] = ADC_IM_OPCODE;
+        cpu.memory[0xFFFC] = ADC_IMM_OPCODE;
         cpu.memory[0xFFFD] = testCase.O;
         // End inline program
 
-        int cycles = em6502_execute(&cpu, ADC_IM_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_IMM_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -66,12 +66,12 @@ class ADC_TEST : public ::testing::Test {
         cpu.C = testCase.C;
 
         // Start inline program
-        cpu.memory[0xFFFC] = ADC_ZP_OPCODE;
+        cpu.memory[0xFFFC] = ADC_ZP0_OPCODE;
         cpu.memory[0xFFFD] = testCase.Address;
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = em6502_execute(&cpu, ADC_ZP_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_ZP0_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -94,12 +94,12 @@ class ADC_TEST : public ::testing::Test {
         cpu.X = testCase.X;
 
         // Start inline program
-        cpu.memory[0xFFFC] = ADC_ZP_X_OPCODE;
+        cpu.memory[0xFFFC] = ADC_ZPX_OPCODE;
         cpu.memory[0xFFFD] = testCase.Address;
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = em6502_execute(&cpu, ADC_ZP_X_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_ZPX_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -124,13 +124,13 @@ class ADC_TEST : public ::testing::Test {
         Byte MSB = testCase.Address >> 8;
 
         // Start inline program
-        cpu.memory[0xFFFC] = ADC_AB_OPCODE;
+        cpu.memory[0xFFFC] = ADC_AB0_OPCODE;
         cpu.memory[0xFFFD] = LSB;
         cpu.memory[0xFFFE] = MSB;
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = em6502_execute(&cpu, ADC_AB_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_AB0_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -156,13 +156,13 @@ class ADC_TEST : public ::testing::Test {
         Byte MSB = testCase.Address >> 8;
 
         // Start inline program
-        cpu.memory[0xFFFC] = ADC_AB_X_OPCODE;
+        cpu.memory[0xFFFC] = ADC_ABX_OPCODE;
         cpu.memory[0xFFFD] = LSB;
         cpu.memory[0xFFFE] = MSB;
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = em6502_execute(&cpu, ADC_AB_X_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_ABX_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -188,13 +188,13 @@ class ADC_TEST : public ::testing::Test {
         Byte MSB = testCase.Address >> 8;
 
         // Start inline program
-        cpu.memory[0xFFFC] = ADC_AB_Y_OPCODE;
+        cpu.memory[0xFFFC] = ADC_ABY_OPCODE;
         cpu.memory[0xFFFD] = LSB;
         cpu.memory[0xFFFE] = MSB;
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = em6502_execute(&cpu, ADC_AB_Y_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_ABY_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -220,7 +220,7 @@ class ADC_TEST : public ::testing::Test {
         Byte MSB = testCase.IndirectAddress >> 8;
 
         // Start inline program
-        cpu.memory[0xFFFC] = ADC_IN_X_OPCODE;
+        cpu.memory[0xFFFC] = ADC_INX_OPCODE;
         cpu.memory[0xFFFD] = testCase.Address;
 
         cpu.memory[testCase.ZeroPageAddress] = LSB;
@@ -229,7 +229,7 @@ class ADC_TEST : public ::testing::Test {
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = em6502_execute(&cpu, ADC_IN_X_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_INX_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -246,7 +246,7 @@ class ADC_TEST : public ::testing::Test {
         ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
     }
 
-    void ADC_IN_Y_test(ADC_TestCase testCase) {
+    void ADC_INY_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
         cpu.Y = testCase.Y;
@@ -255,7 +255,7 @@ class ADC_TEST : public ::testing::Test {
         Byte MSB = testCase.IndirectAddress >> 8;
 
         // Start inline program
-        cpu.memory[0xFFFC] = ADC_IN_Y_OPCODE;
+        cpu.memory[0xFFFC] = ADC_INY_OPCODE;
         cpu.memory[0xFFFD] = testCase.ZeroPageAddress;
 
         cpu.memory[testCase.ZeroPageAddress] = LSB;
@@ -264,7 +264,7 @@ class ADC_TEST : public ::testing::Test {
         cpu.memory[testCase.ExpectedAddress] = testCase.O;
         // End inline program
 
-        int cycles = em6502_execute(&cpu, ADC_IN_Y_CYCLES);
+        int cycles = em6502_execute(&cpu, ADC_INY_CYCLES);
 
         ASSERT_EQ(cycles, testCase.expectedCycles);
 
@@ -292,7 +292,7 @@ class ADC_TEST : public ::testing::Test {
 #define ADC_AB_Y_TEST 1
 
 #define ADC_IN_X_TEST 1
-#define ADC_IN_Y_TEST 1
+#define ADC_INY_TEST 1
 
 #if ADC_IM_TEST
 
@@ -313,7 +313,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbers) {
     testCase.ExpectedV = false;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -336,7 +336,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoPositiveNumbersAndCarry) {
     testCase.ExpectedV = false;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -358,7 +358,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbers) {
     testCase.ExpectedV = false;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -381,7 +381,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoNegativeNumbersAndCarry) {
     testCase.ExpectedV = false;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -403,7 +403,7 @@ TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumber) {
     testCase.ExpectedV = false;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -426,7 +426,7 @@ TEST_F(ADC_TEST, ADC_IM_AddNegativeAndPositiveNumberAndCarry) {
     testCase.ExpectedV = false;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -448,7 +448,7 @@ TEST_F(ADC_TEST, ADC_IM_AddTwoPostiveNumberWithCarry) {
     testCase.ExpectedV = false;
     testCase.ExpectedZ = true;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -470,7 +470,7 @@ TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbers) {
     testCase.ExpectedV = true;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -492,7 +492,7 @@ TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbers) {
     testCase.ExpectedV = true;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -515,7 +515,7 @@ TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoPostiveNumbersAndCarry) {
     testCase.ExpectedV = true;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -538,7 +538,7 @@ TEST_F(ADC_TEST, ADC_IM_OverflowAddingTwoNegativeNumbersAndCarry) {
     testCase.ExpectedV = true;
     testCase.ExpectedZ = false;
 
-    testCase.expectedCycles = ADC_IM_CYCLES;
+    testCase.expectedCycles = ADC_IMM_CYCLES;
 
     ADC_IM_test(testCase);
 }
@@ -567,7 +567,7 @@ TEST_F(ADC_TEST, ADC_ZP_AddTwoPositiveNumbers) {
     testCase.Address = 0xF1;
     testCase.ExpectedAddress = 0xF1;
 
-    testCase.expectedCycles = ADC_ZP_CYCLES;
+    testCase.expectedCycles = ADC_ZP0_CYCLES;
 
     ADC_ZP_test(testCase);
 }
@@ -592,7 +592,7 @@ TEST_F(ADC_TEST, ADC_ZP_AddTwoNegativeNumbers) {
     testCase.Address = 0x09;
     testCase.ExpectedAddress = 0x09;
 
-    testCase.expectedCycles = ADC_ZP_CYCLES;
+    testCase.expectedCycles = ADC_ZP0_CYCLES;
 
     ADC_ZP_test(testCase);
 }
@@ -622,7 +622,7 @@ TEST_F(ADC_TEST, ADC_ZP_X_AddTwoPositiveNumbersWithWrap) {
     testCase.Address = 0xFF;
     testCase.ExpectedAddress = 0x7F;
 
-    testCase.expectedCycles = ADC_ZP_X_CYCLES;
+    testCase.expectedCycles = ADC_ZPX_CYCLES;
 
     ADC_ZP_X_test(testCase);
 }
@@ -648,7 +648,7 @@ TEST_F(ADC_TEST, ADC_ZP_X_AddTwoNegativeNumbersNoWrap) {
     testCase.Address = 0x01;
     testCase.ExpectedAddress = 0x02;
 
-    testCase.expectedCycles = ADC_ZP_X_CYCLES;
+    testCase.expectedCycles = ADC_ZPX_CYCLES;
 
     ADC_ZP_X_test(testCase);
 }
@@ -677,7 +677,7 @@ TEST_F(ADC_TEST, ADC_AB_AddTwoPositiveNumbers) {
     testCase.Address = 0x8361;
     testCase.ExpectedAddress = 0x8361;
 
-    testCase.expectedCycles = ADC_AB_CYCLES;
+    testCase.expectedCycles = ADC_AB0_CYCLES;
 
     ADC_AB_test(testCase);
 }
@@ -702,7 +702,7 @@ TEST_F(ADC_TEST, ADC_AB_AddTwoNegativeNumbers) {
     testCase.Address = 0xFCD9;
     testCase.ExpectedAddress = 0xFCD9;
 
-    testCase.expectedCycles = ADC_AB_CYCLES;
+    testCase.expectedCycles = ADC_AB0_CYCLES;
 
     ADC_AB_test(testCase);
 }
@@ -732,7 +732,7 @@ TEST_F(ADC_TEST, ADC_AB_X_AddTwoPositiveNumbers) {
     testCase.Address = 0x2000;
     testCase.ExpectedAddress = 0x2092;
 
-    testCase.expectedCycles = ADC_AB_X_CYCLES;
+    testCase.expectedCycles = ADC_ABX_CYCLES;
 
     ADC_AB_X_test(testCase);
 }
@@ -758,7 +758,7 @@ TEST_F(ADC_TEST, ADC_AB_X_AddTwoNegativeNumbers) {
     testCase.Address = 0x2000;
     testCase.ExpectedAddress = 0x20F9;
 
-    testCase.expectedCycles = ADC_AB_X_CYCLES;
+    testCase.expectedCycles = ADC_ABX_CYCLES;
 
     ADC_AB_X_test(testCase);
 }
@@ -784,7 +784,7 @@ TEST_F(ADC_TEST, ADC_AB_X_AddTwoNegativeNumbersAndRunExtraCycle) {
     testCase.Address = 0x00FF;
     testCase.ExpectedAddress = 0x0100;
 
-    testCase.expectedCycles = ADC_AB_X_CYCLES + 1;
+    testCase.expectedCycles = ADC_ABX_CYCLES + 1;
 
     ADC_AB_X_test(testCase);
 }
@@ -814,7 +814,7 @@ TEST_F(ADC_TEST, ADC_AB_Y_AddTwoPositiveNumbers) {
     testCase.Address = 0x2000;
     testCase.ExpectedAddress = 0x2092;
 
-    testCase.expectedCycles = ADC_AB_Y_CYCLES;
+    testCase.expectedCycles = ADC_ABY_CYCLES;
 
     ADC_AB_Y_test(testCase);
 }
@@ -840,7 +840,7 @@ TEST_F(ADC_TEST, ADC_AB_Y_AddTwoNegativeNumbers) {
     testCase.Address = 0x2000;
     testCase.ExpectedAddress = 0x20F9;
 
-    testCase.expectedCycles = ADC_AB_Y_CYCLES;
+    testCase.expectedCycles = ADC_ABY_CYCLES;
 
     ADC_AB_Y_test(testCase);
 }
@@ -866,7 +866,7 @@ TEST_F(ADC_TEST, ADC_AB_Y_AddTwoNegativeNumbersAndRunExtraCycle) {
     testCase.Address = 0x00FF;
     testCase.ExpectedAddress = 0x0100;
 
-    testCase.expectedCycles = ADC_AB_Y_CYCLES + 1;
+    testCase.expectedCycles = ADC_ABY_CYCLES + 1;
 
     ADC_AB_Y_test(testCase);
 }
@@ -898,7 +898,7 @@ TEST_F(ADC_TEST, ADC_IN_X_AddTwoPositiveNumbers) {
     testCase.IndirectAddress = 0x2074;
     testCase.ExpectedAddress = 0x2074;
 
-    testCase.expectedCycles = ADC_IN_X_CYCLES;
+    testCase.expectedCycles = ADC_INX_CYCLES;
 
     ADC_IN_X_test(testCase);
 }
@@ -927,16 +927,16 @@ TEST_F(ADC_TEST, ADC_IN_X_AddTwoNegativeNumbersWithWrap) {
     testCase.IndirectAddress = 0x2000;
     testCase.ExpectedAddress = 0x2000;
 
-    testCase.expectedCycles = ADC_IN_X_CYCLES;
+    testCase.expectedCycles = ADC_INX_CYCLES;
 
     ADC_IN_X_test(testCase);
 }
 
 #endif /* ADC_IN_X_TEST */
 
-#if ADC_IN_Y_TEST
+#if ADC_INY_TEST
 
-TEST_F(ADC_TEST, ADC_IN_Y_AddTwoPositiveNumbers) {
+TEST_F(ADC_TEST, ADC_INY_AddTwoPositiveNumbers) {
     // A: 0000 0101
     // O: 0000 0101
     // =: 0000 1010
@@ -958,9 +958,9 @@ TEST_F(ADC_TEST, ADC_IN_Y_AddTwoPositiveNumbers) {
     testCase.IndirectAddress = 0x4028;
     testCase.ExpectedAddress = 0x4038;
 
-    testCase.expectedCycles = ADC_IN_Y_CYCLES;
+    testCase.expectedCycles = ADC_INY_CYCLES;
 
-    ADC_IN_Y_test(testCase);
+    ADC_INY_test(testCase);
 }
 
 TEST_F(ADC_TEST, ADC_IN_X_AddTwoNegativeNumbers) {
@@ -985,12 +985,12 @@ TEST_F(ADC_TEST, ADC_IN_X_AddTwoNegativeNumbers) {
     testCase.IndirectAddress = 0x4500;
     testCase.ExpectedAddress = 0x4520;
 
-    testCase.expectedCycles = ADC_IN_Y_CYCLES;
+    testCase.expectedCycles = ADC_INY_CYCLES;
 
-    ADC_IN_Y_test(testCase);
+    ADC_INY_test(testCase);
 }
 
-TEST_F(ADC_TEST, ADC_IN_Y_AddTwoNegativeNumbersAndRunExtraCycle) {
+TEST_F(ADC_TEST, ADC_INY_AddTwoNegativeNumbersAndRunExtraCycle) {
     // A:     1111 1011
     // O:     1111 1011
     // =: (1) 1111 0110
@@ -1012,9 +1012,9 @@ TEST_F(ADC_TEST, ADC_IN_Y_AddTwoNegativeNumbersAndRunExtraCycle) {
     testCase.IndirectAddress = 0x00FF;
     testCase.ExpectedAddress = 0x0100;
 
-    testCase.expectedCycles = ADC_IN_Y_CYCLES + 1;
+    testCase.expectedCycles = ADC_INY_CYCLES + 1;
 
-    ADC_IN_Y_test(testCase);
+    ADC_INY_test(testCase);
 }
 
-#endif /* ADC_IN_Y_TEST */
+#endif /* ADC_INY_TEST */

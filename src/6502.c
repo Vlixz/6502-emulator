@@ -1,7 +1,6 @@
 #include "6502.h"
 
 #include "instruction.h"
-#include "stdlib.h"
 #include <string.h>
 
 void em6502_reset(CPU_6502 *cpu) {

@@ -8,19 +8,19 @@ class DEY_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~DEY_TEST() override { em6502_destroy(&cpu); }
+    ~DEY_TEST() override { }
 };
 
-TEST_F(DEY_TEST, DEY_IP_DecrementsXZeroNonNegative) {
+TEST_F(DEY_TEST, DEY_IMP_DecrementsXZeroNonNegative) {
     cpu.Y = 0x01;
 
     // Start inline program
-    cpu.memory[0xFFFC] = DEY_IP_OPCODE;
+    cpu.memory[0xFFFC] = DEY_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, DEY_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, DEY_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, DEY_IP_CYCLES);
+    ASSERT_EQ(cycles, DEY_IMP_CYCLES);
 
     ASSERT_EQ(cpu.Y, 0x00);
     ASSERT_TRUE(cpu.Z);
@@ -34,16 +34,16 @@ TEST_F(DEY_TEST, DEY_IP_DecrementsXZeroNonNegative) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(DEY_TEST, DEY_IP_DecrementsXNonZeroNegative) {
+TEST_F(DEY_TEST, DEY_IMP_DecrementsXNonZeroNegative) {
     cpu.Y = 0x00;
 
     // Start inline program
-    cpu.memory[0xFFFC] = DEY_IP_OPCODE;
+    cpu.memory[0xFFFC] = DEY_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, DEY_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, DEY_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, DEY_IP_CYCLES);
+    ASSERT_EQ(cycles, DEY_IMP_CYCLES);
 
     ASSERT_EQ(cpu.Y, 0xFF);
     ASSERT_TRUE(cpu.N);
@@ -57,16 +57,16 @@ TEST_F(DEY_TEST, DEY_IP_DecrementsXNonZeroNegative) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(DEY_TEST, DEY_IP_DecrementsXNonZeroNonNegative) {
+TEST_F(DEY_TEST, DEY_IMP_DecrementsXNonZeroNonNegative) {
     cpu.Y = 0x02;
 
     // Start inline program
-    cpu.memory[0xFFFC] = DEY_IP_OPCODE;
+    cpu.memory[0xFFFC] = DEY_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, DEY_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, DEY_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, DEY_IP_CYCLES);
+    ASSERT_EQ(cycles, DEY_IMP_CYCLES);
 
     ASSERT_EQ(cpu.Y, 0x01);
     ASSERT_FALSE(cpu.N);

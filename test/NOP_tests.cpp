@@ -8,17 +8,17 @@ class NOP_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~NOP_TEST() override { em6502_destroy(&cpu); }
+    ~NOP_TEST() override { }
 };
 
 TEST_F(NOP_TEST, NOP_IP_DoesNothing) {
     // Start inline program
-    cpu.memory[0xFFFC] = NOP_IP_OPCODE;
+    cpu.memory[0xFFFC] = NOP_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, NOP_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, NOP_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, NOP_IP_CYCLES);
+    ASSERT_EQ(cycles, NOP_IMP_CYCLES);
 
     /* Make sure the rest are unaffected by the instruction */
     ASSERT_EQ(cpu.Z, ZERO_FLAG_RESET_VALUE);

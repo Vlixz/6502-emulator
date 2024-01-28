@@ -8,20 +8,20 @@ class BCS_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~BCS_TEST() override { em6502_destroy(&cpu); }
+    ~BCS_TEST() override {  }
 };
 
-TEST_F(BCS_TEST, BCS_RE_NoCarrySetNoBranch) {
+TEST_F(BCS_TEST, BCS_REL_NoCarrySetNoBranch) {
     cpu.C = 0;
 
     // Start inline program
-    cpu.memory[0xFFFC] = BCS_RE_OPCODE;
+    cpu.memory[0xFFFC] = BCS_REL_OPCODE;
     cpu.memory[0xFFFD] = 0x02; // Jump 2 bytes
     // End inline program
 
-    int cycles = em6502_execute(&cpu, BCS_RE_CYCLES);
+    int cycles = em6502_execute(&cpu, BCS_REL_CYCLES);
 
-    ASSERT_EQ(cycles, BCS_RE_CYCLES);
+    ASSERT_EQ(cycles, BCS_REL_CYCLES);
 
     ASSERT_EQ(cpu.PC, 0xFFFE);
 
@@ -36,20 +36,20 @@ TEST_F(BCS_TEST, BCS_RE_NoCarrySetNoBranch) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BCS_TEST, BCS_RE_CarrySetBranchJumpTwoBytesAndToANewPage) {
+TEST_F(BCS_TEST, BCS_REL_CarrySetBranchJumpTwoBytesAndToANewPage) {
     cpu.C = 1;
 
     // Start inline program
-    cpu.memory[0xFFFC] = BCS_RE_OPCODE;
+    cpu.memory[0xFFFC] = BCS_REL_OPCODE;
     cpu.memory[0xFFFD] = 0x02;          // Jump 2 bytes
     cpu.memory[0xFFFE] = 0x00;          // skipped
     cpu.memory[0xFFFF] = 0x00;          // skipped
-    cpu.memory[0x0000] = BCC_RE_OPCODE; // next instruction
+    cpu.memory[0x0000] = BCC_REL_OPCODE; // next instruction
     // End inline program
 
-    int cycles = em6502_execute(&cpu, BCS_RE_CYCLES);
+    int cycles = em6502_execute(&cpu, BCS_REL_CYCLES);
 
-    ASSERT_EQ(cycles, BCS_RE_CYCLES + 2);
+    ASSERT_EQ(cycles, BCS_REL_CYCLES + 2);
 
     ASSERT_EQ(cpu.PC, 0x0000);
 
@@ -64,28 +64,28 @@ TEST_F(BCS_TEST, BCS_RE_CarrySetBranchJumpTwoBytesAndToANewPage) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(BCS_TEST, BCC_RE_CarrySetBranchJumpOneByteNoNewPage) {
+TEST_F(BCS_TEST, BCC_REL_CarrySetBranchJumpOneByteNoNewPage) {
     cpu.C = 1;
 
     // Start inline program
-    cpu.memory[0xFFFC] = BCS_RE_OPCODE;
+    cpu.memory[0xFFFC] = BCS_REL_OPCODE;
     cpu.memory[0xFFFD] = 0x02; // Jump 2 bytes
     cpu.memory[0xFFFE] = 0x00; // skipped
     cpu.memory[0xFFFF] = 0x00; // skipped
     cpu.memory[0x0000] =
-        BCS_RE_OPCODE; // Run instruction again without going to a new page
+        BCS_REL_OPCODE; // Run instruction again without going to a new page
     cpu.memory[0x0001] = 0x02;          // Jump 2 bytes
     cpu.memory[0x0002] = 0x00;          // skipped
     cpu.memory[0x0003] = 0x00;          // skipped
-    cpu.memory[0x0004] = BCS_RE_OPCODE; // Next instruction
+    cpu.memory[0x0004] = BCS_REL_OPCODE; // Next instruction
     // End inline program
 
-    int cycles = em6502_execute(&cpu, (BCS_RE_CYCLES + 2) + BCS_RE_CYCLES);
+    int cycles = em6502_execute(&cpu, (BCS_REL_CYCLES + 2) + BCS_REL_CYCLES);
 
-    cycles -= BCS_RE_CYCLES +
+    cycles -= BCS_REL_CYCLES +
               2; // Remove the cycles which are used to jump the PC to 0x0001
 
-    ASSERT_EQ(cycles, BCS_RE_CYCLES + 1);
+    ASSERT_EQ(cycles, BCS_REL_CYCLES + 1);
 
     ASSERT_EQ(cpu.PC, 0x0004);
 
