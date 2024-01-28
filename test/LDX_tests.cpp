@@ -7,8 +7,6 @@ extern "C" {
 
 class LDX_TEST : public ::testing::Test {
   protected:
-    CPU_6502 cpu;
-
     void SetUp() override { em6502_reset(&cpu); }
 
     ~LDX_TEST() override { em6502_destroy(&cpu); }
@@ -172,7 +170,7 @@ TEST_F(LDX_TEST, LDX_ZP_SetsZeroFlag) {
 #if LDX_ZP_Y_TEST
 
 TEST_F(LDX_TEST, LDX_ZP_X_LoadsCorrectValueIntoXRegister) {
-    cpu.Y = 0x10;
+    cpu.X = 0x10;
 
     // Start inline program
     cpu.memory[0xFFFC] = LDX_ZP_Y_OPCODE;
@@ -198,7 +196,7 @@ TEST_F(LDX_TEST, LDX_ZP_X_LoadsCorrectValueIntoXRegister) {
 }
 
 TEST_F(LDX_TEST, LDX_ZP_Y_SetsNegativeFlag) {
-    cpu.Y = 0x1;
+    cpu.X = 0x1;
 
     // Start inline program
     cpu.memory[0xFFFC] = LDX_ZP_Y_OPCODE;

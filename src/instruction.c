@@ -1,5 +1,6 @@
 #include "instruction.h"
 #include "cpu.h"
+#include <stdbool.h>
 
 instruction matrix[16][16] = {
 
@@ -276,89 +277,594 @@ instruction matrix[16][16] = {
      {"???", &XXX, &IMP, 1}}, /* 0xF */
 };
 
-Byte ADC() { return 0; }
-Byte AND() { return 0; }
-Byte ASL() { return 0; }
-Byte BCC() { return 0; }
-Byte BCS() { return 0; }
-Byte BEQ() { return 0; }
-Byte BIT() { return 0; }
-Byte BMI() { return 0; }
-Byte BNE() { return 0; }
-Byte BPL() { return 0; }
-Byte BRK() { return 0; }
-Byte BVC() { return 0; }
-Byte BVS() { return 0; }
-Byte CLC() { return 0; }
+Byte branch(Word relative_address) {
+    int cycles = 1;
 
-Byte CLD() { return 0; }
-Byte CLI() { return 0; }
-Byte CLV() { return 0; }
-Byte CMP() { return 0; }
-Byte CPX() { return 0; }
-Byte CPY() { return 0; }
-Byte DEC() { return 0; }
-Byte DEX() { return 0; }
-Byte DEY() { return 0; }
-Byte EOR() { return 0; }
-Byte INC() { return 0; }
-Byte INX() { return 0; }
-Byte INY() { return 0; }
-Byte JMP() { return 0; }
+    Word tmp = cpu.PC;
 
-Byte JSR() { return 0; }
-Byte LDA() { return 0; }
-Byte LDX() { return 0; }
-Byte LDY() { return 0; }
-Byte LSR() { return 0; }
-Byte NOP() { return 0; }
-Byte ORA() { return 0; }
-Byte PHA() { return 0; }
-Byte PHP() { return 0; }
-Byte PLA() { return 0; }
-Byte PLP() { return 0; }
-Byte ROL() { return 0; }
-Byte ROR() { return 0; }
-Byte RTI() { return 0; }
+    cpu.PC += relative_address;
 
-Byte RTS() { return 0; }
-Byte SBC() { return 0; }
-Byte SEC() { return 0; }
-Byte SED() { return 0; }
-Byte SEI() { return 0; }
-Byte STA() { return 0; }
-Byte STX() { return 0; }
-Byte STY() { return 0; }
-Byte TAX() { return 0; }
-Byte TAY() { return 0; }
-Byte TSX() { return 0; }
-Byte TXA() { return 0; }
-Byte TXS() { return 0; }
-Byte TYA() { return 0; }
+    cycles += (tmp >> 8) != (cpu.PC >> 8); // +1 if a page is crossed.
 
-Byte XXX() { return 0; }
+    return cycles;
+}
 
-Byte IMP() { return 0; }
-Byte ACC() { return 0; }
-Byte IMM() { return 0; }
-Byte ZP0() { return 0; }
-Byte ZPX() { return 0; }
-Byte ZPY() { return 0; }
-Byte REL() { return 0; }
-Byte AB0() { return 0; }
-Byte ABX() { return 0; }
-Byte ABY() { return 0; }
-Byte IND() { return 0; }
-Byte IIX() { return 0; }
-Byte IIY() { return 0; }
+Word absolute_address;
+Byte (*addrmode)(Byte *operand);
 
-void ins_execute() {
-    Byte opcode = mem_fetch(cpu->PC);
+Byte ADC(Byte operand) {
+    bool areSignBitsEqual =
+        !((cpu.A & BIT_MASK_SIGNED) ^ (operand & BIT_MASK_SIGNED));
+
+    unsigned int value = cpu.A + cpu.C + operand;
+
+    cpu.A = value;
+
+    cpu.C = (value & BIT_MASK_CARRY) > 0;
+    cpu.Z = IS_ZERO(cpu.A);
+    cpu.N = IS_NEGATIVE(cpu.A);
+
+    cpu.V = areSignBitsEqual *
+            ((operand & BIT_MASK_SIGNED) != (cpu.A & BIT_MASK_SIGNED));
+
+    return 0;
+}
+
+Byte AND(Byte operand) {
+    cpu.A &= operand;
+
+    cpu.Z = IS_ZERO(cpu.A);
+    cpu.N = IS_NEGATIVE(cpu.A);
+
+    return 0;
+}
+
+Byte ASL(Byte operand) {
+    Word value = operand << 1;
+
+    cpu.C = (value & 0x100) > 0;
+    cpu.Z = IS_ZERO(value & 0x00FF);
+    cpu.N = IS_NEGATIVE(value & 0x00FF);
+
+    if (addrmode == &ACC) {
+        cpu.A = value;
+    } else {
+        mem_write(absolute_address, value);
+    }
+
+    return 0;
+}
+
+Byte BCC(Byte operand) {
+    if (!cpu.C)
+        return branch(operand);
+
+    return 0;
+}
+
+Byte BCS(Byte operand) {
+    if (cpu.C)
+        return branch(operand);
+
+    return 0;
+}
+
+Byte BEQ(Byte operand) {
+    if (cpu.Z)
+        return branch(operand);
+
+    return 0;
+}
+
+Byte BIT(Byte operand) {
+    Byte result = cpu.A & operand;
+
+    cpu.N = IS_NEGATIVE(operand);
+    cpu.V = (operand & 0b01000000) > 0;
+
+    cpu.Z = IS_ZERO(result);
+
+    return 0;
+}
+
+Byte BMI(Byte operand) {
+    if (cpu.N)
+        return branch(operand);
+
+    return 0;
+}
+
+Byte BNE(Byte operand) {
+    if (!cpu.Z)
+        return branch(operand);
+
+    return 0;
+}
+
+Byte BPL(Byte operand) {
+    if (!cpu.N)
+        return branch(operand);
+
+    return 0;
+}
+
+Byte BRK(Byte operand) {
+    stack_push_word(++cpu.PC);
+    cpu.B = 1;
+    stack_push_ps();
+
+    Byte LSB = mem_fetch(0xFFFE);
+    Byte MSB = mem_fetch(0xFFFF);
+
+    cpu.PC = LSB | MSB << 8;
+
+    return 0;
+}
+
+Byte BVC(Byte operand) {
+    if (!cpu.V)
+        return branch(operand);
+
+    return 0;
+}
+
+Byte BVS(Byte operand) {
+    if (cpu.V)
+        return branch(operand);
+
+    return 0;
+}
+
+Byte CLC(Byte operand) {
+    cpu.C = 0;
+    return 0;
+}
+
+Byte CLD(Byte operand) {
+    cpu.D = 0;
+    return 0;
+}
+
+Byte CLI(Byte operand) {
+    cpu.I = 0;
+    return 0;
+}
+
+Byte CLV(Byte operand) {
+    cpu.V = 0;
+    return 0;
+}
+
+Byte CMP(Byte operand) {
+    cpu.C = (cpu.A >= operand);
+    cpu.Z = (cpu.A == operand);
+    cpu.N = IS_NEGATIVE(cpu.A - operand);
+
+    return 0;
+}
+
+Byte CPX(Byte operand) {
+    cpu.C = (cpu.X >= operand);
+    cpu.Z = (cpu.X == operand);
+    cpu.N = IS_NEGATIVE(cpu.X - operand);
+
+    return 0;
+}
+
+Byte CPY(Byte operand) {
+    cpu.C = (cpu.Y >= operand);
+    cpu.Z = (cpu.Y == operand);
+    cpu.N = IS_NEGATIVE(cpu.Y - operand);
+
+    return 0;
+}
+
+Byte DEC(Byte operand) {
+    Byte value = operand - 1;
+
+    cpu.Z = IS_ZERO(value);
+    cpu.N = IS_NEGATIVE(value);
+
+    mem_write(absolute_address, value);
+    return 0;
+}
+
+Byte DEX(Byte operand) {
+    cpu.X -= 1;
+
+    cpu.Z = IS_ZERO(cpu.X);
+    cpu.N = IS_NEGATIVE(cpu.X);
+
+    return 0;
+}
+
+Byte DEY(Byte operand) {
+    cpu.Y -= 1;
+
+    cpu.Z = IS_ZERO(cpu.Y);
+    cpu.N = IS_NEGATIVE(cpu.Y);
+
+    return 0;
+}
+
+Byte EOR(Byte operand) {
+    cpu.A ^= operand;
+
+    cpu.Z = IS_ZERO(cpu.A);
+    cpu.N = IS_NEGATIVE(cpu.A);
+
+    return 0;
+}
+
+Byte INC(Byte operand) {
+    operand += 1;
+
+    cpu.Z = IS_ZERO(operand);
+    cpu.N = IS_NEGATIVE(operand);
+
+    mem_write(absolute_address, operand);
+
+    return 0;
+}
+
+Byte INX(Byte operand) {
+    cpu.X += 1;
+
+    cpu.Z = IS_ZERO(cpu.X);
+    cpu.N = IS_NEGATIVE(cpu.X);
+
+    return 0;
+}
+
+Byte INY(Byte operand) {
+    cpu.Y += 1;
+
+    cpu.Z = IS_ZERO(cpu.Y);
+    cpu.N = IS_NEGATIVE(cpu.Y);
+
+    return 0;
+}
+
+Byte JMP(Byte operand) {
+    cpu.PC = operand;
+    return 0;
+}
+
+Byte JSR(Byte operand) {
+    stack_push_word(--cpu.PC);
+
+    cpu.PC = operand;
+
+    return 0;
+}
+
+Byte LDA(Byte operand) {
+    cpu.A = operand;
+
+    cpu.Z = IS_ZERO(cpu.A);
+    cpu.N = IS_NEGATIVE(cpu.A);
+
+    return 0;
+}
+
+Byte LDX(Byte operand) {
+    cpu.X = operand;
+
+    cpu.Z = IS_ZERO(cpu.X);
+    cpu.N = IS_NEGATIVE(cpu.X);
+
+    return 0;
+}
+
+Byte LDY(Byte operand) {
+    cpu.Y = operand;
+
+    cpu.Z = IS_ZERO(cpu.Y);
+    cpu.N = IS_NEGATIVE(cpu.Y);
+
+    return 0;
+}
+
+Byte LSR(Byte operand) {
+    Word value = operand >> 1;
+
+    cpu.C = (value & 0x100) > 0;
+    cpu.Z = IS_ZERO(value);
+    cpu.N = IS_NEGATIVE(value);
+
+    if (addrmode == &ACC) {
+        cpu.A = value;
+    } else {
+        mem_write(absolute_address, value);
+    }
+
+    return 0;
+}
+
+Byte NOP(Byte operand) { return 0; }
+
+Byte ORA(Byte operand) {
+    cpu.A |= operand;
+
+    cpu.Z = IS_ZERO(cpu.A);
+    cpu.N = IS_NEGATIVE(cpu.N);
+
+    return 0;
+}
+
+Byte PHA(Byte operand) {
+    stack_push_byte(cpu.A);
+    return 0;
+}
+
+Byte PHP(Byte operand) {
+    stack_push_ps();
+    return 0;
+}
+
+Byte PLA(Byte operand) {
+    cpu.A = stack_pop_byte();
+    return 0;
+}
+
+Byte PLP(Byte operand) {
+    stack_pop_ps();
+    return 0;
+}
+
+Byte ROL(Byte operand) {
+    Word value = (Word)(operand << 1) | cpu.C;
+
+    cpu.C = (value & 0xFF00) == 1;
+    cpu.Z = IS_ZERO(value & 0x00FF);
+    cpu.N = IS_NEGATIVE(value);
+
+    if (addrmode == &IMP) {
+        cpu.A = value;
+    } else {
+        mem_write(absolute_address, value);
+    }
+
+    return 0;
+}
+
+Byte ROR(Byte operand) {
+    Word value = (Word)(cpu.C << 7) | (operand >> 1);
+
+    cpu.C = value & 0x0001;
+    cpu.Z = IS_ZERO(value & 0x00FF);
+    cpu.N = IS_NEGATIVE(value);
+
+    if (addrmode == &IMP) {
+        cpu.A = value;
+    } else {
+        mem_write(absolute_address, value);
+    }
+
+    return 0;
+}
+
+Byte RTI(Byte operand) {
+    stack_pop_ps();
+    cpu.PC = stack_pop_word();
+    return 0;
+}
+
+Byte RTS(Byte operand) {
+    cpu.PC = stack_pop_word() - 1;
+    return 0;
+}
+
+Byte SBC(Byte operand) { return 0; }
+
+Byte SEC(Byte operand) {
+    cpu.C = 1;
+    return 0;
+}
+
+Byte SED(Byte operand) {
+    cpu.D = 1;
+    return 0;
+}
+
+Byte SEI(Byte operand) {
+    cpu.I = 1;
+    return 0;
+}
+
+Byte STA(Byte operand) {
+    mem_write(operand, cpu.A);
+    return 0;
+}
+
+Byte STX(Byte operand) {
+    mem_write(operand, cpu.X);
+    return 0;
+}
+
+Byte STY(Byte operand) {
+    mem_write(operand, cpu.Y);
+    return 0;
+}
+
+Byte TAX(Byte operand) {
+    cpu.X = cpu.A;
+
+    cpu.Z = IS_ZERO(cpu.X);
+    cpu.N = IS_NEGATIVE(cpu.X);
+
+    return 0;
+}
+
+Byte TAY(Byte operand) {
+    cpu.Y = cpu.A;
+
+    cpu.Z = IS_ZERO(cpu.Y);
+    cpu.N = IS_NEGATIVE(cpu.Y);
+
+    return 0;
+}
+
+Byte TSX(Byte operand) {
+    cpu.X = cpu.SP;
+
+    cpu.Z = IS_ZERO(cpu.X);
+    cpu.N = IS_NEGATIVE(cpu.X);
+
+    return 0;
+}
+
+Byte TXA(Byte operand) {
+    cpu.A = cpu.X;
+
+    cpu.Z = IS_ZERO(cpu.A);
+    cpu.N = IS_NEGATIVE(cpu.A);
+
+    return 0;
+}
+
+Byte TXS(Byte operand) {
+    cpu.SP = cpu.X;
+
+    cpu.Z = IS_ZERO(cpu.SP);
+    cpu.N = IS_NEGATIVE(cpu.SP);
+    
+    return 0;
+}
+
+Byte TYA(Byte operand) {
+    cpu.A = cpu.Y;
+
+    cpu.Z = IS_ZERO(cpu.A);
+    cpu.N = IS_NEGATIVE(cpu.A);
+
+    return 0;
+}
+
+Byte XXX(Byte operand) { return 0; }
+
+uint8_t IMP(Byte *operand) { return 0; }
+
+uint8_t ACC(Byte *operand) { 
+    (*operand) = cpu.A;
+    return 0; 
+}
+
+uint8_t IMM(Byte *operand) {
+    (*operand) = mem_fetch(cpu.PC);
+    return 0;
+}
+
+uint8_t ZP0(Byte *operand) {
+    absolute_address = mem_fetch(cpu.PC) & 0x00FF;
+    (*operand) = mem_fetch(absolute_address);
+    return 0;
+}
+
+uint8_t ZPX(Byte *operand) {
+    Byte zero_page_address = cpu.X + mem_fetch(cpu.PC);
+    absolute_address = (Word)zero_page_address;
+    (*operand) = mem_fetch(zero_page_address);
+    return 0;
+}
+
+uint8_t ZPY(Byte *operand) {
+    Byte zero_page_address = cpu.Y + mem_fetch(cpu.PC);
+    absolute_address = (Word)zero_page_address;
+    (*operand) = mem_fetch(zero_page_address);
+    return 0;
+}
+
+uint8_t REL(Byte *operand) {
+    (*operand) = mem_fetch(cpu.PC);
+    return 0;
+}
+
+uint8_t AB0(Byte *operand) {
+    Byte LSB = mem_fetch(cpu.PC);
+    Byte MSB = mem_fetch(cpu.PC);
+
+    absolute_address = (Word)LSB | MSB << 8;
+
+    (*operand) = mem_fetch(absolute_address);
+    return 0;
+}
+
+uint8_t ABX(Byte *operand) {
+    Byte LSB = mem_fetch(cpu.PC);
+    Byte MSB = mem_fetch(cpu.PC);
+
+    absolute_address = (Word)LSB | MSB << 8;
+    (*operand) = mem_fetch(absolute_address += cpu.X);
+
+    return (Byte)(LSB + cpu.X) < cpu.X;
+}
+
+uint8_t ABY(Byte *operand) {
+    Byte LSB = mem_fetch(cpu.PC);
+    Byte MSB = mem_fetch(cpu.PC);
+
+    absolute_address = (Word)LSB | MSB << 8;
+    (*operand) = mem_fetch(absolute_address + cpu.Y);
+
+    return (Byte)(LSB + cpu.Y) < cpu.Y;
+}
+
+uint8_t IND(Byte *operand) {
+    Byte LSB = mem_fetch(cpu.PC);
+    Byte MSB = mem_fetch(cpu.PC);
+
+    Word pointer = (Word)LSB | MSB << 8;
+
+    if (LSB == 0xFF) {
+        (*operand) = (mem_fetch(pointer & 0xFF00) << 8) | mem_fetch(pointer);
+    } else {
+        (*operand) = (mem_fetch(pointer + 1) << 8) | mem_fetch(pointer);
+    }
+
+    return 0;
+}
+
+uint8_t IIX(Byte *operand) {
+    Byte zero_page_address = mem_fetch(cpu.PC);
+
+    zero_page_address += cpu.X;
+
+    Byte LSB = mem_fetch(zero_page_address);
+    Byte MSB = mem_fetch(zero_page_address + 1);
+
+    absolute_address = (Word)LSB | MSB << 8;
+
+    (*operand) = mem_fetch(absolute_address);
+
+    return 0;
+}
+
+uint8_t IIY(Byte *operand) {
+    Byte zero_page_address = mem_fetch(cpu.PC);
+
+    Byte LSB = mem_fetch(zero_page_address);
+    Byte MSB = mem_fetch(zero_page_address + 1);
+
+    absolute_address = (Word)LSB | MSB << 8;
+
+    (*operand) = mem_fetch(absolute_address + cpu.Y);
+
+    return (Byte)(LSB + cpu.Y) < cpu.Y;
+}
+
+uint8_t ins_execute() {
+    Byte opcode = mem_fetch(cpu.PC);
 
     instruction ins = matrix[opcode >> 4][opcode & 0x0F];
+    addrmode = ins.addrmode;
 
     Byte cycles = ins.cycles;
 
-    Byte additional_cycles_1 = ins.addrmode();
-    Byte additional_cycles_2 = ins.operation();
+    Byte operand;
+
+    Byte additional_cycles_1 = ins.addrmode(&operand);
+    Byte additional_cycles_2 = ins.operation(operand);
+
+    return cycles + additional_cycles_1 + additional_cycles_2;
 }

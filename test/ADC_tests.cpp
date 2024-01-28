@@ -6,8 +6,6 @@ extern "C" {
 
 class ADC_TEST : public ::testing::Test {
   protected:
-    CPU_6502 cpu;
-
     void SetUp() override { em6502_reset(&cpu); }
 
     ~ADC_TEST() override { em6502_destroy(&cpu); }

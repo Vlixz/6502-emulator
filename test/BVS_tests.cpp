@@ -6,8 +6,6 @@ extern "C" {
 
 class BVS_TEST : public ::testing::Test {
   protected:
-    CPU_6502 cpu;
-
     void SetUp() override { em6502_reset(&cpu); }
 
     ~BVS_TEST() override { em6502_destroy(&cpu); }
@@ -74,12 +72,12 @@ TEST_F(BVS_TEST, BVS_RE_OverflowflowSetBranchJumpOneByteNoNewPage) {
     cpu.memory[0xFFFD] = 0x02; // Jump 2 bytes
     cpu.memory[0xFFFE] = 0x00; // skipped
     cpu.memory[0xFFFF] = 0x00; // skipped
-    cpu.memory[0x0001] =
+    cpu.memory[0x0000] =
         BVS_RE_OPCODE; // Run instruction again without going to a new page
-    cpu.memory[0x0002] = 0x02;          // Jump 2 bytes
+    cpu.memory[0x0001] = 0x02;          // Jump 2 bytes
+    cpu.memory[0x0002] = 0x00;          // skipped
     cpu.memory[0x0003] = 0x00;          // skipped
-    cpu.memory[0x0004] = 0x00;          // skipped
-    cpu.memory[0x0005] = BVS_RE_OPCODE; // Next instruction
+    cpu.memory[0x0004] = BVS_RE_OPCODE; // Next instruction
     // End inline program
 
     int cycles = em6502_execute(&cpu, (BVS_RE_CYCLES + 2) + BVS_RE_CYCLES);
@@ -89,7 +87,7 @@ TEST_F(BVS_TEST, BVS_RE_OverflowflowSetBranchJumpOneByteNoNewPage) {
 
     ASSERT_EQ(cycles, BVS_RE_CYCLES + 1);
 
-    ASSERT_EQ(cpu.PC, 0x0005);
+    ASSERT_EQ(cpu.PC, 0x0004);
 
     ASSERT_TRUE(cpu.V);
 

@@ -6,8 +6,6 @@ extern "C" {
 
 class SEI_TEST : public ::testing::Test {
   protected:
-    CPU_6502 cpu;
-
     void SetUp() override { em6502_reset(&cpu); }
 
     ~SEI_TEST() override { em6502_destroy(&cpu); }
@@ -40,7 +38,7 @@ TEST_F(SEI_TEST, SEI_IP_InterruptFlagStaysSetWhenSettingItMultipleTimes) {
 
     // Start inline program
     cpu.memory[0xFFFC] = SEI_IP_OPCODE;
-    cpu.memory[0xFFFE] = SEI_IP_OPCODE; // Run instruction again
+    cpu.memory[0xFFFD] = SEI_IP_OPCODE; // Run instruction again
     // End inline program
 
     int cycles = em6502_execute(&cpu, SEI_IP_CYCLES * 2);

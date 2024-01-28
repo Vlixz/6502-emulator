@@ -7,8 +7,8 @@
 typedef struct {
     char *name;
 
-    Byte (*operation)(void);
-    Byte (*addrmode)(void);
+    Byte (*operation)(Byte operand);
+    Byte (*addrmode)(Byte *operand);
 
     uint8_t cycles;
 } instruction;
@@ -17,88 +17,90 @@ typedef struct {
 //             Instructions
 // =======================================
 
-Byte ADC();
-Byte AND();
-Byte ASL();
-Byte BCC();
-Byte BCS();
-Byte BEQ();
-Byte BIT();
-Byte BMI();
-Byte BNE();
-Byte BPL();
-Byte BRK();
-Byte BVC();
-Byte BVS();
-Byte CLC();
+uint8_t ins_execute();
 
-Byte CLD();
-Byte CLI();
-Byte CLV();
-Byte CMP();
-Byte CPX();
-Byte CPY();
-Byte DEC();
-Byte DEX();
-Byte DEY();
-Byte EOR();
-Byte INC();
-Byte INX();
-Byte INY();
-Byte JMP();
+Byte ADC(Byte operand);
+Byte AND(Byte operand);
+Byte ASL(Byte operand);
+Byte BCC(Byte operand);
+Byte BCS(Byte operand);
+Byte BEQ(Byte operand);
+Byte BIT(Byte operand);
+Byte BMI(Byte operand);
+Byte BNE(Byte operand);
+Byte BPL(Byte operand);
+Byte BRK(Byte operand);
+Byte BVC(Byte operand);
+Byte BVS(Byte operand);
+Byte CLC(Byte operand);
 
-Byte JSR();
-Byte LDA();
-Byte LDX();
-Byte LDY();
-Byte LSR();
-Byte NOP();
-Byte ORA();
-Byte PHA();
-Byte PHP();
-Byte PLA();
-Byte PLP();
-Byte ROL();
-Byte ROR();
-Byte RTI();
+Byte CLD(Byte operand);
+Byte CLI(Byte operand);
+Byte CLV(Byte operand);
+Byte CMP(Byte operand);
+Byte CPX(Byte operand);
+Byte CPY(Byte operand);
+Byte DEC(Byte operand);
+Byte DEX(Byte operand);
+Byte DEY(Byte operand);
+Byte EOR(Byte operand);
+Byte INC(Byte operand);
+Byte INX(Byte operand);
+Byte INY(Byte operand);
+Byte JMP(Byte operand);
 
-Byte RTS();
-Byte SBC();
-Byte SEC();
-Byte SED();
-Byte SEI();
-Byte STA();
-Byte STX();
-Byte STY();
-Byte TAX();
-Byte TAY();
-Byte TSX();
-Byte TXA();
-Byte TXS();
-Byte TYA();
+Byte JSR(Byte operand);
+Byte LDA(Byte operand);
+Byte LDX(Byte operand);
+Byte LDY(Byte operand);
+Byte LSR(Byte operand);
+Byte NOP(Byte operand);
+Byte ORA(Byte operand);
+Byte PHA(Byte operand);
+Byte PHP(Byte operand);
+Byte PLA(Byte operand);
+Byte PLP(Byte operand);
+Byte ROL(Byte operand);
+Byte ROR(Byte operand);
+Byte RTI(Byte operand);
 
-Byte XXX();
+Byte RTS(Byte operand);
+Byte SBC(Byte operand);
+Byte SEC(Byte operand);
+Byte SED(Byte operand);
+Byte SEI(Byte operand);
+Byte STA(Byte operand);
+Byte STX(Byte operand);
+Byte STY(Byte operand);
+Byte TAX(Byte operand);
+Byte TAY(Byte operand);
+Byte TSX(Byte operand);
+Byte TXA(Byte operand);
+Byte TXS(Byte operand);
+Byte TYA(Byte operand);
+
+Byte XXX(Byte operand);
 
 // =======================================
 //            Addressing Modes
 // =======================================
 
-Byte IMP();
-Byte ACC();
+Byte IMP(Byte *operand);
+Byte ACC(Byte *operand);
 
 /**
  * @brief Immediate mode returns the value specified during compile time with
  * '#'
  *
  */
-Byte IMM();
+Byte IMM(Byte *operand);
 
 /**
  * @brief Zero Page mode returns the value at a specific address in the Zero
- * Page (0x00 -> 0xFF)
+ * Page (0x00 -> 0xTYA - Transfer Y to AccumulatorFF)
  *
  */
-Byte ZP0();
+Byte ZP0(Byte *operand);
 
 /**
  * @brief Zero Page X returns the value at a address added to the current value
@@ -111,7 +113,7 @@ Byte ZP0();
  *
  * EX: 0x80 + 0xFF = 0x7F and not 0x017F
  */
-Byte ZPX();
+Byte ZPX(Byte *operand);
 
 /**
  * @brief Zero Page Y returns the value at a address calculated by adding the
@@ -122,7 +124,7 @@ Byte ZPX();
  * STX.
  *
  */
-Byte ZPY();
+Byte ZPY(Byte *operand);
 
 /**
  * @brief Addressing mode relative does not return a value and only increments
@@ -131,28 +133,28 @@ Byte ZPY();
  * @note PS: This addressing mode is only used by branch instructions.
  *
  */
-Byte REL();
+Byte REL(Byte *operanbd);
 
 /**
  * @brief Absolute addressing mode returns the value at the given 16-bit address
  * specifeid in the program code.
  *
  */
-Byte AB0();
+Byte AB0(Byte *operand);
 
 /**
  * @brief Absolute X addressing mode returns the value at a given 16-bit address
  * added to the current value in the X register.
  *
  */
-Byte ABX();
+Byte ABX(Byte *operand);
 
 /**
  * @brief Absolute Y addressing mode returns the value at a given 16-bit address
  * added to the current value of the Y register.
  *
  */
-Byte ABY();
+Byte ABY(Byte *operand);
 
 /**
  * @brief JMP is the only 6502 instruction to support indirection. The
@@ -165,7 +167,7 @@ Byte ABY();
  * execution to occur at $BAFC (e.g. the contents of $0120 and $0121).
  *
  */
-Byte IND();
+Byte IND(Byte *operand);
 
 /**
  * @brief Indexed indirect addressing is normally used in conjunction with a
@@ -174,7 +176,7 @@ Byte IND();
  * to give the location of the least significant byte of the target address.
  *
  */
-Byte IIX();
+Byte IIX(Byte *operand);
 
 /**
  * @brief Indirect indirect addressing is the most common indirection mode used
@@ -183,5 +185,6 @@ Byte IIX();
  * this value to generated the actual target address for operation.
  *
  */
-Byte IIY();
+Byte IIY(Byte *operand);
+
 #endif /* INC_INSTRUCTION_H */

@@ -6,8 +6,6 @@ extern "C" {
 
 class LDA_TEST : public ::testing::Test {
   protected:
-    CPU_6502 cpu;
-
     void SetUp() override { em6502_reset(&cpu); }
 
     ~LDA_TEST() override { em6502_destroy(&cpu); }
