@@ -8,19 +8,19 @@ class SEI_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~SEI_TEST() override { em6502_destroy(&cpu); }
+    ~SEI_TEST() override { }
 };
 
-TEST_F(SEI_TEST, SEI_IP_InterruptFlagSet) {
+TEST_F(SEI_TEST, SEI_IMP_InterruptFlagSet) {
     cpu.I = 0;
 
     // Start inline program
-    cpu.memory[0xFFFC] = SEI_IP_OPCODE;
+    cpu.memory[0xFFFC] = SEI_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, SEI_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, SEI_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, SEI_IP_CYCLES);
+    ASSERT_EQ(cycles, SEI_IMP_CYCLES);
 
     ASSERT_TRUE(cpu.I);
 
@@ -33,17 +33,17 @@ TEST_F(SEI_TEST, SEI_IP_InterruptFlagSet) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(SEI_TEST, SEI_IP_InterruptFlagStaysSetWhenSettingItMultipleTimes) {
+TEST_F(SEI_TEST, SEI_IMP_InterruptFlagStaysSetWhenSettingItMultipleTimes) {
     cpu.I = 0;
 
     // Start inline program
-    cpu.memory[0xFFFC] = SEI_IP_OPCODE;
-    cpu.memory[0xFFFD] = SEI_IP_OPCODE; // Run instruction again
+    cpu.memory[0xFFFC] = SEI_IMP_OPCODE;
+    cpu.memory[0xFFFD] = SEI_IMP_OPCODE; // Run instruction again
     // End inline program
 
-    int cycles = em6502_execute(&cpu, SEI_IP_CYCLES * 2);
+    int cycles = em6502_execute(&cpu, SEI_IMP_CYCLES * 2);
 
-    ASSERT_EQ(cycles, SEI_IP_CYCLES * 2);
+    ASSERT_EQ(cycles, SEI_IMP_CYCLES * 2);
 
     ASSERT_TRUE(cpu.I);
 

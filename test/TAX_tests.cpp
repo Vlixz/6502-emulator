@@ -8,19 +8,19 @@ class TAX_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~TAX_TEST() override { em6502_destroy(&cpu); }
+    ~TAX_TEST() override { }
 };
 
-TEST_F(TAX_TEST, TAX_IP_TransferAccumulatorIntoX) {
+TEST_F(TAX_TEST, TAX_IMP_TransferAccumulatorIntoX) {
     cpu.A = 0x0F;
 
     // Start inline program
-    cpu.memory[0xFFFC] = TAX_IP_OPCODE;
+    cpu.memory[0xFFFC] = TAX_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, TAX_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, TAX_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, TAX_IP_CYCLES);
+    ASSERT_EQ(cycles, TAX_IMP_CYCLES);
 
     ASSERT_EQ(cpu.X, 0x0F);
 
@@ -35,16 +35,16 @@ TEST_F(TAX_TEST, TAX_IP_TransferAccumulatorIntoX) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TAX_TEST, TAX_IP_TransferAccumulatorIntoXNegative) {
+TEST_F(TAX_TEST, TAX_IMP_TransferAccumulatorIntoXNegative) {
     cpu.A = 0b10001111;
 
     // Start inline program
-    cpu.memory[0xFFFC] = TAX_IP_OPCODE;
+    cpu.memory[0xFFFC] = TAX_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, TAX_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, TAX_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, TAX_IP_CYCLES);
+    ASSERT_EQ(cycles, TAX_IMP_CYCLES);
 
     ASSERT_EQ(cpu.X, 0b10001111);
 
@@ -59,16 +59,16 @@ TEST_F(TAX_TEST, TAX_IP_TransferAccumulatorIntoXNegative) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TAX_TEST, TAX_IP_TransferAccumulatorIntoXZero) {
+TEST_F(TAX_TEST, TAX_IMP_TransferAccumulatorIntoXZero) {
     cpu.A = 0x00;
 
     // Start inline program
-    cpu.memory[0xFFFC] = TAX_IP_OPCODE;
+    cpu.memory[0xFFFC] = TAX_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, TAX_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, TAX_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, TAX_IP_CYCLES);
+    ASSERT_EQ(cycles, TAX_IMP_CYCLES);
 
     ASSERT_EQ(cpu.X, 0x00);
 

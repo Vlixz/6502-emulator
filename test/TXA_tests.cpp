@@ -8,19 +8,19 @@ class TXA_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~TXA_TEST() override { em6502_destroy(&cpu); }
+    ~TXA_TEST() override { }
 };
 
-TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulator) {
+TEST_F(TXA_TEST, TXA_IMP_TransferXIntoAccumulator) {
     cpu.X = 0x0F;
 
     // Start inline program
-    cpu.memory[0xFFFC] = TXA_IP_OPCODE;
+    cpu.memory[0xFFFC] = TXA_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, TXA_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, TXA_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, TXA_IP_CYCLES);
+    ASSERT_EQ(cycles, TXA_IMP_CYCLES);
 
     ASSERT_EQ(cpu.A, 0x0F);
 
@@ -35,16 +35,16 @@ TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulator) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulatorNegative) {
+TEST_F(TXA_TEST, TXA_IMP_TransferXIntoAccumulatorNegative) {
     cpu.X = 0b10001111;
 
     // Start inline program
-    cpu.memory[0xFFFC] = TXA_IP_OPCODE;
+    cpu.memory[0xFFFC] = TXA_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, TXA_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, TXA_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, TXA_IP_CYCLES);
+    ASSERT_EQ(cycles, TXA_IMP_CYCLES);
 
     ASSERT_EQ(cpu.A, 0b10001111);
 
@@ -59,16 +59,16 @@ TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulatorNegative) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TXA_TEST, TXA_IP_TransferXIntoAccumulatorZero) {
+TEST_F(TXA_TEST, TXA_IMP_TransferXIntoAccumulatorZero) {
     cpu.X = 0x00;
 
     // Start inline program
-    cpu.memory[0xFFFC] = TXA_IP_OPCODE;
+    cpu.memory[0xFFFC] = TXA_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, TXA_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, TXA_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, TXA_IP_CYCLES);
+    ASSERT_EQ(cycles, TXA_IMP_CYCLES);
 
     ASSERT_EQ(cpu.A, 0x00);
 

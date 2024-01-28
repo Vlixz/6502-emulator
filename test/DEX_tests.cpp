@@ -8,19 +8,19 @@ class DEX_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~DEX_TEST() override { em6502_destroy(&cpu); }
+    ~DEX_TEST() override { }
 };
 
-TEST_F(DEX_TEST, DEX_IP_DecrementsXZeroNonNegative) {
+TEST_F(DEX_TEST, DEX_IMP_DecrementsXZeroNonNegative) {
     cpu.X = 0x01;
 
     // Start inline program
-    cpu.memory[0xFFFC] = DEX_IP_OPCODE;
+    cpu.memory[0xFFFC] = DEX_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, DEX_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, DEX_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, DEX_IP_CYCLES);
+    ASSERT_EQ(cycles, DEX_IMP_CYCLES);
 
     ASSERT_EQ(cpu.X, 0x00);
     ASSERT_TRUE(cpu.Z);
@@ -34,16 +34,16 @@ TEST_F(DEX_TEST, DEX_IP_DecrementsXZeroNonNegative) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNegative) {
+TEST_F(DEX_TEST, DEX_IMP_DecrementsXNonZeroNegative) {
     cpu.X = 0x00;
 
     // Start inline program
-    cpu.memory[0xFFFC] = DEX_IP_OPCODE;
+    cpu.memory[0xFFFC] = DEX_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, DEX_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, DEX_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, DEX_IP_CYCLES);
+    ASSERT_EQ(cycles, DEX_IMP_CYCLES);
 
     ASSERT_EQ(cpu.X, 0xFF);
     ASSERT_TRUE(cpu.N);
@@ -57,16 +57,16 @@ TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNegative) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(DEX_TEST, DEX_IP_DecrementsXNonZeroNonNegative) {
+TEST_F(DEX_TEST, DEX_IMP_DecrementsXNonZeroNonNegative) {
     cpu.X = 0x02;
 
     // Start inline program
-    cpu.memory[0xFFFC] = DEX_IP_OPCODE;
+    cpu.memory[0xFFFC] = DEX_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, DEX_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, DEX_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, DEX_IP_CYCLES);
+    ASSERT_EQ(cycles, DEX_IMP_CYCLES);
 
     ASSERT_EQ(cpu.X, 0x01);
     ASSERT_FALSE(cpu.N);

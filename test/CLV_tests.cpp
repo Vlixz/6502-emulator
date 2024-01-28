@@ -8,19 +8,19 @@ class CLV_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~CLV_TEST() override { em6502_destroy(&cpu); }
+    ~CLV_TEST() override { }
 };
 
-TEST_F(CLV_TEST, CLV_IP_OverflowFlagCleared) {
+TEST_F(CLV_TEST, CLV_IMP_OverflowFlagCleared) {
     cpu.V = 1;
 
     // Start inline program
-    cpu.memory[0xFFFC] = CLV_IP_OPCODE;
+    cpu.memory[0xFFFC] = CLV_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, CLV_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, CLV_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, CLV_IP_CYCLES);
+    ASSERT_EQ(cycles, CLV_IMP_CYCLES);
 
     ASSERT_FALSE(cpu.V);
 
@@ -33,17 +33,17 @@ TEST_F(CLV_TEST, CLV_IP_OverflowFlagCleared) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(CLV_TEST, CLV_IP_DoesNotChangeClearedOverflowFlag) {
+TEST_F(CLV_TEST, CLV_IMP_DoesNotChangeClearedOverflowFlag) {
     cpu.V = 1;
 
     // Start inline program
-    cpu.memory[0xFFFC] = CLV_IP_OPCODE;
-    cpu.memory[0xFFFD] = CLV_IP_OPCODE; // Run instruction again
+    cpu.memory[0xFFFC] = CLV_IMP_OPCODE;
+    cpu.memory[0xFFFD] = CLV_IMP_OPCODE; // Run instruction again
     // End inline program
 
-    int cycles = em6502_execute(&cpu, CLV_IP_CYCLES * 2);
+    int cycles = em6502_execute(&cpu, CLV_IMP_CYCLES * 2);
 
-    ASSERT_EQ(cycles, CLV_IP_CYCLES * 2);
+    ASSERT_EQ(cycles, CLV_IMP_CYCLES * 2);
 
     ASSERT_FALSE(cpu.V);
 

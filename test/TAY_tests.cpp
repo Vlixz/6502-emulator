@@ -8,19 +8,19 @@ class TAY_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~TAY_TEST() override { em6502_destroy(&cpu); }
+    ~TAY_TEST() override { }
 };
 
-TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoY) {
+TEST_F(TAY_TEST, TAY_IMP_TransferAccumulatorIntoY) {
     cpu.A = 0x0F;
 
     // Start inline program
-    cpu.memory[0xFFFC] = TAY_IP_OPCODE;
+    cpu.memory[0xFFFC] = TAY_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, TAY_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, TAY_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, TAY_IP_CYCLES);
+    ASSERT_EQ(cycles, TAY_IMP_CYCLES);
 
     ASSERT_EQ(cpu.Y, 0x0F);
 
@@ -35,16 +35,16 @@ TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoY) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoYNegative) {
+TEST_F(TAY_TEST, TAY_IMP_TransferAccumulatorIntoYNegative) {
     cpu.A = 0b10001111;
 
     // Start inline program
-    cpu.memory[0xFFFC] = TAY_IP_OPCODE;
+    cpu.memory[0xFFFC] = TAY_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, TAY_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, TAY_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, TAY_IP_CYCLES);
+    ASSERT_EQ(cycles, TAY_IMP_CYCLES);
 
     ASSERT_EQ(cpu.Y, 0b10001111);
 
@@ -59,16 +59,16 @@ TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoYNegative) {
     ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
 }
 
-TEST_F(TAY_TEST, TAY_IP_TransferAccumulatorIntoYZero) {
+TEST_F(TAY_TEST, TAY_IMP_TransferAccumulatorIntoYZero) {
     cpu.A = 0x00;
 
     // Start inline program
-    cpu.memory[0xFFFC] = TAY_IP_OPCODE;
+    cpu.memory[0xFFFC] = TAY_IMP_OPCODE;
     // End inline program
 
-    int cycles = em6502_execute(&cpu, TAY_IP_CYCLES);
+    int cycles = em6502_execute(&cpu, TAY_IMP_CYCLES);
 
-    ASSERT_EQ(cycles, TAY_IP_CYCLES);
+    ASSERT_EQ(cycles, TAY_IMP_CYCLES);
 
     ASSERT_EQ(cpu.Y, 0x00);
 

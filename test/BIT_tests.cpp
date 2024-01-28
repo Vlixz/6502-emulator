@@ -8,7 +8,7 @@ class BIT_TEST : public ::testing::Test {
   protected:
     void SetUp() override { em6502_reset(&cpu); }
 
-    ~BIT_TEST() override { em6502_destroy(&cpu); }
+    ~BIT_TEST() override { }
 };
 
 #define BIT_ZP_TEST 1
@@ -24,14 +24,14 @@ TEST_F(BIT_TEST, BIT_ZP_CheckBitSixNoVNoN) {
     cpu.A = 0b00100111;
 
     // Start inline program
-    cpu.memory[0xFFFC] = BIT_ZP_OPCODE;
+    cpu.memory[0xFFFC] = BIT_ZP0_OPCODE;
     cpu.memory[0xFFFD] = 0x0011;
     cpu.memory[0x0011] = 0b00100000; // Bit mask
     // End inline program
 
-    int cycles = em6502_execute(&cpu, BIT_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, BIT_ZP0_CYCLES);
 
-    ASSERT_EQ(cycles, BIT_ZP_CYCLES);
+    ASSERT_EQ(cycles, BIT_ZP0_CYCLES);
 
     ASSERT_FALSE(cpu.Z);
 
@@ -53,14 +53,14 @@ TEST_F(BIT_TEST, BIT_ZP_CheckBitSixVAndN) {
     cpu.A = 0b00100111;
 
     // Start inline program
-    cpu.memory[0xFFFC] = BIT_ZP_OPCODE;
+    cpu.memory[0xFFFC] = BIT_ZP0_OPCODE;
     cpu.memory[0xFFFD] = 0x0011;
     cpu.memory[0x0011] = 0b11100000; // Bit mask
     // End inline program
 
-    int cycles = em6502_execute(&cpu, BIT_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, BIT_ZP0_CYCLES);
 
-    ASSERT_EQ(cycles, BIT_ZP_CYCLES);
+    ASSERT_EQ(cycles, BIT_ZP0_CYCLES);
 
     ASSERT_FALSE(cpu.Z);
 
@@ -82,14 +82,14 @@ TEST_F(BIT_TEST, BIT_ZP_CheckBitZero) {
     cpu.A = 0b00100111;
 
     // Start inline program
-    cpu.memory[0xFFFC] = BIT_ZP_OPCODE;
+    cpu.memory[0xFFFC] = BIT_ZP0_OPCODE;
     cpu.memory[0xFFFD] = 0x0011;
     cpu.memory[0x0011] = 0b01000000; // Bit mask
     // End inline program
 
-    int cycles = em6502_execute(&cpu, BIT_ZP_CYCLES);
+    int cycles = em6502_execute(&cpu, BIT_ZP0_CYCLES);
 
-    ASSERT_EQ(cycles, BIT_ZP_CYCLES);
+    ASSERT_EQ(cycles, BIT_ZP0_CYCLES);
 
     ASSERT_TRUE(cpu.Z);
 
@@ -120,15 +120,15 @@ TEST_F(BIT_TEST, BIT_AB_CheckBitSixNoVNoN) {
     Byte MSB = AbsoluteAddress >> 8;
 
     // Start inline program
-    cpu.memory[0xFFFC] = BIT_AB_OPCODE;
+    cpu.memory[0xFFFC] = BIT_AB0_OPCODE;
     cpu.memory[0xFFFD] = LSB;
     cpu.memory[0xFFFE] = MSB;
     cpu.memory[AbsoluteAddress] = 0b00100000; // Bit mask
     // End inline program
 
-    int cycles = em6502_execute(&cpu, BIT_AB_CYCLES);
+    int cycles = em6502_execute(&cpu, BIT_AB0_CYCLES);
 
-    ASSERT_EQ(cycles, BIT_AB_CYCLES);
+    ASSERT_EQ(cycles, BIT_AB0_CYCLES);
 
     ASSERT_FALSE(cpu.Z);
 
@@ -155,15 +155,15 @@ TEST_F(BIT_TEST, BIT_AB_CheckBitSixVAndN) {
     Byte MSB = AbsoluteAddress >> 8;
 
     // Start inline program
-    cpu.memory[0xFFFC] = BIT_AB_OPCODE;
+    cpu.memory[0xFFFC] = BIT_AB0_OPCODE;
     cpu.memory[0xFFFD] = LSB;
     cpu.memory[0xFFFE] = MSB;
     cpu.memory[AbsoluteAddress] = 0b11100000; // Bit mask
     // End inline program
 
-    int cycles = em6502_execute(&cpu, BIT_AB_CYCLES);
+    int cycles = em6502_execute(&cpu, BIT_AB0_CYCLES);
 
-    ASSERT_EQ(cycles, BIT_AB_CYCLES);
+    ASSERT_EQ(cycles, BIT_AB0_CYCLES);
 
     ASSERT_FALSE(cpu.Z);
 
@@ -190,15 +190,15 @@ TEST_F(BIT_TEST, BIT_AB_CheckBitZero) {
     Byte MSB = AbsoluteAddress >> 8;
 
     // Start inline program
-    cpu.memory[0xFFFC] = BIT_AB_OPCODE;
+    cpu.memory[0xFFFC] = BIT_AB0_OPCODE;
     cpu.memory[0xFFFD] = LSB;
     cpu.memory[0xFFFE] = MSB;
     cpu.memory[AbsoluteAddress] = 0b01000000; // Bit mask
     // End inline program
 
-    int cycles = em6502_execute(&cpu, BIT_AB_CYCLES);
+    int cycles = em6502_execute(&cpu, BIT_AB0_CYCLES);
 
-    ASSERT_EQ(cycles, BIT_AB_CYCLES);
+    ASSERT_EQ(cycles, BIT_AB0_CYCLES);
 
     ASSERT_TRUE(cpu.Z);
 
