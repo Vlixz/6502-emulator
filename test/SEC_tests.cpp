@@ -6,8 +6,6 @@ extern "C" {
 
 class SEC_TEST : public ::testing::Test {
   protected:
-    CPU_6502 cpu;
-
     void SetUp() override { em6502_reset(&cpu); }
 
     ~SEC_TEST() override { em6502_destroy(&cpu); }
@@ -40,7 +38,7 @@ TEST_F(SEC_TEST, SEC_IP_CarryFlagStaysSetWhenSettingItMultipleTimes) {
 
     // Start inline program
     cpu.memory[0xFFFC] = SEC_IP_OPCODE;
-    cpu.memory[0xFFFE] = SEC_IP_OPCODE; // Run instruction again
+    cpu.memory[0xFFFD] = SEC_IP_OPCODE; // Run instruction again
     // End inline program
 
     int cycles = em6502_execute(&cpu, SEC_IP_CYCLES * 2);

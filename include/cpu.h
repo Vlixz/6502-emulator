@@ -158,9 +158,23 @@ typedef struct {
      * @brief Memory of the 6502
      *
      */
-    Byte *memory;
+    Byte memory[MEMORY_WORD_COUNT_6502];
 
 } CPU_6502;
+
+extern CPU_6502 cpu;
+
+Byte mem_fetch(const Word address);
+void mem_write(const Word address, const Word value);
+
+void stack_push_byte(const Byte value);
+void stack_push_word(const Word value);
+
+Byte stack_pop_byte();
+Word stack_pop_word();
+
+void stack_push_ps();
+void stack_pop_ps();
 
 // =======================================
 //            Addressing Modes

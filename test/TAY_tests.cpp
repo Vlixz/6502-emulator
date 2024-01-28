@@ -6,8 +6,6 @@ extern "C" {
 
 class TAY_TEST : public ::testing::Test {
   protected:
-    CPU_6502 cpu;
-
     void SetUp() override { em6502_reset(&cpu); }
 
     ~TAY_TEST() override { em6502_destroy(&cpu); }

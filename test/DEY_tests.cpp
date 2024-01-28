@@ -6,8 +6,6 @@ extern "C" {
 
 class DEY_TEST : public ::testing::Test {
   protected:
-    CPU_6502 cpu;
-
     void SetUp() override { em6502_reset(&cpu); }
 
     ~DEY_TEST() override { em6502_destroy(&cpu); }

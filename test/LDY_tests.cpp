@@ -7,8 +7,6 @@ extern "C" {
 
 class LDY_TEST : public ::testing::Test {
   protected:
-    CPU_6502 cpu;
-
     void SetUp() override { em6502_reset(&cpu); }
 
     ~LDY_TEST() override { em6502_destroy(&cpu); }
@@ -206,9 +204,9 @@ TEST_F(LDY_TEST, LDY_ZP_X_SetsNegativeFlag) {
     cpu.memory[0x0065] = -42;  // 0xD6 (two compliment)
     // End inline program
 
-    int cycles = em6502_execute(&cpu, LDY_ZP_X_OPCODE);
+    int cycles = em6502_execute(&cpu, LDY_ZP_X_CYCLES);
 
-    ASSERT_EQ(cycles, LDY_ZP_X_OPCODE);
+    ASSERT_EQ(cycles, LDY_ZP_X_CYCLES);
 
     ASSERT_EQ(cpu.Y, (unsigned char)-42); // 0xD6 (two compliment)
 
