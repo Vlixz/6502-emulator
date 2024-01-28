@@ -10,12 +10,6 @@
 void em6502_reset(CPU_6502 *cpu);
 
 /**
- * @brief frees the memory allocated for the CPU
- *
- */
-void em6502_destroy(CPU_6502 *cpu);
-
-/**
  * @brief Executes a number of cycles on the CPU
  *
  * @return The number of cycles the CPU executed.
