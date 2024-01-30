@@ -49,6 +49,19 @@
 #define MEMORY_WORD_COUNT_6502 0x10000
 
 /**
+ * Processor Status Register (PSR) flags.
+ * 
+*/
+
+#define PSR_C 0
+#define PSR_Z 1
+#define PSR_I 2
+#define PSR_D 3
+#define PSR_B 4
+#define PSR_V 6
+#define PSR_N 7
+
+/**
  * @brief 6502 defenition.
  *
  * @note Sources:

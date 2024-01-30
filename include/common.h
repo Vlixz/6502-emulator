@@ -12,6 +12,8 @@
 #define IS_ZERO(x) ((x) == 0)
 #define DID_CROSS_PAGE_BOUNDARY(LSB, X) ((Byte)(LSB + X) < X)
 #define COMBINE_BYTES_LITTLE_ENDIAN(HIGH, LOW) ((HIGH << 8) | LOW)
+#define GET_BIT_PSR(flag, psr, n) ((flag) = ((psr) >> (n)) & (0x01))
+#define SET_BIT_PSR(psr, flag, n) ((psr) |= (flag << (n)))
 
 /**
  * Handy constants

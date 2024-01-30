@@ -46,13 +46,13 @@ Word stack_pop_word() {
 void stack_push_ps() {
     Byte ps = 0;
 
-    ps |= cpu.C << 0;
-    ps |= cpu.Z << 1;
-    ps |= cpu.I << 2;
-    ps |= cpu.D << 3;
-    ps |= cpu.B << 4;
-    ps |= cpu.V << 6;
-    ps |= cpu.N << 7;
+    SET_BIT_PSR(ps, cpu.C, PSR_C);
+    SET_BIT_PSR(ps, cpu.Z, PSR_Z);
+    SET_BIT_PSR(ps, cpu.I, PSR_I);
+    SET_BIT_PSR(ps, cpu.D, PSR_D);
+    SET_BIT_PSR(ps, cpu.B, PSR_B);
+    SET_BIT_PSR(ps, cpu.V, PSR_V);
+    SET_BIT_PSR(ps, cpu.N, PSR_N);
 
     stack_push_byte(ps);
 }
@@ -60,13 +60,13 @@ void stack_push_ps() {
 void stack_pop_ps() {
     Byte ps = stack_pop_byte();
 
-    // cpu.C = ps & (1 << 0);
-    // cpu.Z = ps & (1 << 1);
-    // cpu.I = ps & (1 << 2);
-    // cpu.D = ps & (1 << 3);
-    // cpu.B = ps & (1 << 4);
-    // cpu.V = ps & (1 << 6);
-    // cpu.N = ps & (1 << 7);
+    GET_BIT_PSR(cpu.C, ps, PSR_C);
+    GET_BIT_PSR(cpu.Z, ps, PSR_Z);
+    GET_BIT_PSR(cpu.I, ps, PSR_I);
+    GET_BIT_PSR(cpu.D, ps, PSR_D);
+    GET_BIT_PSR(cpu.B, ps, PSR_B);
+    GET_BIT_PSR(cpu.V, ps, PSR_V);
+    GET_BIT_PSR(cpu.N, ps, PSR_N);
 }
 
 int readBinaryFile(const char *filename) {
