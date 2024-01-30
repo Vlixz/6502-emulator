@@ -17,8 +17,9 @@ void em6502_reset(central_processing_unit *cpu) {
     //Byte MSB = mem_fetch(RESET_VECTOR_MSB);
 
     //cpu->PC = (MSB << 8) | LSB;
-    cpu->PC = 0xFFFC;
-    // cpu->PC = 0x03F6;
+    // cpu->PC = 0xFFFC;
+    //cpu->PC = 0x03F6;
+    cpu->PC = 0x0400;
     cpu->SP = STACK_START;
 
     cpu->X = 0;
@@ -29,7 +30,7 @@ void em6502_reset(central_processing_unit *cpu) {
 
 void em6502_destroy(central_processing_unit *cpu) {}
 
-Byte em6502_execute_instruction(void) {
+execution_information em6502_execute_instruction(void) {
     return instruction_execute();
 }
 
@@ -38,7 +39,7 @@ int em6502_execute(central_processing_unit *cpu, int cycles) {
 
     while (cycles > 0) {
 
-        uint8_t cyc = instruction_execute();
+        uint8_t cyc = instruction_execute().cycles;
 
         runCycles += cyc;
         cycles -= cyc;

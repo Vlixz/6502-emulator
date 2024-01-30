@@ -13,7 +13,19 @@ typedef struct {
     uint8_t cycles;
 } instruction;
 
-extern instruction instruction_matrix[16][16];
+/**
+ * @brief The current instruction being executed.
+ * 
+*/
+extern instruction current_instruction;
+
+/**
+ * @brief Matrix of all 6502 instructions. As defined here:
+ * 
+ * https://www.masswerk.at/6502/6502_instruction_set.html
+ * 
+*/
+extern instruction instruction_matrix[16][16]; 
 
 // =======================================
 //             Instructions

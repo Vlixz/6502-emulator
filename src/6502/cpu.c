@@ -1,6 +1,7 @@
 #include "cpu.h"
 #include <stdio.h>
 
+#include "debug.h"
 #include "memory.h"
 #include "instruction.h"
 
@@ -10,16 +11,15 @@ instruction get_instruction(Byte opcode) {
     return instruction_matrix[opcode >> 4][opcode & 0x0F];
 }
 
-uint8_t instruction_execute(void) {
+execution_information instruction_execute(void) {
     Byte opcode = mem_fetch(cpu.PC);
 
-    instruction ins = get_instruction(opcode);
-    // addrmode = ins.addrmode;
+    current_instruction = get_instruction(opcode);
 
     Word address;
 
-    uint8_t additional_cycles_1 = ins.addrmode(&address);
-    uint8_t additional_cycles_2 = ins.operation(address);
+    uint8_t additional_cycles_1 = current_instruction.addrmode(&address);
+    uint8_t additional_cycles_2 = current_instruction.operation(address);
 
-    return ins.cycles + additional_cycles_1 + additional_cycles_2;
+    return (execution_information){current_instruction, address, current_instruction.cycles + additional_cycles_1 + additional_cycles_2};
 }

@@ -69,7 +69,7 @@ void stack_pop_ps() {
     GET_BIT_PSR(cpu.N, ps, PSR_N);
 }
 
-int readBinaryFile(const char *filename) {
+int mem_read_bin_file(const char *filename) {
     FILE *file = fopen(filename, "rb");
 
     if (file == NULL) {

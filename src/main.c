@@ -3,15 +3,16 @@
 
 #include "6502.h"
 #include "cpu.h"
+#include "debug.h"
 #include "memory.h"
 #include "instruction.h"
 
 const char *BIN_TEST_FILE =
-    "/home/vlixz/Documents/6502_functional_test.bin";
+    "/home/vlixz/Projects/6502-emulator/examples/6502_functional_test.bin";
 
 int main(int argc, char **argv) {
 
-    int result = readBinaryFile(BIN_TEST_FILE);
+    int result = mem_read_bin_file(BIN_TEST_FILE);
 
     if (result != 0)
         return EXIT_FAILURE;
@@ -30,8 +31,13 @@ int main(int argc, char **argv) {
             em6502_reset(&cpu);
             break;
         default:
-            Byte opcode = em6502_execute_instruction();
-            printf("Executed opcode: %s[%02X]\n", get_instruction(opcode).name, opcode);
+            execution_information info = em6502_execute_instruction();
+            printf("Executed opcode: %s, cycles: %d\n", info.ins.name, info.ins.cycles);
+            printf("PC: 0x%04X\n", cpu.PC);
+            printf("A: 0x%02X\n", cpu.A);
+            printf("X: 0x%02X\n", cpu.X);
+            printf("Y: 0x%02X\n", cpu.Y);
+            printf("Address: 0x%04X\n", info.address);
             break;
         }
     }

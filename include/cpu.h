@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include "debug.h"
 #include "common.h"
 
 /**
@@ -148,6 +149,6 @@ typedef struct {
 
 extern central_processing_unit cpu;
 
-uint8_t instruction_execute(void);
+execution_information instruction_execute(void);
 
 #endif /* INC_CPU_H */

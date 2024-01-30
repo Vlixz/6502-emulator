@@ -5,7 +5,7 @@
 #include "memory.h"
 #include "instruction.h"
 
-uint8_t (*addrmode)(Word *address);
+instruction current_instruction;
 
 uint8_t branch(Word relative_address_offset) {
     Word tmp = cpu.PC;
@@ -52,7 +52,7 @@ uint8_t AND(Word address) {
 }
 
 uint8_t ASL(Word address) {
-    Word value = (addrmode == &ACC) ? cpu.A : mem_fetch(address);
+    Word value = (current_instruction.addrmode == &ACC) ? cpu.A : mem_fetch(address);
 
     value <<= 1;
 
@@ -60,7 +60,7 @@ uint8_t ASL(Word address) {
     cpu.Z = IS_ZERO(value & 0x00FF);
     cpu.N = IS_NEGATIVE(value & 0x00FF);
 
-    (addrmode == &ACC) ? cpu.A = value : mem_write(address, value);
+    (current_instruction.addrmode == &ACC) ? cpu.A = value : mem_write(address, value);
 
     return NO_EXTRA_CYCLES;
 }
@@ -301,7 +301,7 @@ uint8_t LSR(Word address) {
     cpu.Z = IS_ZERO(value);
     cpu.N = IS_NEGATIVE(value);
 
-    if (addrmode == &ACC) {
+    if (current_instruction.addrmode == &ACC) {
         cpu.A = value;
     } else {
         mem_write(address, value);
@@ -346,7 +346,7 @@ uint8_t PLP(Word address) {
 }
 
 uint8_t ROL(Word address) {
-    Byte operand = (addrmode == &ACC) ? cpu.A : mem_fetch(address);
+    Byte operand = (current_instruction.addrmode == &ACC) ? cpu.A : mem_fetch(address);
 
     Word value = (Word)(operand << 1) | cpu.C;
 
@@ -354,7 +354,7 @@ uint8_t ROL(Word address) {
     cpu.Z = IS_ZERO(value & 0x00FF);
     cpu.N = IS_NEGATIVE(value);
 
-    if (addrmode == &ACC) {
+    if (current_instruction.addrmode == &ACC) {
         cpu.A = value;
     } else {
         mem_write(address, value);
@@ -364,7 +364,7 @@ uint8_t ROL(Word address) {
 }
 
 uint8_t ROR(Word address) {
-    Byte operand =  (addrmode == &ACC) ? cpu.A : mem_fetch(address);
+    Byte operand =  (current_instruction.addrmode == &ACC) ? cpu.A : mem_fetch(address);
 
     Word value = (Word)(cpu.C << 7) | (operand >> 1);
 
@@ -372,7 +372,7 @@ uint8_t ROR(Word address) {
     cpu.Z = IS_ZERO(value & 0x00FF);
     cpu.N = IS_NEGATIVE(value);
 
-    if (addrmode == &ACC) {
+    if (current_instruction.addrmode == &ACC) {
         cpu.A = value;
     } else {
         mem_write(address, value);

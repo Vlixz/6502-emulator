@@ -89,6 +89,14 @@ void stack_push_ps();
 */
 void stack_pop_ps();
 
-int readBinaryFile(const char *filename);
+/**
+ * @brief Reads a binary file into memory.
+ * 
+ * @param filename The name of the file to read.
+ * 
+ * @return 0 if the file was read successfully, 1 otherwise.
+ * 
+*/
+int mem_read_bin_file(const char *filename);
 
 #endif /* INC_MEMORY_H */
