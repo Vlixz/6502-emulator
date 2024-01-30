@@ -1,6 +1,8 @@
 #ifndef INC_CPU_H
 #define INC_CPU_H
 
+#include <stdint.h>
+
 #include "common.h"
 
 /**
@@ -145,5 +147,7 @@ typedef struct {
 } central_processing_unit;
 
 extern central_processing_unit cpu;
+
+uint8_t instruction_execute(void);
 
 #endif /* INC_CPU_H */

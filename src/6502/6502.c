@@ -30,7 +30,7 @@ void em6502_reset(central_processing_unit *cpu) {
 void em6502_destroy(central_processing_unit *cpu) {}
 
 Byte em6502_execute_instruction(void) {
-    return ins_execute();
+    return instruction_execute();
 }
 
 int em6502_execute(central_processing_unit *cpu, int cycles) {
@@ -38,7 +38,7 @@ int em6502_execute(central_processing_unit *cpu, int cycles) {
 
     while (cycles > 0) {
 
-        uint8_t cyc = ins_execute();
+        uint8_t cyc = instruction_execute();
 
         runCycles += cyc;
         cycles -= cyc;

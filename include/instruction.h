@@ -13,13 +13,11 @@ typedef struct {
     uint8_t cycles;
 } instruction;
 
-instruction get_instruction(Byte opcode);
+extern instruction instruction_matrix[16][16];
 
 // =======================================
 //             Instructions
 // =======================================
-
-uint8_t ins_execute();
 
 uint8_t ADC(Word address);
 uint8_t AND(Word address);
