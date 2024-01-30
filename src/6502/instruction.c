@@ -1,7 +1,9 @@
-#include "instruction.h"
-#include "cpu.h"
 #include <stdbool.h>
 #include <stdio.h>
+
+#include "cpu.h"
+#include "memory.h"
+#include "instruction.h"
 
 instruction matrix[16][16] = {
 

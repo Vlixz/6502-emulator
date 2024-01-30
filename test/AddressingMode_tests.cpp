@@ -1,5 +1,6 @@
 extern "C" {
 #include "6502.h"
+#include "memory.h"
 #include "instruction.h"
 }
 
@@ -37,7 +38,7 @@ class ADDRESSINGMODE_TEST : public ::testing::Test {
 
     void ZP0_test(TestCase testCase) {
         cpu.PC = testCase.PC;
-        cpu.memory[testCase.PC] = testCase.address;
+        mem_write(testCase.PC, testCase.address);
 
         Word address;
         uint8_t cycles = ZP0(&address);
@@ -48,7 +49,7 @@ class ADDRESSINGMODE_TEST : public ::testing::Test {
 
     void ZPX_test(TestCase testCase) {
         cpu.PC = testCase.PC;
-        cpu.memory[testCase.PC] = testCase.address;
+        mem_write(testCase.PC, testCase.address);
         cpu.X = testCase.X;
        
         Word address;
@@ -60,7 +61,7 @@ class ADDRESSINGMODE_TEST : public ::testing::Test {
 
     void ZPY_test(TestCase testCase) {
         cpu.PC = testCase.PC;
-        cpu.memory[testCase.PC] = testCase.address;
+        mem_write(testCase.PC, testCase.address);
         cpu.Y = testCase.Y;
        
         Word address;
@@ -72,8 +73,8 @@ class ADDRESSINGMODE_TEST : public ::testing::Test {
 
     void AB0_test(TestCase testCase) {
         cpu.PC = testCase.PC;
-        cpu.memory[testCase.PC] = testCase.address & 0xFF;   // LSB
-        cpu.memory[testCase.PC + 1] = testCase.address >> 8; // MSB
+        mem_write(testCase.PC, testCase.address & 0xFF);   // LSB
+        mem_write(testCase.PC + 1, testCase.address >> 8); // MSB
 
         Word address;
         uint8_t cycles = AB0(&address);
@@ -84,8 +85,8 @@ class ADDRESSINGMODE_TEST : public ::testing::Test {
 
     void ABX_test(TestCase testCase) {
         cpu.PC = testCase.PC;
-        cpu.memory[testCase.PC] = testCase.address & 0xFF;   // LSB
-        cpu.memory[testCase.PC + 1] = testCase.address >> 8; // MSB
+        mem_write(testCase.PC, testCase.address & 0xFF);   // LSB
+        mem_write(testCase.PC + 1, testCase.address >> 8); // MSB
         cpu.X = testCase.X;
 
         Word address;
@@ -97,8 +98,8 @@ class ADDRESSINGMODE_TEST : public ::testing::Test {
 
     void ABY_test(TestCase testCase) {
         cpu.PC = testCase.PC;
-        cpu.memory[testCase.PC] = testCase.address & 0xFF;   // LSB
-        cpu.memory[testCase.PC + 1] = testCase.address >> 8; // MSB
+        mem_write(testCase.PC, testCase.address & 0xFF);   // LSB
+        mem_write(testCase.PC + 1, testCase.address >> 8); // MSB
         cpu.Y = testCase.Y;
 
         Word address;
@@ -110,12 +111,12 @@ class ADDRESSINGMODE_TEST : public ::testing::Test {
 
     void IND_test(TestCase testCase) {
         cpu.PC = testCase.PC;
-        cpu.memory[testCase.indirect_bug_address] = testCase.indirect_bug_value;
-        cpu.memory[testCase.PC] = testCase.pointer & 0xFF;   // LSB
-        cpu.memory[testCase.PC + 1] = testCase.pointer >> 8; // MSB
+        mem_write(testCase.indirect_bug_address, testCase.indirect_bug_value);
+        mem_write(testCase.PC, testCase.pointer & 0xFF);   // LSB
+        mem_write(testCase.PC + 1, testCase.pointer >> 8); // MSB
 
-        cpu.memory[testCase.pointer] = testCase.address & 0xFF;   // LSB
-        cpu.memory[testCase.pointer + 1] = testCase.address >> 8; // MSB
+        mem_write(testCase.pointer, testCase.address & 0xFF);   // LSB
+        mem_write(testCase.pointer + 1, testCase.address >> 8); // MSB
 
         Word address;
         uint8_t cycles = IND(&address);
@@ -126,10 +127,10 @@ class ADDRESSINGMODE_TEST : public ::testing::Test {
 
     void IIX_test(TestCase testCase) {
         cpu.PC = testCase.PC;
-        cpu.memory[testCase.PC] = testCase.zero_page_address;
+        mem_write(testCase.PC, testCase.zero_page_address);
         cpu.X = testCase.X;
-        cpu.memory[testCase.zero_page_address_indirect] = testCase.address & 0xFF;   // LSB
-        cpu.memory[testCase.zero_page_address_indirect + 1] = testCase.address >> 8; // MSB
+        mem_write(testCase.zero_page_address_indirect, testCase.address & 0xFF);   // LSB
+        mem_write(testCase.zero_page_address_indirect + 1, testCase.address >> 8); // MSB
 
         Word address;
         uint8_t cycles = IIX(&address);
@@ -140,9 +141,9 @@ class ADDRESSINGMODE_TEST : public ::testing::Test {
 
     void IIY_test(TestCase testCase) {
         cpu.PC = testCase.PC;
-        cpu.memory[testCase.PC] = testCase.zero_page_address;
-        cpu.memory[testCase.zero_page_address] = testCase.address & 0xFF;   // LSB
-        cpu.memory[testCase.zero_page_address + 1] = testCase.address >> 8; // MSB
+        mem_write(testCase.PC, testCase.zero_page_address);
+        mem_write(testCase.zero_page_address, testCase.address & 0xFF);   // LSB
+        mem_write(testCase.zero_page_address + 1, testCase.address >> 8); // MSB
         cpu.Y = testCase.Y;
 
         Word address;

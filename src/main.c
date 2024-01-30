@@ -11,7 +11,7 @@ const char *BIN_TEST_FILE =
 
 int main(int argc, char **argv) {
 
-    int result = readBinaryFile(BIN_TEST_FILE, cpu.memory, sizeof(cpu.memory));
+    int result = readBinaryFile(BIN_TEST_FILE);
 
     if (result != 0)
         return EXIT_FAILURE;

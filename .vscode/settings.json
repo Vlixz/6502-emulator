@@ -72,6 +72,8 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "stdbool.h": "c",
-        "cpu.h": "c"
+        "cpu.h": "c",
+        "stdio.h": "c",
+        "common.h": "c"
     }
 }

@@ -7,7 +7,7 @@
  * @brief Resets the CPU to its initial state
  *
  */
-void em6502_reset(CPU_6502 *cpu);
+void em6502_reset(central_processing_unit *cpu);
 
 /**
  * @brief Executes a number of cycles on the CPU
@@ -20,7 +20,7 @@ void em6502_reset(CPU_6502 *cpu);
  * crossings etc.
  *
  */
-int em6502_execute(CPU_6502 *cpu, int cycles);
+int em6502_execute(central_processing_unit *cpu, int cycles);
 
 Byte em6502_execute_instruction(void);
 

@@ -19,9 +19,6 @@
  */
 #define NO_EXTRA_CYCLES 0
 
-
-#define MEMORY_WORD_COUNT_6502 0xFFFF + 1
-
 /*
  * Bitmasks
  */
@@ -29,21 +26,6 @@
 #define BIT_MASK_CARRY 0b100000000
 #define BIT_MASK_FIRST_BYTE 0x00FF
 #define BIT_MASK_LAST_BYTE 0xFF00
-
-/*
- * Reset value's
- */
-#define ACCUMULATOR_RESET_VALUE 0
-#define BREAK_COMMAND_RESET_VALUE 0
-#define CARRY_FLAG_RESET_VALUE 0
-#define DECIMAL_MODE_RESET_VALUE 0
-#define INTERRUPT_DISABLE_RESET_VALUE 0
-#define NEGATIVE_FLAG_RESET_VALUE 0
-#define OVERFLOW_FLAG_RESET_VALUE 0
-#define ZERO_FLAG_RESET_VALUE 0
-
-#define RESET_VECTOR_LSB 0xFFFC
-#define RESET_VECTOR_MSB 0xFFFD
 
 /*
  * Naming scheme Addressing Modes:

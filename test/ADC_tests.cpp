@@ -1,5 +1,6 @@
 extern "C" {
 #include "6502.h"
+#include "memory.h"
 }
 
 #include <gtest/gtest.h>
@@ -39,10 +40,8 @@ class ADC_TEST : public ::testing::Test {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
 
-        // Start inline program
-        cpu.memory[0xFFFC] = ADC_IMM_OPCODE;
-        cpu.memory[0xFFFD] = testCase.O;
-        // End inline program
+        mem_write(0xFFFC, ADC_IMM_OPCODE);
+        mem_write(0xFFFD, testCase.O); 
 
         int cycles = em6502_execute(&cpu, ADC_IMM_CYCLES);
 
@@ -55,21 +54,18 @@ class ADC_TEST : public ::testing::Test {
         ASSERT_EQ(cpu.V, testCase.ExpectedV);
         ASSERT_EQ(cpu.N, testCase.ExpectedN);
 
-        /* Make sure the rest are unaffected by the instruction */
-        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
-        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
-        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+        ASSERT_EQ(cpu.I, RESET_VALUE_I);
+        ASSERT_EQ(cpu.D, RESET_VALUE_D);
+        ASSERT_EQ(cpu.B, RESET_VALUE_B);
     }
 
     void ADC_ZP_test(ADC_TestCase testCase) {
         cpu.A = testCase.A;
         cpu.C = testCase.C;
 
-        // Start inline program
-        cpu.memory[0xFFFC] = ADC_ZP0_OPCODE;
-        cpu.memory[0xFFFD] = testCase.Address;
-        cpu.memory[testCase.ExpectedAddress] = testCase.O;
-        // End inline program
+        mem_write(0xFFFC, ADC_ZP0_OPCODE);
+        mem_write(0xFFFD, testCase.Address);
+        mem_write(testCase.ExpectedAddress, testCase.O);
 
         int cycles = em6502_execute(&cpu, ADC_ZP0_CYCLES);
 
@@ -82,10 +78,9 @@ class ADC_TEST : public ::testing::Test {
         ASSERT_EQ(cpu.V, testCase.ExpectedV);
         ASSERT_EQ(cpu.N, testCase.ExpectedN);
 
-        /* Make sure the rest are unaffected by the instruction */
-        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
-        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
-        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+        ASSERT_EQ(cpu.I, RESET_VALUE_I);
+        ASSERT_EQ(cpu.D, RESET_VALUE_D);
+        ASSERT_EQ(cpu.B, RESET_VALUE_B);
     }
 
     void ADC_ZP_X_test(ADC_TestCase testCase) {
@@ -93,11 +88,9 @@ class ADC_TEST : public ::testing::Test {
         cpu.C = testCase.C;
         cpu.X = testCase.X;
 
-        // Start inline program
-        cpu.memory[0xFFFC] = ADC_ZPX_OPCODE;
-        cpu.memory[0xFFFD] = testCase.Address;
-        cpu.memory[testCase.ExpectedAddress] = testCase.O;
-        // End inline program
+        mem_write(0xFFFC, ADC_ZPX_OPCODE);
+        mem_write(0xFFFD, testCase.Address);
+        mem_write(testCase.ExpectedAddress, testCase.O);
 
         int cycles = em6502_execute(&cpu, ADC_ZPX_CYCLES);
 
@@ -110,10 +103,9 @@ class ADC_TEST : public ::testing::Test {
         ASSERT_EQ(cpu.V, testCase.ExpectedV);
         ASSERT_EQ(cpu.N, testCase.ExpectedN);
 
-        /* Make sure the rest are unaffected by the instruction */
-        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
-        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
-        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+        ASSERT_EQ(cpu.I, RESET_VALUE_I);
+        ASSERT_EQ(cpu.D, RESET_VALUE_D);
+        ASSERT_EQ(cpu.B, RESET_VALUE_B);
     }
 
     void ADC_AB_test(ADC_TestCase testCase) {
@@ -123,12 +115,10 @@ class ADC_TEST : public ::testing::Test {
         Byte LSB = testCase.Address & BIT_MASK_FIRST_BYTE;
         Byte MSB = testCase.Address >> 8;
 
-        // Start inline program
-        cpu.memory[0xFFFC] = ADC_AB0_OPCODE;
-        cpu.memory[0xFFFD] = LSB;
-        cpu.memory[0xFFFE] = MSB;
-        cpu.memory[testCase.ExpectedAddress] = testCase.O;
-        // End inline program
+        mem_write(0xFFFC, ADC_AB0_OPCODE);
+        mem_write(0xFFFD, LSB);
+        mem_write(0xFFFE, MSB);
+        mem_write(testCase.ExpectedAddress, testCase.O);
 
         int cycles = em6502_execute(&cpu, ADC_AB0_CYCLES);
 
@@ -142,9 +132,9 @@ class ADC_TEST : public ::testing::Test {
         ASSERT_EQ(cpu.N, testCase.ExpectedN);
 
         /* Make sure the rest are unaffected by the instruction */
-        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
-        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
-        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+        ASSERT_EQ(cpu.I, RESET_VALUE_I);
+        ASSERT_EQ(cpu.D, RESET_VALUE_D);
+        ASSERT_EQ(cpu.B, RESET_VALUE_B);
     }
 
     void ADC_AB_X_test(ADC_TestCase testCase) {
@@ -155,12 +145,10 @@ class ADC_TEST : public ::testing::Test {
         Byte LSB = testCase.Address & BIT_MASK_FIRST_BYTE;
         Byte MSB = testCase.Address >> 8;
 
-        // Start inline program
-        cpu.memory[0xFFFC] = ADC_ABX_OPCODE;
-        cpu.memory[0xFFFD] = LSB;
-        cpu.memory[0xFFFE] = MSB;
-        cpu.memory[testCase.ExpectedAddress] = testCase.O;
-        // End inline program
+        mem_write(0xFFFC, ADC_ABX_OPCODE);
+        mem_write(0xFFFD, LSB);
+        mem_write(0xFFFE, MSB);
+        mem_write(testCase.ExpectedAddress, testCase.O);
 
         int cycles = em6502_execute(&cpu, ADC_ABX_CYCLES);
 
@@ -173,10 +161,9 @@ class ADC_TEST : public ::testing::Test {
         ASSERT_EQ(cpu.V, testCase.ExpectedV);
         ASSERT_EQ(cpu.N, testCase.ExpectedN);
 
-        /* Make sure the rest are unaffected by the instruction */
-        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
-        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
-        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+        ASSERT_EQ(cpu.I, RESET_VALUE_I);
+        ASSERT_EQ(cpu.D, RESET_VALUE_D);
+        ASSERT_EQ(cpu.B, RESET_VALUE_B);
     }
 
     void ADC_AB_Y_test(ADC_TestCase testCase) {
@@ -187,12 +174,10 @@ class ADC_TEST : public ::testing::Test {
         Byte LSB = testCase.Address & BIT_MASK_FIRST_BYTE;
         Byte MSB = testCase.Address >> 8;
 
-        // Start inline program
-        cpu.memory[0xFFFC] = ADC_ABY_OPCODE;
-        cpu.memory[0xFFFD] = LSB;
-        cpu.memory[0xFFFE] = MSB;
-        cpu.memory[testCase.ExpectedAddress] = testCase.O;
-        // End inline program
+        mem_write(0xFFFC, ADC_ABY_OPCODE);
+        mem_write(0xFFFD, LSB);
+        mem_write(0xFFFE, MSB);
+        mem_write(testCase.ExpectedAddress, testCase.O);
 
         int cycles = em6502_execute(&cpu, ADC_ABY_CYCLES);
 
@@ -206,9 +191,9 @@ class ADC_TEST : public ::testing::Test {
         ASSERT_EQ(cpu.N, testCase.ExpectedN);
 
         /* Make sure the rest are unaffected by the instruction */
-        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
-        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
-        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+        ASSERT_EQ(cpu.I, RESET_VALUE_I);
+        ASSERT_EQ(cpu.D, RESET_VALUE_D);
+        ASSERT_EQ(cpu.B, RESET_VALUE_B);
     }
 
     void ADC_IN_X_test(ADC_TestCase testCase) {
@@ -219,15 +204,11 @@ class ADC_TEST : public ::testing::Test {
         Byte LSB = testCase.IndirectAddress & BIT_MASK_FIRST_BYTE;
         Byte MSB = testCase.IndirectAddress >> 8;
 
-        // Start inline program
-        cpu.memory[0xFFFC] = ADC_INX_OPCODE;
-        cpu.memory[0xFFFD] = testCase.Address;
-
-        cpu.memory[testCase.ZeroPageAddress] = LSB;
-        cpu.memory[testCase.ZeroPageAddress + 1] = MSB;
-
-        cpu.memory[testCase.ExpectedAddress] = testCase.O;
-        // End inline program
+        mem_write(0xFFFC, ADC_INX_OPCODE);
+        mem_write(0xFFFD, testCase.Address);
+        mem_write(testCase.ZeroPageAddress, LSB);
+        mem_write(testCase.ZeroPageAddress + 1, MSB);
+        mem_write(testCase.ExpectedAddress, testCase.O);
 
         int cycles = em6502_execute(&cpu, ADC_INX_CYCLES);
 
@@ -240,10 +221,9 @@ class ADC_TEST : public ::testing::Test {
         ASSERT_EQ(cpu.V, testCase.ExpectedV);
         ASSERT_EQ(cpu.N, testCase.ExpectedN);
 
-        /* Make sure the rest are unaffected by the instruction */
-        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
-        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
-        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+        ASSERT_EQ(cpu.I, RESET_VALUE_I);
+        ASSERT_EQ(cpu.D, RESET_VALUE_D);
+        ASSERT_EQ(cpu.B, RESET_VALUE_B);
     }
 
     void ADC_INY_test(ADC_TestCase testCase) {
@@ -254,15 +234,11 @@ class ADC_TEST : public ::testing::Test {
         Byte LSB = testCase.IndirectAddress & BIT_MASK_FIRST_BYTE;
         Byte MSB = testCase.IndirectAddress >> 8;
 
-        // Start inline program
-        cpu.memory[0xFFFC] = ADC_INY_OPCODE;
-        cpu.memory[0xFFFD] = testCase.ZeroPageAddress;
-
-        cpu.memory[testCase.ZeroPageAddress] = LSB;
-        cpu.memory[testCase.ZeroPageAddress + 1] = MSB;
-
-        cpu.memory[testCase.ExpectedAddress] = testCase.O;
-        // End inline program
+        mem_write(0xFFFC, ADC_INY_OPCODE);
+        mem_write(0xFFFD, testCase.ZeroPageAddress);
+        mem_write(testCase.ZeroPageAddress, LSB);
+        mem_write(testCase.ZeroPageAddress + 1, MSB);
+        mem_write(testCase.ExpectedAddress, testCase.O);
 
         int cycles = em6502_execute(&cpu, ADC_INY_CYCLES);
 
@@ -275,10 +251,9 @@ class ADC_TEST : public ::testing::Test {
         ASSERT_EQ(cpu.V, testCase.ExpectedV);
         ASSERT_EQ(cpu.N, testCase.ExpectedN);
 
-        /* Make sure the rest are unaffected by the instruction */
-        ASSERT_EQ(cpu.I, INTERRUPT_DISABLE_RESET_VALUE);
-        ASSERT_EQ(cpu.D, DECIMAL_MODE_RESET_VALUE);
-        ASSERT_EQ(cpu.B, BREAK_COMMAND_RESET_VALUE);
+        ASSERT_EQ(cpu.I, RESET_VALUE_I);
+        ASSERT_EQ(cpu.D, RESET_VALUE_D);
+        ASSERT_EQ(cpu.B, RESET_VALUE_B);
     }
 };
 
