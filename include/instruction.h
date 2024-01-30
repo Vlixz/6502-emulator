@@ -7,8 +7,8 @@
 typedef struct {
     char *name;
 
-    uint8_t (*operation)(Word absolute_address);
-    uint8_t (*addrmode)(Word *absolute_address);
+    uint8_t (*operation)(Word address);
+    uint8_t (*addrmode)(Word *address);
 
     uint8_t cycles;
 } instruction;
@@ -21,67 +21,67 @@ instruction get_instruction(Byte opcode);
 
 uint8_t ins_execute();
 
-uint8_t ADC(Word absolute_address);
-uint8_t AND(Word absolute_address);
-uint8_t ASL(Word absolute_address);
-uint8_t BCC(Word absolute_address);
-uint8_t BCS(Word absolute_address);
-uint8_t BEQ(Word absolute_address);
-uint8_t BIT(Word absolute_address);
-uint8_t BMI(Word absolute_address);
-uint8_t BNE(Word absolute_address);
-uint8_t BPL(Word absolute_address);
-uint8_t BRK(Word absolute_address);
-uint8_t BVC(Word absolute_address);
-uint8_t BVS(Word absolute_address);
-uint8_t CLC(Word absolute_address);
+uint8_t ADC(Word address);
+uint8_t AND(Word address);
+uint8_t ASL(Word address);
+uint8_t BCC(Word address);
+uint8_t BCS(Word address);
+uint8_t BEQ(Word address);
+uint8_t BIT(Word address);
+uint8_t BMI(Word address);
+uint8_t BNE(Word address);
+uint8_t BPL(Word address);
+uint8_t BRK(Word address);
+uint8_t BVC(Word address);
+uint8_t BVS(Word address);
+uint8_t CLC(Word address);
 
-uint8_t CLD(Word absolute_address);
-uint8_t CLI(Word absolute_address);
-uint8_t CLV(Word absolute_address);
-uint8_t CMP(Word absolute_address);
-uint8_t CPX(Word absolute_address);
-uint8_t CPY(Word absolute_address);
-uint8_t DEC(Word absolute_address);
-uint8_t DEX(Word absolute_address);
-uint8_t DEY(Word absolute_address);
-uint8_t EOR(Word absolute_address);
-uint8_t INC(Word absolute_address);
-uint8_t INX(Word absolute_address);
-uint8_t INY(Word absolute_address);
-uint8_t JMP(Word absolute_address);
+uint8_t CLD(Word address);
+uint8_t CLI(Word address);
+uint8_t CLV(Word address);
+uint8_t CMP(Word address);
+uint8_t CPX(Word address);
+uint8_t CPY(Word address);
+uint8_t DEC(Word address);
+uint8_t DEX(Word address);
+uint8_t DEY(Word address);
+uint8_t EOR(Word address);
+uint8_t INC(Word address);
+uint8_t INX(Word address);
+uint8_t INY(Word address);
+uint8_t JMP(Word address);
 
-uint8_t JSR(Word absolute_address);
-uint8_t LDA(Word absolute_address);
-uint8_t LDX(Word absolute_address);
-uint8_t LDY(Word absolute_address);
-uint8_t LSR(Word absolute_address);
-uint8_t NOP(Word absolute_address);
-uint8_t ORA(Word absolute_address);
-uint8_t PHA(Word absolute_address);
-uint8_t PHP(Word absolute_address);
-uint8_t PLA(Word absolute_address);
-uint8_t PLP(Word absolute_address);
-uint8_t ROL(Word absolute_address);
-uint8_t ROR(Word absolute_address);
-uint8_t RTI(Word absolute_address);
+uint8_t JSR(Word address);
+uint8_t LDA(Word address);
+uint8_t LDX(Word address);
+uint8_t LDY(Word address);
+uint8_t LSR(Word address);
+uint8_t NOP(Word address);
+uint8_t ORA(Word address);
+uint8_t PHA(Word address);
+uint8_t PHP(Word address);
+uint8_t PLA(Word address);
+uint8_t PLP(Word address);
+uint8_t ROL(Word address);
+uint8_t ROR(Word address);
+uint8_t RTI(Word address);
 
-uint8_t RTS(Word absolute_address);
-uint8_t SBC(Word absolute_address);
-uint8_t SEC(Word absolute_address);
-uint8_t SED(Word absolute_address);
-uint8_t SEI(Word absolute_address);
-uint8_t STA(Word absolute_address);
-uint8_t STX(Word absolute_address);
-uint8_t STY(Word absolute_address);
-uint8_t TAX(Word absolute_address);
-uint8_t TAY(Word absolute_address);
-uint8_t TSX(Word absolute_address);
-uint8_t TXA(Word absolute_address);
-uint8_t TXS(Word absolute_address);
-uint8_t TYA(Word absolute_address);
+uint8_t RTS(Word address);
+uint8_t SBC(Word address);
+uint8_t SEC(Word address);
+uint8_t SED(Word address);
+uint8_t SEI(Word address);
+uint8_t STA(Word address);
+uint8_t STX(Word address);
+uint8_t STY(Word address);
+uint8_t TAX(Word address);
+uint8_t TAY(Word address);
+uint8_t TSX(Word address);
+uint8_t TXA(Word address);
+uint8_t TXS(Word address);
+uint8_t TYA(Word address);
 
-uint8_t XXX(Word absolute_address);
+uint8_t XXX(Word address);
 
 /**
  * =======================================
@@ -139,7 +139,7 @@ uint8_t ZP0(Word *address);
  *
  * EX: 0x80 + 0xFF = 0x7F and not 0x017F
  */
-uint8_t ZPX(Word *absolute_address);
+uint8_t ZPX(Word *address);
 
 /**
  * @brief Zero Page Y returns the value at a address calculated by adding the
@@ -150,7 +150,7 @@ uint8_t ZPX(Word *absolute_address);
  * STX.
  *
  */
-uint8_t ZPY(Word *absolute_address);
+uint8_t ZPY(Word *address);
 
 /**
  * @brief Addressing mode relative does not return a value and only increments
@@ -166,21 +166,21 @@ uint8_t REL(Word *operanbd);
  * specifeid in the program code.
  *
  */
-uint8_t AB0(Word *absolute_address);
+uint8_t AB0(Word *address);
 
 /**
  * @brief Absolute X addressing mode returns the value at a given 16-bit address
  * added to the current value in the X register.
  *
  */
-uint8_t ABX(Word *absolute_address);
+uint8_t ABX(Word *address);
 
 /**
  * @brief Absolute Y addressing mode returns the value at a given 16-bit address
  * added to the current value of the Y register.
  *
  */
-uint8_t ABY(Word *absolute_address);
+uint8_t ABY(Word *address);
 
 /**
  * @brief JMP is the only 6502 instruction to support indirection. The
@@ -193,7 +193,7 @@ uint8_t ABY(Word *absolute_address);
  * execution to occur at $BAFC (e.g. the contents of $0120 and $0121).
  *
  */
-uint8_t IND(Word *absolute_address);
+uint8_t IND(Word *address);
 
 /**
  * @brief Indexed indirect addressing is normally used in conjunction with a
@@ -202,7 +202,7 @@ uint8_t IND(Word *absolute_address);
  * to give the location of the least significant byte of the target address.
  *
  */
-uint8_t IIX(Word *absolute_address);
+uint8_t IIX(Word *address);
 
 /**
  * @brief Indirect indirect addressing is the most common indirection mode used
@@ -211,6 +211,6 @@ uint8_t IIX(Word *absolute_address);
  * this value to generated the actual target address for operation.
  *
  */
-uint8_t IIY(Word *absolute_address);
+uint8_t IIY(Word *address);
 
 #endif /* INC_INSTRUCTION_H */
