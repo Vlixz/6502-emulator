@@ -4,8 +4,21 @@
 #define Word unsigned short
 #define Byte unsigned char
 
+/**
+ * Macros
+ *
+ */
 #define IS_NEGATIVE(x) (((x) & BIT_MASK_SIGNED) > 0)
 #define IS_ZERO(x) ((x) == 0)
+#define DID_CROSS_PAGE_BOUNDARY(LSB, X) ((Byte)(LSB + X) < X)
+#define COMBINE_BYTES_LITTLE_ENDIAN(HIGH, LOW) ((HIGH << 8) | LOW)
+
+/**
+ * Handy constants
+ * 
+ */
+#define NO_EXTRA_CYCLES 0
+
 
 #define MEMORY_WORD_COUNT_6502 0xFFFF + 1
 
@@ -28,6 +41,9 @@
 #define NEGATIVE_FLAG_RESET_VALUE 0
 #define OVERFLOW_FLAG_RESET_VALUE 0
 #define ZERO_FLAG_RESET_VALUE 0
+
+#define RESET_VECTOR_LSB 0xFFFC
+#define RESET_VECTOR_MSB 0xFFFD
 
 /*
  * Naming scheme Addressing Modes:

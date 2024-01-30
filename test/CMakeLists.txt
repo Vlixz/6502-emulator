@@ -2,7 +2,7 @@ enable_testing()
 
 add_executable(
   unit_tests
-
+  
   ADC_tests.cpp
   AND_tests.cpp
   ASL_tests.cpp
@@ -32,10 +32,12 @@ add_executable(
   DEY_tests.cpp
   LDX_tests.cpp
   LDY_tests.cpp
+
+  AddressingMode_tests.cpp
 )
 
 # include the gtest and em6502 lib
-target_link_libraries(unit_tests em6502 GTest::gtest_main)
+target_link_libraries(unit_tests cpu6502 GTest::gtest_main)
 
 target_include_directories(unit_tests PUBLIC ${CMAKE_SOURCE_DIR}/include)
 

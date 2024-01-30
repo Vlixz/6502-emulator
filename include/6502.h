@@ -22,4 +22,6 @@ void em6502_reset(CPU_6502 *cpu);
  */
 int em6502_execute(CPU_6502 *cpu, int cycles);
 
+Byte em6502_execute_instruction(void);
+
 #endif /* INC_6502_H */

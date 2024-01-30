@@ -1,6 +1,7 @@
 #include "instruction.h"
 #include "cpu.h"
 #include <stdbool.h>
+#include <stdio.h>
 
 instruction matrix[16][16] = {
 
@@ -197,7 +198,7 @@ instruction matrix[16][16] = {
      {"???", &XXX, &IMP, 1},
      {"LDY", &LDY, &ZPX, 4},
      {"LDA", &LDA, &ZPX, 4},
-     {"LDX", &LDX, &ZPX, 4},
+     {"LDX", &LDX, &ZPY, 4},
      {"???", &XXX, &IMP, 1},
      {"CLV", &CLV, &IMP, 2},
      {"LDA", &LDA, &ABY, 4},
@@ -277,22 +278,26 @@ instruction matrix[16][16] = {
      {"???", &XXX, &IMP, 1}}, /* 0xF */
 };
 
-Byte branch(Word relative_address) {
-    int cycles = 1;
+uint8_t (*addrmode)(Word *address);
 
+uint8_t branch(Word relative_address_offset) {
     Word tmp = cpu.PC;
 
-    cpu.PC += relative_address;
+    cpu.PC += relative_address_offset;
 
-    cycles += (tmp >> 8) != (cpu.PC >> 8); // +1 if a page is crossed.
-
-    return cycles;
+    return 1 + ((tmp >> 8) != (cpu.PC >> 8)); // +1 succesfull branch && +1 if a page is crossed.
 }
 
-Word absolute_address;
-Byte (*addrmode)(Byte *operand);
+/**
+ * =======================================
+ *              Instructions
+ * =======================================
+ * 
+ */
 
-Byte ADC(Byte operand) {
+uint8_t ADC(Word address) {
+    Byte operand = mem_fetch(address);
+
     bool areSignBitsEqual =
         !((cpu.A & BIT_MASK_SIGNED) ^ (operand & BIT_MASK_SIGNED));
 
@@ -307,56 +312,47 @@ Byte ADC(Byte operand) {
     cpu.V = areSignBitsEqual *
             ((operand & BIT_MASK_SIGNED) != (cpu.A & BIT_MASK_SIGNED));
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte AND(Byte operand) {
-    cpu.A &= operand;
+uint8_t AND(Word address) {
+    cpu.A &= mem_fetch(address);
 
     cpu.Z = IS_ZERO(cpu.A);
     cpu.N = IS_NEGATIVE(cpu.A);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte ASL(Byte operand) {
-    Word value = operand << 1;
+uint8_t ASL(Word address) {
+    Word value = (addrmode == &ACC) ? cpu.A : mem_fetch(address);
+
+    value <<= 1;
 
     cpu.C = (value & 0x100) > 0;
     cpu.Z = IS_ZERO(value & 0x00FF);
     cpu.N = IS_NEGATIVE(value & 0x00FF);
 
-    if (addrmode == &ACC) {
-        cpu.A = value;
-    } else {
-        mem_write(absolute_address, value);
-    }
+    (addrmode == &ACC) ? cpu.A = value : mem_write(address, value);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte BCC(Byte operand) {
-    if (!cpu.C)
-        return branch(operand);
-
-    return 0;
+uint8_t BCC(Word address) {
+    return (!cpu.C) ? branch(address) : NO_EXTRA_CYCLES;
 }
 
-Byte BCS(Byte operand) {
-    if (cpu.C)
-        return branch(operand);
-
-    return 0;
+uint8_t BCS(Word address) {
+    return (cpu.C) ? branch(address) : NO_EXTRA_CYCLES;
 }
 
-Byte BEQ(Byte operand) {
-    if (cpu.Z)
-        return branch(operand);
-
-    return 0;
+uint8_t BEQ(Word address) {
+    return (cpu.Z) ? branch(address) : NO_EXTRA_CYCLES;
 }
 
-Byte BIT(Byte operand) {
+uint8_t BIT(Word address) {
+    Byte operand = mem_fetch(address);
+
     Byte result = cpu.A & operand;
 
     cpu.N = IS_NEGATIVE(operand);
@@ -364,31 +360,22 @@ Byte BIT(Byte operand) {
 
     cpu.Z = IS_ZERO(result);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte BMI(Byte operand) {
-    if (cpu.N)
-        return branch(operand);
-
-    return 0;
+uint8_t BMI(Word address) {
+    return (cpu.N) ? branch(address) : NO_EXTRA_CYCLES;
 }
 
-Byte BNE(Byte operand) {
-    if (!cpu.Z)
-        return branch(operand);
-
-    return 0;
+uint8_t BNE(Word address) {
+    return (!cpu.Z) ? branch(address) : NO_EXTRA_CYCLES;
 }
 
-Byte BPL(Byte operand) {
-    if (!cpu.N)
-        return branch(operand);
-
-    return 0;
+uint8_t BPL(Word address) {
+    return (!cpu.N) ? branch(address) : NO_EXTRA_CYCLES;
 }
 
-Byte BRK(Byte operand) {
+uint8_t BRK(Word address) {
     stack_push_word(++cpu.PC);
     cpu.B = 1;
     stack_push_ps();
@@ -396,176 +383,191 @@ Byte BRK(Byte operand) {
     Byte LSB = mem_fetch(0xFFFE);
     Byte MSB = mem_fetch(0xFFFF);
 
-    cpu.PC = LSB | MSB << 8;
+    cpu.PC =  COMBINE_BYTES_LITTLE_ENDIAN(MSB, LSB);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte BVC(Byte operand) {
-    if (!cpu.V)
-        return branch(operand);
-
-    return 0;
+uint8_t BVC(Word address) {
+    return (!cpu.V) ? branch(address) : NO_EXTRA_CYCLES;
 }
 
-Byte BVS(Byte operand) {
-    if (cpu.V)
-        return branch(operand);
-
-    return 0;
+uint8_t BVS(Word address) {
+    return (cpu.V) ? branch(address) : NO_EXTRA_CYCLES;
 }
 
-Byte CLC(Byte operand) {
+uint8_t CLC(Word address) {
     cpu.C = 0;
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte CLD(Byte operand) {
+uint8_t CLD(Word address) {
     cpu.D = 0;
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte CLI(Byte operand) {
+uint8_t CLI(Word address) {
     cpu.I = 0;
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte CLV(Byte operand) {
+uint8_t CLV(Word address) {
     cpu.V = 0;
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte CMP(Byte operand) {
+uint8_t CMP(Word address) {
+    Byte operand = mem_fetch(address);
+
     cpu.C = (cpu.A >= operand);
     cpu.Z = (cpu.A == operand);
     cpu.N = IS_NEGATIVE(cpu.A - operand);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte CPX(Byte operand) {
+uint8_t CPX(Word address) {
+    Byte operand = mem_fetch(address);
+
     cpu.C = (cpu.X >= operand);
     cpu.Z = (cpu.X == operand);
     cpu.N = IS_NEGATIVE(cpu.X - operand);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte CPY(Byte operand) {
+uint8_t CPY(Word address) {
+    Byte operand = mem_fetch(address);
+
     cpu.C = (cpu.Y >= operand);
     cpu.Z = (cpu.Y == operand);
     cpu.N = IS_NEGATIVE(cpu.Y - operand);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte DEC(Byte operand) {
+uint8_t DEC(Word address) {
+    Byte operand = mem_fetch(address);
+
     Byte value = operand - 1;
 
     cpu.Z = IS_ZERO(value);
     cpu.N = IS_NEGATIVE(value);
 
-    mem_write(absolute_address, value);
-    return 0;
+    mem_write(address, value);
+
+    return NO_EXTRA_CYCLES;
 }
 
-Byte DEX(Byte operand) {
+uint8_t DEX(Word address) {
     cpu.X -= 1;
 
     cpu.Z = IS_ZERO(cpu.X);
     cpu.N = IS_NEGATIVE(cpu.X);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte DEY(Byte operand) {
+uint8_t DEY(Word address) {
     cpu.Y -= 1;
 
     cpu.Z = IS_ZERO(cpu.Y);
     cpu.N = IS_NEGATIVE(cpu.Y);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte EOR(Byte operand) {
+uint8_t EOR(Word address) {
+    Byte operand = mem_fetch(address);
+
     cpu.A ^= operand;
 
     cpu.Z = IS_ZERO(cpu.A);
     cpu.N = IS_NEGATIVE(cpu.A);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte INC(Byte operand) {
+uint8_t INC(Word address) {
+    Byte operand = mem_fetch(address);
+
     operand += 1;
 
     cpu.Z = IS_ZERO(operand);
     cpu.N = IS_NEGATIVE(operand);
 
-    mem_write(absolute_address, operand);
+    mem_write(address, operand);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte INX(Byte operand) {
+uint8_t INX(Word address) {
     cpu.X += 1;
 
     cpu.Z = IS_ZERO(cpu.X);
     cpu.N = IS_NEGATIVE(cpu.X);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte INY(Byte operand) {
+uint8_t INY(Word address) {
     cpu.Y += 1;
 
     cpu.Z = IS_ZERO(cpu.Y);
     cpu.N = IS_NEGATIVE(cpu.Y);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte JMP(Byte operand) {
-    cpu.PC = operand;
-    return 0;
+uint8_t JMP(Word address) {
+    cpu.PC = address;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte JSR(Byte operand) {
+uint8_t JSR(Word address) {
     stack_push_word(--cpu.PC);
 
-    cpu.PC = operand;
+    cpu.PC = address;
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte LDA(Byte operand) {
+uint8_t LDA(Word address) {
+    Byte operand = mem_fetch(address);
+
     cpu.A = operand;
 
     cpu.Z = IS_ZERO(cpu.A);
     cpu.N = IS_NEGATIVE(cpu.A);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte LDX(Byte operand) {
+uint8_t LDX(Word address) {
+    Byte operand = mem_fetch(address);
+
     cpu.X = operand;
 
     cpu.Z = IS_ZERO(cpu.X);
     cpu.N = IS_NEGATIVE(cpu.X);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte LDY(Byte operand) {
+uint8_t LDY(Word address) {
+    Byte operand = mem_fetch(address);
+
     cpu.Y = operand;
 
     cpu.Z = IS_ZERO(cpu.Y);
     cpu.N = IS_NEGATIVE(cpu.Y);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte LSR(Byte operand) {
+uint8_t LSR(Word address) {
+    Byte operand = mem_fetch(address);
+
     Word value = operand >> 1;
 
     cpu.C = (value & 0x100) > 0;
@@ -575,257 +577,273 @@ Byte LSR(Byte operand) {
     if (addrmode == &ACC) {
         cpu.A = value;
     } else {
-        mem_write(absolute_address, value);
+        mem_write(address, value);
     }
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte NOP(Byte operand) { return 0; }
+uint8_t NOP(Word address) { return NO_EXTRA_CYCLES; }
 
-Byte ORA(Byte operand) {
+uint8_t ORA(Word address) {
+    Byte operand = mem_fetch(address);
+
+    operand = mem_fetch(address);
+    
     cpu.A |= operand;
 
     cpu.Z = IS_ZERO(cpu.A);
     cpu.N = IS_NEGATIVE(cpu.N);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte PHA(Byte operand) {
+uint8_t PHA(Word address) {
     stack_push_byte(cpu.A);
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte PHP(Byte operand) {
+uint8_t PHP(Word address) {
     stack_push_ps();
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte PLA(Byte operand) {
+uint8_t PLA(Word address) {
     cpu.A = stack_pop_byte();
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte PLP(Byte operand) {
+uint8_t PLP(Word address) {
     stack_pop_ps();
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte ROL(Byte operand) {
+uint8_t ROL(Word address) {
+    Byte operand = (addrmode == &ACC) ? cpu.A : mem_fetch(address);
+
     Word value = (Word)(operand << 1) | cpu.C;
 
     cpu.C = (value & 0xFF00) == 1;
     cpu.Z = IS_ZERO(value & 0x00FF);
     cpu.N = IS_NEGATIVE(value);
 
-    if (addrmode == &IMP) {
+    if (addrmode == &ACC) {
         cpu.A = value;
     } else {
-        mem_write(absolute_address, value);
+        mem_write(address, value);
     }
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte ROR(Byte operand) {
+uint8_t ROR(Word address) {
+    Byte operand =  (addrmode == &ACC) ? cpu.A : mem_fetch(address);
+
     Word value = (Word)(cpu.C << 7) | (operand >> 1);
 
     cpu.C = value & 0x0001;
     cpu.Z = IS_ZERO(value & 0x00FF);
     cpu.N = IS_NEGATIVE(value);
 
-    if (addrmode == &IMP) {
+    if (addrmode == &ACC) {
         cpu.A = value;
     } else {
-        mem_write(absolute_address, value);
+        mem_write(address, value);
     }
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte RTI(Byte operand) {
+uint8_t RTI(Word address) {
     stack_pop_ps();
     cpu.PC = stack_pop_word();
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte RTS(Byte operand) {
+uint8_t RTS(Word address) {
     cpu.PC = stack_pop_word() - 1;
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte SBC(Byte operand) { return 0; }
+uint8_t SBC(Word address) { return 0; }
 
-Byte SEC(Byte operand) {
+uint8_t SEC(Word address) {
     cpu.C = 1;
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte SED(Byte operand) {
+uint8_t SED(Word address) {
     cpu.D = 1;
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte SEI(Byte operand) {
+uint8_t SEI(Word address) {
     cpu.I = 1;
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte STA(Byte operand) {
-    mem_write(operand, cpu.A);
-    return 0;
+uint8_t STA(Word address) {
+    mem_write(address, cpu.A);
+    return NO_EXTRA_CYCLES;
 }
 
-Byte STX(Byte operand) {
+uint8_t STX(Word address) {
+    Byte operand = mem_fetch(address);
     mem_write(operand, cpu.X);
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte STY(Byte operand) {
+uint8_t STY(Word address) {
+    Byte operand = mem_fetch(address);
     mem_write(operand, cpu.Y);
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte TAX(Byte operand) {
+uint8_t TAX(Word address) {
     cpu.X = cpu.A;
 
     cpu.Z = IS_ZERO(cpu.X);
     cpu.N = IS_NEGATIVE(cpu.X);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte TAY(Byte operand) {
+uint8_t TAY(Word address) {
     cpu.Y = cpu.A;
 
     cpu.Z = IS_ZERO(cpu.Y);
     cpu.N = IS_NEGATIVE(cpu.Y);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte TSX(Byte operand) {
+uint8_t TSX(Word address) {
     cpu.X = cpu.SP;
 
     cpu.Z = IS_ZERO(cpu.X);
     cpu.N = IS_NEGATIVE(cpu.X);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte TXA(Byte operand) {
+uint8_t TXA(Word address) {
     cpu.A = cpu.X;
 
     cpu.Z = IS_ZERO(cpu.A);
     cpu.N = IS_NEGATIVE(cpu.A);
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte TXS(Byte operand) {
+uint8_t TXS(Word address) {
     cpu.SP = cpu.X;
 
     cpu.Z = IS_ZERO(cpu.SP);
     cpu.N = IS_NEGATIVE(cpu.SP);
     
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-Byte TYA(Byte operand) {
+uint8_t TYA(Word address) {
     cpu.A = cpu.Y;
 
     cpu.Z = IS_ZERO(cpu.A);
     cpu.N = IS_NEGATIVE(cpu.A);
 
+    return NO_EXTRA_CYCLES;
+}
+
+uint8_t XXX(Word address) { 
+    fprintf(stderr, "Unknown opcode\n");
+    return NO_EXTRA_CYCLES; 
+}
+
+/**
+ * =======================================
+ *           Addressing Modes
+ * =======================================
+ * 
+ */
+
+uint8_t IMP(Word *address) { return NO_EXTRA_CYCLES; }
+
+uint8_t ACC(Word *address) { return NO_EXTRA_CYCLES; }
+
+uint8_t IMM(Word *address) {
+    (*address) = cpu.PC;
+
+    return NO_EXTRA_CYCLES;
+}
+
+uint8_t ZP0(Word *address) {
+    (*address) = mem_fetch(cpu.PC) & 0x00FF;
+    
+    return NO_EXTRA_CYCLES;
+}
+
+uint8_t ZPX(Word *address) {
+    Byte LSB = mem_fetch(cpu.PC);
+    (*address) = (LSB + cpu.X) & 0x00FF;
+
+    return NO_EXTRA_CYCLES;
+}
+
+uint8_t ZPY(Word *address) {
+    Byte LSB = mem_fetch(cpu.PC);
+    (*address) = (LSB + cpu.Y) & 0x00FF;
+
+    return NO_EXTRA_CYCLES;
+}
+
+uint8_t REL(Word *address) {
+    (*address) = mem_fetch(cpu.PC);
+
     return 0;
 }
 
-Byte XXX(Byte operand) { return 0; }
-
-uint8_t IMP(Byte *operand) { return 0; }
-
-uint8_t ACC(Byte *operand) { 
-    (*operand) = cpu.A;
-    return 0; 
-}
-
-uint8_t IMM(Byte *operand) {
-    (*operand) = mem_fetch(cpu.PC);
-    return 0;
-}
-
-uint8_t ZP0(Byte *operand) {
-    absolute_address = mem_fetch(cpu.PC) & 0x00FF;
-    (*operand) = mem_fetch(absolute_address);
-    return 0;
-}
-
-uint8_t ZPX(Byte *operand) {
-    Byte zero_page_address = cpu.X + mem_fetch(cpu.PC);
-    absolute_address = (Word)zero_page_address;
-    (*operand) = mem_fetch(zero_page_address);
-    return 0;
-}
-
-uint8_t ZPY(Byte *operand) {
-    Byte zero_page_address = cpu.Y + mem_fetch(cpu.PC);
-    absolute_address = (Word)zero_page_address;
-    (*operand) = mem_fetch(zero_page_address);
-    return 0;
-}
-
-uint8_t REL(Byte *operand) {
-    (*operand) = mem_fetch(cpu.PC);
-    return 0;
-}
-
-uint8_t AB0(Byte *operand) {
+uint8_t AB0(Word *address) {
     Byte LSB = mem_fetch(cpu.PC);
     Byte MSB = mem_fetch(cpu.PC);
 
-    absolute_address = (Word)LSB | MSB << 8;
+    (*address) = COMBINE_BYTES_LITTLE_ENDIAN(MSB, LSB);
 
-    (*operand) = mem_fetch(absolute_address);
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-uint8_t ABX(Byte *operand) {
+uint8_t ABX(Word *address) {
     Byte LSB = mem_fetch(cpu.PC);
     Byte MSB = mem_fetch(cpu.PC);
 
-    absolute_address = (Word)LSB | MSB << 8;
-    (*operand) = mem_fetch(absolute_address += cpu.X);
+    (*address) = COMBINE_BYTES_LITTLE_ENDIAN(MSB, LSB) + cpu.X;
 
-    return (Byte)(LSB + cpu.X) < cpu.X;
+    return DID_CROSS_PAGE_BOUNDARY(LSB, cpu.X);
 }
 
-uint8_t ABY(Byte *operand) {
+uint8_t ABY(Word *address) {
     Byte LSB = mem_fetch(cpu.PC);
     Byte MSB = mem_fetch(cpu.PC);
 
-    absolute_address = (Word)LSB | MSB << 8;
-    (*operand) = mem_fetch(absolute_address + cpu.Y);
+    (*address) = COMBINE_BYTES_LITTLE_ENDIAN(MSB, LSB) + cpu.Y;
 
-    return (Byte)(LSB + cpu.Y) < cpu.Y;
+    return DID_CROSS_PAGE_BOUNDARY(LSB, cpu.Y);
 }
 
-uint8_t IND(Byte *operand) {
+uint8_t IND(Word *address) {
     Byte LSB = mem_fetch(cpu.PC);
     Byte MSB = mem_fetch(cpu.PC);
 
-    Word pointer = (Word)LSB | MSB << 8;
+    Word pointer = COMBINE_BYTES_LITTLE_ENDIAN(MSB, LSB);
 
     if (LSB == 0xFF) {
-        (*operand) = (mem_fetch(pointer & 0xFF00) << 8) | mem_fetch(pointer);
+        (*address) = (mem_fetch(pointer & 0xFF00) << 8) | mem_fetch(pointer);
     } else {
-        (*operand) = (mem_fetch(pointer + 1) << 8) | mem_fetch(pointer);
+        (*address) = (mem_fetch(pointer + 1) << 8) | mem_fetch(pointer);
     }
 
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-uint8_t IIX(Byte *operand) {
+uint8_t IIX(Word *address) {
     Byte zero_page_address = mem_fetch(cpu.PC);
 
     zero_page_address += cpu.X;
@@ -833,38 +851,36 @@ uint8_t IIX(Byte *operand) {
     Byte LSB = mem_fetch(zero_page_address);
     Byte MSB = mem_fetch(zero_page_address + 1);
 
-    absolute_address = (Word)LSB | MSB << 8;
+    (*address) = COMBINE_BYTES_LITTLE_ENDIAN(MSB, LSB);
 
-    (*operand) = mem_fetch(absolute_address);
-
-    return 0;
+    return NO_EXTRA_CYCLES;
 }
 
-uint8_t IIY(Byte *operand) {
+uint8_t IIY(Word *address) {
     Byte zero_page_address = mem_fetch(cpu.PC);
 
     Byte LSB = mem_fetch(zero_page_address);
     Byte MSB = mem_fetch(zero_page_address + 1);
 
-    absolute_address = (Word)LSB | MSB << 8;
+    (*address) = COMBINE_BYTES_LITTLE_ENDIAN(MSB, LSB) + cpu.Y;
 
-    (*operand) = mem_fetch(absolute_address + cpu.Y);
-
-    return (Byte)(LSB + cpu.Y) < cpu.Y;
+    return DID_CROSS_PAGE_BOUNDARY(LSB, cpu.Y);
 }
 
-uint8_t ins_execute() {
+instruction get_instruction(Byte opcode) {
+    return matrix[opcode >> 4][opcode & 0x0F];
+}
+
+Byte ins_execute() {
     Byte opcode = mem_fetch(cpu.PC);
 
-    instruction ins = matrix[opcode >> 4][opcode & 0x0F];
+    instruction ins = get_instruction(opcode);
     addrmode = ins.addrmode;
 
-    Byte cycles = ins.cycles;
+    Word address;
 
-    Byte operand;
+    uint8_t additional_cycles_1 = ins.addrmode(&address);
+    uint8_t additional_cycles_2 = ins.operation(address);
 
-    Byte additional_cycles_1 = ins.addrmode(&operand);
-    Byte additional_cycles_2 = ins.operation(operand);
-
-    return cycles + additional_cycles_1 + additional_cycles_2;
+    return ins.cycles + additional_cycles_1 + additional_cycles_2;
 }

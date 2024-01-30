@@ -1,11 +1,16 @@
 #include "cpu.h"
+#include <stdio.h>
 
 CPU_6502 cpu;
 
 Byte mem_fetch(const Word address) {
-    cpu.PC++;
-    volatile Byte value = cpu.memory[address];
-    return value;
+    //printf("(cpu_fetch) reading at: 0x%X\n", address);
+    Byte data = cpu.memory[address];
+    //printf("(cpu_fetch) GOT: 0x%X\n", data);
+
+    if (address == cpu.PC) cpu.PC++;
+
+    return data;
 }
 
 void mem_write(const Word address, const Word value) {
