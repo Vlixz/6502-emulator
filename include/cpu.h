@@ -61,8 +61,10 @@
 #define PSR_I 2
 #define PSR_D 3
 #define PSR_B 4
+#define PSR_RESERVED 5
 #define PSR_V 6
 #define PSR_N 7
+
 
 /**
  * @brief 6502 defenition.

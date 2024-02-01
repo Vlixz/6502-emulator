@@ -50,7 +50,8 @@ void stack_push_ps() {
     SET_BIT_PSR(ps, cpu.Z, PSR_Z);
     SET_BIT_PSR(ps, cpu.I, PSR_I);
     SET_BIT_PSR(ps, cpu.D, PSR_D);
-    SET_BIT_PSR(ps, cpu.B, PSR_B);
+    SET_BIT_PSR(ps, 1, PSR_B); // Always set to 1 when pushed to stack
+    SET_BIT_PSR(ps, 1, PSR_RESERVED);
     SET_BIT_PSR(ps, cpu.V, PSR_V);
     SET_BIT_PSR(ps, cpu.N, PSR_N);
 

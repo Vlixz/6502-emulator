@@ -150,9 +150,11 @@ uint8_t CLV(Word address) {
 uint8_t CMP(Word address) {
     Byte operand = mem_fetch(address);
 
+    printf("CPM : A: %d, operand: 0x%02X\n", cpu.A, operand);
+
     cpu.C = (cpu.A >= operand);
     cpu.Z = (cpu.A == operand);
-    cpu.N = IS_NEGATIVE(cpu.A - operand);
+    cpu.N = IS_NEGATIVE((Word)cpu.A - (Word)operand);
 
     return NO_EXTRA_CYCLES;
 }
@@ -341,6 +343,10 @@ uint8_t PHP(Word address) {
 
 uint8_t PLA(Word address) {
     cpu.A = stack_pop_byte();
+
+    cpu.Z = IS_ZERO(cpu.A);
+    cpu.N = IS_NEGATIVE(cpu.A);
+
     return NO_EXTRA_CYCLES;
 }
 

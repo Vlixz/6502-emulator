@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
             printf("X: 0x%02X\n", cpu.X);
             printf("Y: 0x%02X\n", cpu.Y);
             printf("SP: 0x%02X\n", cpu.SP);
-            printf("Flags: N[%d] Z[%d]\n", cpu.N, cpu.Z);
+            printf("Flags: C[%d] Z[%d] I[%d] D[%d] B[%d] V[%d] N[%d]\n" , cpu.C, cpu.Z, cpu.I, cpu.D, cpu.B, cpu.V, cpu.N);
 
             break;
         }
