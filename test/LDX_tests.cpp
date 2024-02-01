@@ -170,7 +170,7 @@ TEST_F(LDX_TEST, LDX_ZP0_SetsZeroFlag) {
 #if LDX_ZPY_TEST
 
 TEST_F(LDX_TEST, LDX_ZP0_X_LoadsCorrectValueIntoXRegister) {
-    cpu.X = 0x10;
+    cpu.Y = 0x10;
 
     // Start inline program
     cpu.memory[0xFFFC] = LDX_ZPY_OPCODE;
@@ -196,7 +196,7 @@ TEST_F(LDX_TEST, LDX_ZP0_X_LoadsCorrectValueIntoXRegister) {
 }
 
 TEST_F(LDX_TEST, LDX_ZPY_SetsNegativeFlag) {
-    cpu.X = 0x1;
+    cpu.Y = 0x1;
 
     // Start inline program
     cpu.memory[0xFFFC] = LDX_ZPY_OPCODE;
@@ -226,8 +226,8 @@ TEST_F(LDX_TEST, LDX_ZPY_SetsZeroFlag) {
 
     // Start inline program
     cpu.memory[0xFFFC] = LDX_ZPY_OPCODE;
-    cpu.memory[0xFFFD] = 0x80; // 0x80 + 0xFF = 0x17F (wrapps around so 0x7F)
-    cpu.memory[0x007F] = 0x00;
+    cpu.memory[0xFFFD] = 0x80; // 0x80 + 0xFF = 0x17F 
+    cpu.memory[0x017F] = 0x00;
     // End inline program
 
     int cycles = em6502_execute(&cpu, LDX_ZPY_CYCLES);
