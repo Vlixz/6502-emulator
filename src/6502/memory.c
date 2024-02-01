@@ -22,23 +22,23 @@ void mem_write(const Word address, const Word value) {
 }
 
 void stack_push_byte(const Byte value) {
-    memory[cpu.SP++] = value;
+    memory[STACK_START + cpu.SP--] = value;
 }
 
 void stack_push_word(const Word value) {
-    memory[cpu.SP++] = value & 0xFF; // LSB
-    memory[cpu.SP++] = value >> 8;   // MSB
+    memory[STACK_START + cpu.SP--] = value & 0xFF; // LSB
+    memory[STACK_START + cpu.SP--] = value >> 8;   // MSB
 }
 
 Byte stack_pop_byte() {
-    return memory[--cpu.SP];
+    return memory[STACK_START + ++cpu.SP];
 }
 
 Word stack_pop_word() {
     Word value = 0;
 
-    value |= memory[--cpu.SP];      // MSB
-    value |= memory[--cpu.SP] << 8; // LSB
+    value |= memory[STACK_START + ++cpu.SP];      // MSB
+    value |= memory[STACK_START + ++cpu.SP] << 8; // LSB
 
     return value;
 }

@@ -8,7 +8,7 @@
 #include "instruction.h"
 
 const char *BIN_TEST_FILE =
-    "/home/vlixz/Projects/6502-emulator/examples/6502_functional_test.bin";
+    "../../examples/6502_functional_test.bin";
 
 int main(int argc, char **argv) {
 
@@ -21,8 +21,10 @@ int main(int argc, char **argv) {
 
     em6502_reset(&cpu);
 
+    Word old_pc;
+    execution_information info;
     while (1) {
-        char input = getchar();
+        char input = ' ';
 
         switch (input) {
         case 'q':
@@ -31,15 +33,22 @@ int main(int argc, char **argv) {
             em6502_reset(&cpu);
             break;
         default:
-            execution_information info = em6502_execute_instruction();
+            info = em6502_execute_instruction();
             printf("Executed opcode: %s, cycles: %d\n", info.ins.name, info.ins.cycles);
-            printf("PC: 0x%04X\n", cpu.PC);
+            printf("PC: 0x%04X\n", info.PC);
             printf("A: 0x%02X\n", cpu.A);
             printf("X: 0x%02X\n", cpu.X);
             printf("Y: 0x%02X\n", cpu.Y);
-            printf("Address: 0x%04X\n", info.address);
+            printf("SP: 0x%02X\n", cpu.SP);
+            printf("Flags: N[%d] Z[%d]\n", cpu.N, cpu.Z);
+
             break;
         }
+
+        if (old_pc == info.PC)
+            break;
+            
+        old_pc = info.PC;
     }
 
     return EXIT_SUCCESS;

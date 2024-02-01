@@ -10,8 +10,12 @@ instruction current_instruction;
 uint8_t branch(Word relative_address_offset) {
     Word tmp = cpu.PC;
 
-    cpu.PC += relative_address_offset;
+    if (relative_address_offset & 0x80) {
+        relative_address_offset |= 0xFF00;
+    }
 
+    cpu.PC += relative_address_offset;
+   
     return 1 + ((tmp >> 8) != (cpu.PC >> 8)); // +1 succesfull branch && +1 if a page is crossed.
 }
 

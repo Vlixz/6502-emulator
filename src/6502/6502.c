@@ -20,7 +20,7 @@ void em6502_reset(central_processing_unit *cpu) {
     // cpu->PC = 0xFFFC;
     //cpu->PC = 0x03F6;
     cpu->PC = 0x0400;
-    cpu->SP = STACK_START;
+    cpu->SP = 0;
 
     cpu->X = 0;
     cpu->Y = 0;

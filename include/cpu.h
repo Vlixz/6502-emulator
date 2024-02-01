@@ -83,7 +83,7 @@ typedef struct {
      * @brief Stack pointer
      *
      */
-    Word SP;
+    Byte SP;
 
     /**
      * @brief Accumulator
