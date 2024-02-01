@@ -7,7 +7,7 @@ extern "C" {
 
 class ADC_TEST : public ::testing::Test {
   protected:
-    void SetUp() override { em6502_reset(&cpu); }
+    void SetUp() override { em6502_reset(&cpu, 0xFFFC); }
 
     ~ADC_TEST() override { }
 

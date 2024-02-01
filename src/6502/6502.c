@@ -3,7 +3,7 @@
 #include "instruction.h"
 #include <string.h>
 
-void em6502_reset(central_processing_unit *cpu) {
+void em6502_reset(central_processing_unit *cpu, Word reset_vector) {
     cpu->A = RESET_VALUE_A;
     cpu->B = RESET_VALUE_B;
     cpu->C = RESET_VALUE_C;
@@ -13,13 +13,10 @@ void em6502_reset(central_processing_unit *cpu) {
     cpu->V = RESET_VALUE_V;
     cpu->Z = RESET_VALUE_Z;
 
-    //Byte LSB = mem_fetch(RESET_VECTOR_LSB);
-    //Byte MSB = mem_fetch(RESET_VECTOR_MSB);
-
-    //cpu->PC = (MSB << 8) | LSB;
-    // cpu->PC = 0xFFFC;
-    //cpu->PC = 0x03F6;
-    cpu->PC = 0x0400;
+    cpu->PC = reset_vector;
+    // cpu->PC = 0x03F6;
+    // cpu->PC = 0x0400;
+    
     cpu->SP = 0;
 
     cpu->X = 0;

@@ -436,7 +436,7 @@
  * @brief Resets the CPU to its initial state
  *
  */
-void em6502_reset(central_processing_unit *cpu);
+void em6502_reset(central_processing_unit *cpu, Word reset_vector);
 
 /**
  * @brief Executes a number of cycles on the CPU

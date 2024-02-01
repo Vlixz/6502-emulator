@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 
     printf("Successfully read file into cpu memory\n");
 
-    em6502_reset(&cpu);
+    em6502_reset(&cpu, 0x0400);
 
     Word old_pc;
     execution_information info;
@@ -30,7 +30,8 @@ int main(int argc, char **argv) {
         case 'q':
             return EXIT_SUCCESS;
         case 'r':
-            em6502_reset(&cpu);
+            em6502_reset(&cpu, 0x400);
+            mem_read_bin_file(BIN_TEST_FILE);
             break;
         default:
             info = em6502_execute_instruction();
