@@ -18,4 +18,4 @@ jobs:
     - name: make -j4
       run: cd build && make
     - name: Run Test
-      run: /home/runner/work/6502-emulator/6502-emulator/build/test/unit_tests
+      run: /home/runner/work/6502-emulator/6502-emulator/build/test/em6502test
