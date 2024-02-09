@@ -26,8 +26,8 @@ void stack_push_byte(const Byte value) {
 }
 
 void stack_push_word(const Word value) {
-    memory[STACK_START + cpu.SP--] = value & 0xFF; // LSB
     memory[STACK_START + cpu.SP--] = value >> 8;   // MSB
+    memory[STACK_START + cpu.SP--] = value & 0xFF; // LSB
 }
 
 Byte stack_pop_byte() {
@@ -37,8 +37,8 @@ Byte stack_pop_byte() {
 Word stack_pop_word() {
     Word value = 0;
 
-    value |= memory[STACK_START + ++cpu.SP];      // MSB
-    value |= memory[STACK_START + ++cpu.SP] << 8; // LSB
+    value |= memory[STACK_START + ++cpu.SP];      // LSB
+    value |= memory[STACK_START + ++cpu.SP] << 8; // MSB
 
     return value;
 }

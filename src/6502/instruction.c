@@ -110,6 +110,8 @@ uint8_t BRK(Word address) {
     stack_push_word(++cpu.PC);
     cpu.B = 1;
     stack_push_ps();
+    
+    cpu.I = 1; // Disable interrupts during BRK
 
     Byte LSB = mem_fetch(0xFFFE);
     Byte MSB = mem_fetch(0xFFFF);
@@ -149,8 +151,6 @@ uint8_t CLV(Word address) {
 
 uint8_t CMP(Word address) {
     Byte operand = mem_fetch(address);
-
-    printf("CPM : A: %d, operand: 0x%02X\n", cpu.A, operand);
 
     cpu.C = (cpu.A >= operand);
     cpu.Z = (cpu.A == operand);
@@ -299,19 +299,16 @@ uint8_t LDY(Word address) {
 }
 
 uint8_t LSR(Word address) {
-    Byte operand = mem_fetch(address);
+    Word value = (current_instruction.addrmode == &ACC) ? cpu.A : mem_fetch(address);
+    
+    cpu.C = (value & 0x01) > 0;
+    
+    value >>= 1;
 
-    Word value = operand >> 1;
+    cpu.Z = IS_ZERO(value & 0x00FF);
+    cpu.N = IS_NEGATIVE(value & 0x00FF);
 
-    cpu.C = (value & 0x100) > 0;
-    cpu.Z = IS_ZERO(value);
-    cpu.N = IS_NEGATIVE(value);
-
-    if (current_instruction.addrmode == &ACC) {
-        cpu.A = value;
-    } else {
-        mem_write(address, value);
-    }
+    (current_instruction.addrmode == &ACC) ? cpu.A = value : mem_write(address, value);
 
     return NO_EXTRA_CYCLES;
 }
@@ -321,23 +318,23 @@ uint8_t NOP(Word address) { return NO_EXTRA_CYCLES; }
 uint8_t ORA(Word address) {
     Byte operand = mem_fetch(address);
 
-    operand = mem_fetch(address);
-    
     cpu.A |= operand;
 
     cpu.Z = IS_ZERO(cpu.A);
-    cpu.N = IS_NEGATIVE(cpu.N);
+    cpu.N = IS_NEGATIVE(cpu.A);
 
     return NO_EXTRA_CYCLES;
 }
 
 uint8_t PHA(Word address) {
     stack_push_byte(cpu.A);
+
     return NO_EXTRA_CYCLES;
 }
 
 uint8_t PHP(Word address) {
     stack_push_ps();
+    
     return NO_EXTRA_CYCLES;
 }
 
@@ -360,15 +357,11 @@ uint8_t ROL(Word address) {
 
     Word value = (Word)(operand << 1) | cpu.C;
 
-    cpu.C = (value & 0xFF00) == 1;
+    cpu.C = (value & 0x0100) > 0;
     cpu.Z = IS_ZERO(value & 0x00FF);
     cpu.N = IS_NEGATIVE(value);
 
-    if (current_instruction.addrmode == &ACC) {
-        cpu.A = value;
-    } else {
-        mem_write(address, value);
-    }
+    (current_instruction.addrmode == &ACC) ? cpu.A = value : mem_write(address, value);
 
     return NO_EXTRA_CYCLES;
 }
@@ -376,17 +369,13 @@ uint8_t ROL(Word address) {
 uint8_t ROR(Word address) {
     Byte operand =  (current_instruction.addrmode == &ACC) ? cpu.A : mem_fetch(address);
 
-    Word value = (Word)(cpu.C << 7) | (operand >> 1);
+    Word value = (Word)(operand >> 1) | (cpu.C << 7) ;
 
-    cpu.C = value & 0x0001;
+    cpu.C = operand & 0x01; 
     cpu.Z = IS_ZERO(value & 0x00FF);
     cpu.N = IS_NEGATIVE(value);
 
-    if (current_instruction.addrmode == &ACC) {
-        cpu.A = value;
-    } else {
-        mem_write(address, value);
-    }
+    (current_instruction.addrmode == &ACC) ? cpu.A = value : mem_write(address, value);
 
     return NO_EXTRA_CYCLES;
 }
@@ -394,45 +383,66 @@ uint8_t ROR(Word address) {
 uint8_t RTI(Word address) {
     stack_pop_ps();
     cpu.PC = stack_pop_word();
+
     return NO_EXTRA_CYCLES;
 }
 
 uint8_t RTS(Word address) {
-    cpu.PC = stack_pop_word() - 1;
+    cpu.PC = stack_pop_word() + 1;
+
     return NO_EXTRA_CYCLES;
 }
 
-uint8_t SBC(Word address) { return 0; }
+uint8_t SBC(Word address) { 
+    Byte operand = mem_fetch(address);
+
+    uint16_t value = ((uint16_t)operand) ^ 0x00FF;
+
+    uint16_t tmp = (uint16_t)cpu.A + value + cpu.C;
+
+    cpu.C = (tmp & 0xFF00) > 0;
+    cpu.Z = (tmp & 0x00FF) == 0;
+    cpu.V = (((tmp ^ (uint16_t)cpu.A) & (tmp ^ value) & 0x0080)) > 0;
+    cpu.N = IS_NEGATIVE(tmp);
+
+    cpu.A = tmp & 0x00FF;
+
+    return NO_EXTRA_CYCLES;
+}
 
 uint8_t SEC(Word address) {
     cpu.C = 1;
+
     return NO_EXTRA_CYCLES;
 }
 
 uint8_t SED(Word address) {
     cpu.D = 1;
+
     return NO_EXTRA_CYCLES;
 }
 
 uint8_t SEI(Word address) {
     cpu.I = 1;
+
     return NO_EXTRA_CYCLES;
 }
 
 uint8_t STA(Word address) {
     mem_write(address, cpu.A);
+
     return NO_EXTRA_CYCLES;
 }
 
 uint8_t STX(Word address) {
-    Byte operand = mem_fetch(address);
-    mem_write(operand, cpu.X);
+    mem_write(address, cpu.X);
+
     return NO_EXTRA_CYCLES;
 }
 
 uint8_t STY(Word address) {
-    Byte operand = mem_fetch(address);
-    mem_write(operand, cpu.Y);
+    mem_write(address, cpu.Y);
+
     return NO_EXTRA_CYCLES;
 }
 
@@ -474,10 +484,7 @@ uint8_t TXA(Word address) {
 
 uint8_t TXS(Word address) {
     cpu.SP = cpu.X;
-
-    cpu.Z = IS_ZERO(cpu.SP);
-    cpu.N = IS_NEGATIVE(cpu.SP);
-    
+ 
     return NO_EXTRA_CYCLES;
 }
 
