@@ -435,22 +435,18 @@
 /**
  * @brief Resets the CPU to its initial state
  *
+ * @param cpu The CPU to reset
+ * @param reset_vector The address to start execution at after the reset
+ * 
  */
 void em6502_reset(central_processing_unit *cpu, Word reset_vector);
 
 /**
- * @brief Executes a number of cycles on the CPU
+ * @brief Executes the next instruction
  *
  * @return The number of cycles the CPU executed.
  *
- * @note The number of cycles executed is most likely the same as the number of
- * cycles passed in. However I use this return value to make it easier to write
- * unit tests, as I can check if I correctly calculate the page boundary
- * crossings etc.
- *
  */
-int em6502_execute(central_processing_unit *cpu, int cycles);
-
 execution_information em6502_execute_instruction(void);
 
 #endif /* INC_6502_H */
