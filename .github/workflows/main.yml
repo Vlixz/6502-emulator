@@ -10,10 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout repository
+      uses: actions/checkout@v2
     - name: configure
       run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Werror" ..
-    - name: make -j4
-      run: cd build && make
-    - name: Run Test
-      run: /home/runner/work/6502-emulator/6502-emulator/build/test/em6502test
+    - name: build
+      run: cd build && make -j4
+    - name: run
+      run: /home/runner/work/6502-emulator/6502-emulator/build/test/em6502test /home/runner/work/6502-emulator/6502-emulator/examples/6502_functional_test.bin

@@ -2,11 +2,8 @@
 #include <stdlib.h>
 
 #include "6502.h"
-#include "cpu.h"
 #include "debug.h"
 #include "memory.h"
-#include "instruction.h"
-
 
 /**
  * Runs the 6502 functional test created by Klaus Dormann 
@@ -17,15 +14,24 @@
  * The test is successful if the program counter reaches 0x336D.
  * 
 */
-
 #define TEST_SUCCESS_ADDRESS 0x336D
 
-const char *BIN_TEST_FILE =
-    "../../examples/6502_functional_test.bin";
+/**
+ * To avoid a infinite loop in GitHub actions, set a maximum number of executed instructions.
+ * 
+ * The number of executed instructions when successful is around 26 765 880.
+*/
+#define MAX_EXECUTED_INSTRUCTIONS 30000000 
+
+
+char *BIN_TEST_FILE = 
+        "../../examples/6502_functional_test.bin";
 
 int main(int argc, char **argv) {
 
-    int result = mem_read_bin_file(BIN_TEST_FILE);
+    char* file_path = (argc != 2) ? BIN_TEST_FILE : argv[1];
+
+    int result = mem_read_bin_file(file_path);
 
     if (result != 0) {
         printf("Error reading file\n");
@@ -34,19 +40,24 @@ int main(int argc, char **argv) {
 
     printf("File read running test.\n");
 
+
+    uint64_t executed_instructions = 0;
     em6502_reset(&cpu, 0x0400);
 
     execution_information info;
 
     while(1) {
         info = em6502_execute_instruction();
+        executed_instructions++;
 
         if (info.PC == TEST_SUCCESS_ADDRESS) {
             printf("Test passed\n");
             return EXIT_SUCCESS;
         }
-    }
 
-    printf("Test failed\n");
-    return EXIT_FAILURE;
+        if (executed_instructions > MAX_EXECUTED_INSTRUCTIONS) {
+            printf("Test failed\n");
+            return EXIT_FAILURE;
+        }
+    }
 }
