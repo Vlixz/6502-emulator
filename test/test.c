@@ -21,7 +21,7 @@
  * 
  * The number of executed instructions when successful is around 26 765 880.
 */
-#define MAX_EXECUTED_INSTRUCTIONS 30000000 
+#define MAX_EXECUTED_INSTRUCTIONS 10000000 
 
 
 char *BIN_TEST_FILE = 
