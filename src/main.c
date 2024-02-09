@@ -35,13 +35,12 @@ int main(int argc, char **argv) {
             break;
         default:
             info = em6502_execute_instruction();
-            printf("Executed opcode: %s, cycles: %d\n", info.ins.name, info.ins.cycles);
-            printf("PC: 0x%04X\n", info.PC);
-            printf("A: 0x%02X\n", cpu.A);
-            printf("X: 0x%02X\n", cpu.X);
-            printf("Y: 0x%02X\n", cpu.Y);
-            printf("SP: 0x%02X\n", cpu.SP);
-            printf("Flags: C[%d] Z[%d] I[%d] D[%d] B[%d] V[%d] N[%d]\n" , cpu.C, cpu.Z, cpu.I, cpu.D, cpu.B, cpu.V, cpu.N);
+
+            if (info.PC == 0x336D) {
+                printf("Test passed\n");
+                
+                return EXIT_SUCCESS;
+            }
 
             break;
         }
