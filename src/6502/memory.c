@@ -17,6 +17,10 @@ Byte mem_fetch(const Word address) {
     return data;
 }
 
+Byte mem_read(const Word address) {
+    return memory[address];
+}
+
 void mem_write(const Word address, const Word value) {
     memory[address] = value;
 }
@@ -74,30 +78,25 @@ int mem_read_bin_file(const char *filename) {
     FILE *file = fopen(filename, "rb");
 
     if (file == NULL) {
-        perror("Error opening file");
-        return -1; // Return an error code
+        return -1;
     }
 
-    // Get the file size
     fseek(file, 0, SEEK_END);
     size_t fileSize = ftell(file);
     fseek(file, 0, SEEK_SET);
 
     if (fileSize > sizeof(memory)) {
         fclose(file);
-        fprintf(stderr, "File size exceeds the maximum allowed size\n");
-        return -1; // Return an error code
+        return -1;
     }
 
-    // Read the file into the specified byte array
     size_t bytesRead = fread(memory, 1, fileSize, file);
 
     if (bytesRead != fileSize) {
         fclose(file);
-        perror("Error reading file");
-        return -1; // Return an error code
+        return -1;
     }
 
     fclose(file);
-    return 0; // Return success
+    return 0;
 }

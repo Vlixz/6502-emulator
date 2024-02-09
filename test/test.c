@@ -40,7 +40,6 @@ int main(int argc, char **argv) {
 
     printf("File read running test.\n");
 
-
     uint64_t executed_instructions = 0;
     em6502_reset(&cpu, 0x0400);
 

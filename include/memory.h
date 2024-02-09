@@ -25,6 +25,16 @@ void mem_reset(void);
 Byte mem_fetch(const Word address);
 
 /**
+ * @brief Reads a byte from memory.
+ * 
+ * @param address The address to read the byte from.
+ * 
+ * @return The byte at the specified address.
+ * 
+*/
+Byte mem_read(const Word address);
+
+/**
  * @brief Writes a byte to memory.
  * 
  * @param address The address to write the byte to.
