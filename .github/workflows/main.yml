@@ -17,4 +17,4 @@ jobs:
     - name: build
       run: cd build && make -j4
     - name: run
-      run: /home/runner/work/6502-emulator/6502-emulator/build/test/em6502test /home/runner/work/6502-emulator/6502-emulator/examples/6502_functional_test.bin
+      run: /home/runner/work/6502-emulator/6502-emulator/build/test/em6502test /home/runner/work/6502-emulator/6502-emulator/bin_files/6502_functional_test.bin

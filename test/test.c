@@ -25,7 +25,7 @@
 
 
 char *BIN_TEST_FILE = 
-        "../../examples/6502_functional_test.bin";
+        "../../bin_files/6502_functional_test.bin";
 
 int main(int argc, char **argv) {
 
