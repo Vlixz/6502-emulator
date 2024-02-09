@@ -8,6 +8,7 @@
  * Macros
  *
  */
+
 #define IS_NEGATIVE(x) (((x) & BIT_MASK_SIGNED) > 0)
 #define IS_ZERO(x) ((x) == 0)
 #define DID_CROSS_PAGE_BOUNDARY(LSB, X) ((Byte)(LSB + X) < X)
@@ -19,11 +20,13 @@
  * Handy constants
  * 
  */
+
 #define NO_EXTRA_CYCLES 0
 
 /*
  * Bitmasks
  */
+
 #define BIT_MASK_SIGNED 0b10000000
 #define BIT_MASK_CARRY 0b100000000
 #define BIT_MASK_FIRST_BYTE 0x00FF

@@ -13,5 +13,4 @@ typedef struct {
     uint8_t cycles;
 } execution_information;
 
-
 #endif /* INC_DEBUG_H */
