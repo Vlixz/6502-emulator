@@ -8,8 +8,8 @@
 
 typedef struct {
     instruction ins;
-    Word PC;
-    Word address;
+    Word hex;
+    Word lastPC;
     uint8_t cycles;
 } execution_information;
 

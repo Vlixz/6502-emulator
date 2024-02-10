@@ -22,5 +22,5 @@ execution_information instruction_execute(void) {
     uint8_t additional_cycles_1 = current_instruction.addrmode(&address);
     uint8_t additional_cycles_2 = current_instruction.operation(address);
 
-    return (execution_information){current_instruction, old_pc, address, current_instruction.cycles + additional_cycles_1 + additional_cycles_2};
+    return (execution_information){current_instruction, opcode, old_pc, current_instruction.cycles + additional_cycles_1 + additional_cycles_2};
 }

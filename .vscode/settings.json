@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.yml": "c",
         "functions.h": "c",
         "memory.h": "c",
         "stdlib.h": "c",
@@ -74,6 +75,8 @@
         "stdbool.h": "c",
         "cpu.h": "c",
         "stdio.h": "c",
-        "common.h": "c"
+        "common.h": "c",
+        "string.h": "c",
+        "pthread.h": "c"
     }
 }
