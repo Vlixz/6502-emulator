@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
         info = em6502_execute_instruction();
         executed_instructions++;
 
-        if (info.PC == TEST_SUCCESS_ADDRESS) {
+        if (info.lastPC == TEST_SUCCESS_ADDRESS) {
             printf("Test passed\n");
             return EXIT_SUCCESS;
         }
