@@ -12,6 +12,7 @@
 
 #define PADDING 7
 #define MAX_WINDOW_WIDTH 94
+
 #define POP_UP_WIDTH 90
 #define POP_UP_HEIGHT 5
 
@@ -43,9 +44,16 @@ pthread_cond_t cond_user_interface;
 void ncurses_init(void);
 void user_interface_create(void);
 
+void update_window_hints(void);
 void update_window_memory(void);
 void update_window_breakpoints(void);
 void update_window_current_instruction(void);
+
+
+/**
+ * Handle logic stuff
+ * 
+*/
 
 void *handle_user_interface(void *arg) {
   
@@ -63,6 +71,68 @@ void *handle_user_interface(void *arg) {
     }
 }
 
+void handle_resize(int sig) {
+
+    delwin(window_current_instruction);
+    delwin(window_breakpoints);
+    delwin(window_memory);
+    delwin(window_hints);
+   
+    endwin();
+
+    ncurses_init();
+
+    user_interface_create();   // Redraw the user interface
+}
+
+/**
+ * Helper functions
+ * 
+*/
+
+WINDOW* create_newwin(int height, int width, int starty, int startx) {
+    WINDOW *window = newwin(height, width, starty, startx);
+    box(window, 0, 0);
+    return window;
+}
+
+void ncurses_init(void) {
+    initscr();   // Start ncurses
+    cbreak();    // Allow quiting with ^C
+    noecho();    // Don't echo any keypresses
+    curs_set(0); // Hide the cursor
+}
+
+void display_input_box(const char *prompt, char *input, int max_length) {
+
+    int screen_height, screen_width;
+    getmaxyx(stdscr, screen_height, screen_width);
+
+    int start_y = (screen_height - POP_UP_HEIGHT) / 2;
+    int start_x = (screen_width - POP_UP_WIDTH) / 2;
+
+    WINDOW *popup = newwin(POP_UP_HEIGHT, POP_UP_WIDTH, start_y, start_x);
+    box(popup, 0, 0);
+
+    mvwprintw(popup, 2, 2, "%s: ", prompt);
+
+    wmove(popup, 2, strlen(prompt) + 4);
+    echo();
+    wgetnstr(popup, input, max_length);
+    noecho();
+
+    wrefresh(popup);
+
+    delwin(popup);
+    clear();
+    user_interface_create();
+}
+
+/**
+ * Public functions
+ * 
+*/
+
 void user_interface_init(void) {
     
     ncurses_init();
@@ -78,16 +148,49 @@ void user_interface_init(void) {
 }
 
 void user_interface_destory(void) {
+
     pthread_cancel(thread_user_interface);
+
+    pthread_join(thread_user_interface, NULL);
+
+    pthread_mutex_destroy(&mutex_user_interface);
+    pthread_cond_destroy(&cond_user_interface);
+
+    delwin(window_current_instruction);
+    delwin(window_breakpoints);
+    delwin(window_memory);
+    delwin(window_hints);
 
     endwin();
 }
 
+/**
+ * All the different windows
+ * 
+*/
 
-WINDOW* create_newwin(int height, int width, int starty, int startx) {
-    WINDOW *window = newwin(height, width, starty, startx);
-    box(window, 0, 0);
-    return window;
+void user_interface_create(void) {
+    
+    clear();
+    getmaxyx(stdscr, terminal_height, terminal_width);
+    
+    /* Center everything */
+    int x_offset = (terminal_width > MAX_WINDOW_WIDTH) ? (terminal_width - MAX_WINDOW_WIDTH) / 2 : 0;
+    terminal_width = (terminal_width > MAX_WINDOW_WIDTH) ? MAX_WINDOW_WIDTH : terminal_width;
+    
+    window_current_instruction = create_newwin(12, 58, 2, 4 + x_offset);
+    window_breakpoints = create_newwin(terminal_height - 3 - 12, 26, 14, terminal_width - 30 + x_offset);
+    window_memory = create_newwin(terminal_height - 3 - 12, 58, 14, 4 + x_offset);
+    window_hints = create_newwin(12, 26, 2, terminal_width - 30 + x_offset);
+
+    refresh();
+
+    update_window_memory();
+    update_window_current_instruction();
+
+    /* Never updated after this */
+    update_window_hints();
+    update_window_breakpoints();
 }
 
 void update_window_hints(void) {
@@ -118,7 +221,6 @@ void update_window_breakpoints(void) {
     wrefresh(window_breakpoints);
 }
 
-
 void update_window_current_instruction(void) {
     wclear(window_current_instruction);
     box(window_current_instruction, 0, 0);
@@ -138,8 +240,6 @@ void update_window_current_instruction(void) {
     mvwprintw(window_current_instruction, 4, PADDING + offset * 5, "%c: %d", flags[5], cpu.V);
     mvwprintw(window_current_instruction, 4, PADDING + offset * 6, "%c: %d", flags[6], cpu.N);
 
-    // mvwprintw(window_current_instruction, 0, 1, "Executed Instruction: %s", (current_execution_information.ins.name == NULL) ? "XXX" : current_execution_information.ins.name);
-
     mvwprintw(window_current_instruction, 2, PADDING, "Program Counter: 0x%04X", cpu.PC);
     mvwprintw(window_current_instruction, 6, PADDING, "Accumulator:   0x%02X 0b"BYTE_TO_BINARY_PATTERN" %d", cpu.A, BYTE_TO_BINARY(cpu.A), cpu.A);
     mvwprintw(window_current_instruction, 7, PADDING, "Register X:    0x%02X 0b"BYTE_TO_BINARY_PATTERN" %d", cpu.X, BYTE_TO_BINARY(cpu.X), cpu.X);
@@ -148,31 +248,6 @@ void update_window_current_instruction(void) {
 
     wrefresh(window_current_instruction);
 }
-
-void user_interface_create(void) {
-    
-    clear();
-    getmaxyx(stdscr, terminal_height, terminal_width);
-    
-    /* Center everything */
-    int x_offset = (terminal_width > MAX_WINDOW_WIDTH) ? (terminal_width - MAX_WINDOW_WIDTH) / 2 : 0;
-    terminal_width = (terminal_width > MAX_WINDOW_WIDTH) ? MAX_WINDOW_WIDTH : terminal_width;
-    
-    window_current_instruction = create_newwin(12, 58, 2, 4 + x_offset);
-    window_breakpoints = create_newwin(terminal_height - 3 - 12, 26, 14, terminal_width - 30 + x_offset);
-    window_memory = create_newwin(terminal_height - 3 - 12, 58, 14, 4 + x_offset);
-    window_hints = create_newwin(12, 26, 2, terminal_width - 30 + x_offset);
-
-    refresh();
-
-    update_window_memory();
-    update_window_current_instruction();
-
-    /* Never updated after this */
-    update_window_hints();
-    update_window_breakpoints();
-}
-
 
 void update_window_memory(void) {
     wclear(window_memory);
@@ -206,50 +281,4 @@ void update_window_memory(void) {
     }
 
     wrefresh(window_memory);
-}
-
-void ncurses_init(void) {
-    initscr();   // Start ncurses
-    cbreak();    // Allow quiting with ^C
-    noecho();    // Don't echo any keypresses
-    curs_set(0); // Hide the cursor
-}
-
-void handle_resize(int sig) {
-
-    delwin(window_current_instruction);
-    delwin(window_breakpoints);
-    delwin(window_memory);
-    delwin(window_hints);
-   
-    endwin();
-
-    ncurses_init();
-
-    user_interface_create();   // Redraw the user interface
-}
-
-void display_input_box(const char *prompt, char *input, int max_length) {
-
-    int screen_height, screen_width;
-    getmaxyx(stdscr, screen_height, screen_width);
-
-    int start_y = (screen_height - POP_UP_HEIGHT) / 2;
-    int start_x = (screen_width - POP_UP_WIDTH) / 2;
-
-    WINDOW *popup = newwin(POP_UP_HEIGHT, POP_UP_WIDTH, start_y, start_x);
-    box(popup, 0, 0);
-
-    mvwprintw(popup, 2, 2, "%s: ", prompt);
-
-    wmove(popup, 2, strlen(prompt) + 4);
-    echo();
-    wgetnstr(popup, input, max_length);
-    noecho();
-
-    wrefresh(popup);
-
-    delwin(popup);
-    clear();
-    user_interface_create();
 }
