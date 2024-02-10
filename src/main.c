@@ -11,6 +11,7 @@
 #include "memory.h"
 
 #include "user_interface.h"
+#include <regex.h>
 
 int reset_vector;
 
@@ -24,6 +25,22 @@ pthread_t thread_process;
 pthread_t thread_execution;
 
 pthread_mutex_t mutex_running;
+
+bool is_valid_hex(const char *str) {
+    regex_t regex;
+    const char *pattern = "^[0-9a-fA-F]+$";
+
+    if (regcomp(&regex, pattern, REG_EXTENDED) != 0) {
+        fprintf(stderr, "Failed to compile regex.\n");
+        return false;
+    }
+
+    int match = regexec(&regex, str, 0, NULL, 0);
+
+    regfree(&regex);
+
+    return (match == 0);
+}
 
 
 /**
@@ -90,7 +107,18 @@ void* handle_process(void *arg) {
                 program_state = PAUSED;
                 break;
 
-            case 'm':          
+            case 'm':
+                char input[6];
+                display_input_box("Enter memory address: ", input, 6);
+
+                if (!is_valid_hex(input))
+                    break;
+
+                uint16_t address = strtol(input, NULL, 16);
+
+                draw_memory_start_address = address;
+
+                pthread_cond_signal(&cond_user_interface);
                 break;
 
             case 'q':
@@ -98,6 +126,7 @@ void* handle_process(void *arg) {
         }
     }
 }
+
 
 int main(int argc, char **argv) {
 

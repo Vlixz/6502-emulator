@@ -36,6 +36,8 @@ WINDOW *window_hints;
 int terminal_height;
 int terminal_width;
 
+int draw_memory_start_address = 0x0000;
+
 pthread_t thread_user_interface;
  
 pthread_mutex_t mutex_user_interface;
@@ -48,7 +50,6 @@ void update_window_hints(void);
 void update_window_memory(void);
 void update_window_breakpoints(void);
 void update_window_current_instruction(void);
-
 
 /**
  * Handle logic stuff
@@ -103,31 +104,6 @@ void ncurses_init(void) {
     curs_set(0); // Hide the cursor
 }
 
-void display_input_box(const char *prompt, char *input, int max_length) {
-
-    int screen_height, screen_width;
-    getmaxyx(stdscr, screen_height, screen_width);
-
-    int start_y = (screen_height - POP_UP_HEIGHT) / 2;
-    int start_x = (screen_width - POP_UP_WIDTH) / 2;
-
-    WINDOW *popup = newwin(POP_UP_HEIGHT, POP_UP_WIDTH, start_y, start_x);
-    box(popup, 0, 0);
-
-    mvwprintw(popup, 2, 2, "%s: ", prompt);
-
-    wmove(popup, 2, strlen(prompt) + 4);
-    echo();
-    wgetnstr(popup, input, max_length);
-    noecho();
-
-    wrefresh(popup);
-
-    delwin(popup);
-    clear();
-    user_interface_create();
-}
-
 /**
  * Public functions
  * 
@@ -163,6 +139,33 @@ void user_interface_destory(void) {
 
     endwin();
 }
+
+void display_input_box(const char *prompt, char *input, int max_length) {
+
+    int screen_height, screen_width;
+    getmaxyx(stdscr, screen_height, screen_width);
+
+    int start_y = (screen_height - POP_UP_HEIGHT) / 2;
+    int start_x = (screen_width - POP_UP_WIDTH) / 2;
+
+    WINDOW *popup = newwin(POP_UP_HEIGHT, POP_UP_WIDTH, start_y, start_x);
+    box(popup, 0, 0);
+
+    mvwprintw(popup, 2, 2, "%s: ", prompt);
+
+    wmove(popup, 2, strlen(prompt) + 4);
+    echo();
+    wgetnstr(popup, input, max_length);
+    noecho();
+
+    wrefresh(popup);
+
+    delwin(popup);
+    clear();
+
+    user_interface_create();
+}
+
 
 /**
  * All the different windows
@@ -262,7 +265,7 @@ void update_window_memory(void) {
 
     int character_len = 54;
 
-    int mem_address = 0x0000;
+    int mem_address = draw_memory_start_address;
 
     mvwprintw(window_memory, 0, 1, "Memory");
     
