@@ -27,19 +27,10 @@ pthread_t thread_execution;
 pthread_mutex_t mutex_running;
 
 bool is_valid_hex(const char *str) {
-    regex_t regex;
-    const char *pattern = "^[0-9a-fA-F]+$";
+    if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X'))
+        str += 2;
 
-    if (regcomp(&regex, pattern, REG_EXTENDED) != 0) {
-        fprintf(stderr, "Failed to compile regex.\n");
-        return false;
-    }
-
-    int match = regexec(&regex, str, 0, NULL, 0);
-
-    regfree(&regex);
-
-    return (match == 0);
+   return (str[strspn(str, "0123456789abcdefABCDEF")] == 0);
 }
 
 
@@ -73,6 +64,8 @@ void* handle_execution(void *arg) {
 void* handle_process(void *arg) {
 
     pthread_mutex_lock(&mutex_running);
+    pthread_cond_signal(&cond_user_interface);
+
     program_state = PAUSED;
 
     while(1) {
@@ -109,12 +102,14 @@ void* handle_process(void *arg) {
 
             case 'm':
                 char input[6];
-                display_input_box("Enter memory address: ", input, 6);
+                display_input_box("Enter memory address", input, 6);
 
-                if (!is_valid_hex(input))
+                if (!is_valid_hex(input)) 
                     break;
 
                 uint16_t address = strtol(input, NULL, 16);
+                
+                address -= address % 16;
 
                 draw_memory_start_address = address;
 
