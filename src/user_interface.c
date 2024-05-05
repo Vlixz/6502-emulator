@@ -2,6 +2,7 @@
 
 #include <ncurses.h>
 #include <unistd.h>
+#include <signal.h>
 #include <string.h>
 
 #include "6502.h"
@@ -102,6 +103,8 @@ void ncurses_init(void) {
     cbreak();    // Allow quiting with ^C
     noecho();    // Don't echo any keypresses
     curs_set(0); // Hide the cursor
+
+    signal(SIGWINCH, handle_resize);
 }
 
 /**
