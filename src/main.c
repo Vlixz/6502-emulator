@@ -86,18 +86,22 @@ void* handle_process(void *arg) {
                 
                 break;
             case 'c': 
+
                 if(program_state == RUNNING)
                     break;
                 
                 pthread_mutex_unlock(&mutex_running);
                 program_state = RUNNING;
+
                 break;
             case 'p':
+
                 if(program_state == PAUSED)
                     break;
 
                 pthread_mutex_lock(&mutex_running);
                 program_state = PAUSED;
+
                 break;
 
             case 'm':
@@ -116,11 +120,24 @@ void* handle_process(void *arg) {
                 pthread_cond_signal(&cond_user_interface);
                 break;
 
+            case 'r':
+
+                if (program_state == RUNNING)
+                    break;
+
+                mem_read_bin_file(binary_file_location);
+                em6502_reset(&cpu, reset_vector);
+
+                pthread_cond_signal(&cond_user_interface);
+
+                break;
+
             case 'q':
                 return NULL;
         }
     }
 }
+
 
 
 int main(int argc, char **argv) {
