@@ -4,6 +4,7 @@
 #include <pthread.h>
 
 extern int draw_memory_start_address;
+extern char* current_instruction_name;
 
 extern pthread_mutex_t mutex_user_interface;
 extern pthread_cond_t cond_user_interface;
