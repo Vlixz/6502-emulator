@@ -13,7 +13,7 @@ I used the [6502_65C02_functional_tests](https://github.com/Klaus2m5/6502_65C02_
 - Step by step execution, and continous execution.
 - Way of defining the reset vector.
 
-![image](https://github.com/Vlixz/6502-emulator/assets/71019504/8d171a13-4a2f-4b73-92c9-41fc70bc30f5)
+![image](https://github.com/Vlixz/6502-emulator/assets/71019504/2bbd7f3d-abe7-462e-8f6c-7b39818cf0c8)
 
 ## Building
 
