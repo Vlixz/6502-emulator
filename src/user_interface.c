@@ -7,7 +7,7 @@
 #include "6502.h"
 #include "memory.h"
 
-#define FPS 30 /* 60 fps is flickering */
+#define FPS 60
 #define FRAME_TIME (1000 / FPS)
 
 #define PADDING 7
@@ -197,7 +197,7 @@ void user_interface_create(void) {
 }
 
 void update_window_hints(void) {
-    wclear(window_hints);
+    werase(window_hints);
     box(window_hints, 0, 0);
 
     mvwprintw(window_hints, 0, 1, "Hints");
@@ -215,7 +215,7 @@ void update_window_hints(void) {
 }
 
 void update_window_breakpoints(void) {
-    wclear(window_breakpoints);
+    werase(window_breakpoints);
     box(window_breakpoints, 0, 0);
 
     mvwprintw(window_breakpoints, 0, 1, "Breakpoints");
@@ -225,7 +225,7 @@ void update_window_breakpoints(void) {
 }
 
 void update_window_current_instruction(void) {
-    wclear(window_current_instruction);
+    werase(window_current_instruction);
     box(window_current_instruction, 0, 0);
 
     const char flags[] = {'C', 'Z', 'I', 'D', 'B', 'V', 'N'};
@@ -253,7 +253,7 @@ void update_window_current_instruction(void) {
 }
 
 void update_window_memory(void) {
-    wclear(window_memory);
+    werase(window_memory);
     box(window_memory, 0, 0);
 
     int y, x;
