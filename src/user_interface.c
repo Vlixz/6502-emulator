@@ -37,6 +37,8 @@ WINDOW *window_hints;
 int terminal_height;
 int terminal_width;
 
+char* current_instruction_name; 
+
 int draw_memory_start_address = 0x0000;
 
 pthread_t thread_user_interface;
@@ -237,7 +239,9 @@ void update_window_current_instruction(void) {
     getmaxyx(window_current_instruction, y, x);
 
     int offset = (x - 2 * PADDING) / sizeof(flags);
-
+    
+    mvwprintw(window_current_instruction, 0, 1, "Last instruction %s", current_instruction_name);
+    
     mvwprintw(window_current_instruction, 4, PADDING + offset * 0, "%c: %d", flags[0], cpu.C);
     mvwprintw(window_current_instruction, 4, PADDING + offset * 1, "%c: %d", flags[1], cpu.Z);
     mvwprintw(window_current_instruction, 4, PADDING + offset * 2, "%c: %d", flags[2], cpu.I);

@@ -45,7 +45,8 @@ void* handle_execution(void *arg) {
         pthread_mutex_lock(&mutex_running);
         pthread_mutex_lock(&mutex_user_interface);
 
-        em6502_execute_instruction();
+        execution_information information = em6502_execute_instruction();
+        current_instruction_name = information.ins.name;
 
         pthread_cond_signal(&cond_user_interface);
 
@@ -79,7 +80,8 @@ void* handle_process(void *arg) {
 
                 pthread_mutex_lock(&mutex_user_interface);
 
-                em6502_execute_instruction();
+                execution_information information = em6502_execute_instruction();
+                current_instruction_name = information.ins.name;
 
                 pthread_cond_signal(&cond_user_interface);
                 pthread_mutex_unlock(&mutex_user_interface);
